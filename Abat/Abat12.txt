@@ -1,0 +1,14 @@
+
+Active 12 version - 
+
+
+
+Dev - 3
+
+Stage - 3
+
+
+Test - UAT 3
+
+Prod - 6  32 Ram  12 Memory 
+

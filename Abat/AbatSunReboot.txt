@@ -1,0 +1,8 @@
+
+
+ABAT Maintenance at noon. Reboot all ABS servers... but if you dont want to do it, let Romeo know. 
+
+md-abs-a02/a03 and d05, mu-abs-a02/03 and d02 plus Prod: mp-abs-a10/11/12/13/14
+
+start with Dev first... Test and then Prod
+

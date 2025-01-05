@@ -1,0 +1,11 @@
+
+Postman Key :
+
+GET:
+https://fnfepeobprocessp001.azurewebsites.net/api/aggregatefolder?folderName=8917FP20240419R51E54FD11
+dKKIm8xJh8wo2aukhD2MAI7BjoYNx9jFS0-CsldpzDkrAzFuH0tASA==
+ 
+ 
+POST
+https://fnfepeobprocessp001.azurewebsites.net/api/aggregatefolder?folderName=8917FP20240611R50E54FD11
+dKKIm8xJh8wo2aukhD2MAI7BjoYNx9jFS0-CsldpzDkrAzFuH0tASA==

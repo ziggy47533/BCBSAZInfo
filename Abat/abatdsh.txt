@@ -1,0 +1,36 @@
+
+
+
+get count
+index="activebatch" sourcetype=activebatch 
+| rex "(?:JobName: )(?P<JobName>(.*?)(?=,))" 
+| rex "(?:ExecStartTime: )(?P<JobStartTime>(.*?)(?=,))" 
+| rex "(?:ExpectedRunTime: )(?P<JobExpectedTime>(.*?)(?=,))" 
+| rex "(?:QueueNAme: )(?P<JobQueue>(.*?)(?=,))" 
+| rex "(?:ActualCPUTime: )(?P<JobCPUTime>(.*?)(?=,))" 
+| rex "(?:Status:)(?P<JobStatus>(.*?)(?=:))" 
+| eval Epoch_Time=strptime(JobStartTime,"%m/%d/%Y %H:%M:%S") 
+| eval DELTA=(_time - Epoch_Time) 
+| eval Minutes=(DELTA/60) 
+| eval Hours=(DELTA/360) 
+| stats max(Hours) as "Max" avg(Hours) as "Avg" values(JobStatus) as "Status" values(JobExpectedTime) by JobName JobQueue 
+| search Avg>24 Max>24 
+| stats count(JobName)
+
+
+Get label not a count
+index="activebatch" sourcetype=activebatch 
+| rex "(?:JobName: )(?P<JobName>(.*?)(?=,))" 
+| rex "(?:ExecStartTime: )(?P<JobStartTime>(.*?)(?=,))" 
+| rex "(?:ExpectedRunTime: )(?P<JobExpectedTime>(.*?)(?=,))" 
+| rex "(?:QueueNAme: )(?P<JobQueue>(.*?)(?=,))" 
+| rex "(?:ActualCPUTime: )(?P<JobCPUTime>(.*?)(?=,))" 
+| rex "(?:Status:)(?P<JobStatus>(.*?)(?=:))" 
+| eval Epoch_Time=strptime(JobStartTime,"%m/%d/%Y %H:%M:%S") 
+| eval DELTA=(_time - Epoch_Time) 
+| eval Minutes=(DELTA/60) 
+| eval Hours=(DELTA/360) 
+| stats max(Hours) as "Max" avg(Hours) as "Avg" values(JobStatus) as "Status" values(JobExpectedTime) by JobName JobQueue
+| search Avg>24 Max>24 
+| stats values(JobName)
+

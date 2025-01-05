@@ -1,0 +1,10 @@
+2-12-20
+
+Active batch services
+
+Might need to restart...
+Abat Execution Agent
+Job Scheduleer 
+
+
+if the service is pause on a10 then stop/resume the service on a11 to load balance to a10 again... (Scheduler)

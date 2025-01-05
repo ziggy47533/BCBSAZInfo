@@ -1,0 +1,17 @@
+
+Abat Servers
+
+mp-abs-a01.corp.net.bcbsaz.com
+mp-abs-a02.corp.net.bcbsaz.com
+mp-abs-a03.corp.net.bcbsaz.com
+mp-abs-a04.corp.net.bcbsaz.com
+mp-abs-a05.corp.net.bcbsaz.com
+mp-abs-a06.corp.net.bcbsaz.com
+mp-abs-a08.corp.net.bcbsaz.com
+mp-abs-a09.corp.net.bcbsaz.com
+mp-abs-d01.corp.net.bcbsaz.com
+MP-ABS-SA05.corp.net.bcbsaz.com
+MP-ABS-SA06.corp.net.bcbsaz.com
+MP-ABS-SF01.corp.net.bcbsaz.com
+MP-ABS-SF02.corp.net.bcbsaz.com
+MP-ABS-SF03.corp.net.bcbsaz.com

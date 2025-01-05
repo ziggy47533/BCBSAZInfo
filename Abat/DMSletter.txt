@@ -1,0 +1,12 @@
+
+
+I just dropped the last of the DMSLetter job in the Incoming folder. Once dropped in the incoming folder, the below abat job triggers:
+
+//mp-abs-a01/IntApps/1205_DMSRenewalLetters/DMSRenewalLetters
+
+If this job takes more than 1hr to complete, abort the ABAT JOB, move the folder back to the holding folder then move it back to the incoming folder. Then watch the job closely in abat. Once it completes, send an email to Ben and IT Prod Support stating the queues are now clear.
+
+\\corp\dfs\abp-bsd\1205_DMSRenewalLetters\Hold
+\\corp\dfs\abp-bsd\1205_DMSRenewalLetters\Incoming
+
+

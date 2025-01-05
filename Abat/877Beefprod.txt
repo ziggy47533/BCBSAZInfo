@@ -1,0 +1,24 @@
+
+
+
+
+
+
+
+
+[‎4/‎9/‎2020 9:48 AM]  Sawyer, Dave:  
+Cool.  On mp-abs-a01, the job Jobs, Folders & Plans\Enrollment\Production\EnrollTransCreator\ETC-EnrollTransCreator\877_BEEF_Prod
+The job kicks off based on a file drop
+the job hangs periodically
+I have been aborting the job and redropping the file
+ 
+[‎4/‎9/‎2020 9:49 AM]  Sawyer, Dave:  
+sometimes that works, sometimes I have to redrop multiple times before it suddntly works
+I can't see any rhyme or reason to it
+ 
+
+
+
+What I have been doing is just redropping the xls file and sometimes it takes multiple drops.
+
+

@@ -1,0 +1,11 @@
+
+Variable : incomingPath
+${bsdroot}\868_NPPES\Dump
+
+event trigger:
+${incomingPath}\npidata.csv
+
+folder file path:
+\\corp\dfs\abp-bsd\868_NPPES\Dump\Archive
+
+
