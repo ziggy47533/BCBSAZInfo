@@ -1,0 +1,15 @@
+
+
+
+STArchive has only a 20 day or less retention of files for Exela, Evicore and Med300.
+Due to the performance of SI files are not routing to Foresight but are being deleted from
+the STArchive before EPS is notified the files are missing.
+I need the below files dates restored to 
+
+Z:\SIProd\Archives\Restore\EXELA 837 File restore
+All 0000SRCP, 0000SRCI and 0000SRCD
+
+
+June thru November 2022.
+If you are unable to restore to the above drive please try
+I:\Prod Support\STALLED FILES\Exela Missing File Restore

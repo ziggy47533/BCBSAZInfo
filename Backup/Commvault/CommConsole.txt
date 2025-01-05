@@ -1,0 +1,17 @@
+
+Install Commvault Console
+\\mm-cmv-sa01\f$\SoftwareCache\CVMedia\11.0.0\SP18_2357765_R713\Windows
+
+
+Popup box:
+corp\cmitchel
+
+commserve.corp.net.bsbsaz.com
+
+
+
+https://forum.commvault.com/forums/thread/57811.aspx
+
+
+
+

@@ -1,0 +1,12 @@
+
+
+
+Team,
+
+Since we  have been changing the infrastructure from physical media agents to virtual, The aux copies are causing network congestion running during the day. I’ve changed the schedule to run 1 aux copy per storage policy a day starting at 12 am with the exception on Sunday where there will be 2 copies running and to kill itself by 4:30 am. Please do not suspend these during the night anymore. If they do not end, please kill the job @ 4:35 am. Please let me know if you do since I want to track the if the run time limitations work. 
+
+You do not need to kill the aux copies for:
+
+ 
+
+The data never leaves the server to access the Quantum. 

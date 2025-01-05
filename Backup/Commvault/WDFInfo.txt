@@ -1,0 +1,7 @@
+
+
+Need someone to install SCOM with domain WDF
+
+
+then use A04.WDF or A05.WDF as agents
+

@@ -1,0 +1,10 @@
+
+
+for \\corp\dfs
+
+Find find missing folder or files 
+
+use server baz-mabdh1
+
+root folder - dhroot
+

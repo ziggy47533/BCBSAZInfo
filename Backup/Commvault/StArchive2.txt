@@ -1,0 +1,13 @@
+
+
+StArchive2 
+
+Nac01 - Onepass (180 days and on Disc) anything over the 180 days will then be on tape
+
+use defaultbackup
+
+
+
+figure what dates to pick from 180 days from the user request...
+
+

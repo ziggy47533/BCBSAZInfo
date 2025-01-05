@@ -1,0 +1,15 @@
+Commvault
+
+
+When there is a new server build 
+Look for the cluster name for that server.
+then find the subclient with that information...
+
+
+ex:
+
+server mp-sle-a01
+Cluster fp7=papps
+Subclient fp7-papps (vcb)
+
+

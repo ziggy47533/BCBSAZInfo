@@ -1,0 +1,27 @@
+
+
+Install Rubrik Agent on server
+
+goto ops folder under software and rubrik
+
+copy the folder and paste to the server you log into 
+
+
+
+goto custom and type D:
+
+got inventory and then database SQL
+
+click on add host
+
+pick the cluster RDC or TDC
+
+in the FAQN type the full server path name
+
+now need to selecet the SLA Domain
+goto manager protection
+pick non or prod
+
+
+
+done

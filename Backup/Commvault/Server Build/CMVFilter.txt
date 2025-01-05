@@ -1,0 +1,14 @@
+*.bak
+*.ldf
+*.mdf
+*.ndf
+*.old
+*.trn
+C:\
+D:\
+P:\
+
+Under Content Tab uncheck System State if we are taking snapshots of OS.
+Goto to the description:
+(Moved C:, D: to VM for File System)
+

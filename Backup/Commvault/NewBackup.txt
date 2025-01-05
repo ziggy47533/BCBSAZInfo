@@ -1,0 +1,12 @@
+
+
+
+
+\\mp-cmv-d01\i$\SW\CVMedia\11.0.0\SP24_3589820_R952
+
+
+df -h
+
+root
+
+
