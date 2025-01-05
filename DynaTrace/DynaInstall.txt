@@ -1,0 +1,3 @@
+
+
+.\Dynatrace-OneAgent-Windows-1.269.166.exe --set-infra-only=false --set-app-log-content-access=true --set-host-group=EDI_Claims_Processing --set-host-property=Owner=Infra_Operations --set-host-property=Owner_Email=Operationsinbox@azblue.com --set-host-property=Environment=Prod --set-host-property=Platform=OpenSpan --set-host-property=Server_Role=OpenSpan_Claims --set-host-property=Enteprise_Application=EDI --set-host-tag=Enterprise_Application=EDI
