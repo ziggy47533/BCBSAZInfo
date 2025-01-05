@@ -1,0 +1,348 @@
+
+
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_ops/stepwise_poc__v1
+
+
+
+<dashboard>
+  <label>Stepwise POC - v1</label>
+  <row>
+    <panel>
+      <title>Stepwise DB Blocking</title>
+      <chart>
+        <search ref="StepWise DB Blocking History"></search>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Stepwise Error Tracking - Month to Date Trend</title>
+      <chart>
+        <search ref="Stepwise Error Tracking by Type - Month to Date View"></search>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Stepwise Web Response Time</title>
+      <chart>
+        <search ref="StepWise IIS WebSite Avg Duration By URI - 24 Hour View"></search>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Stepwise Web Status Tracking</title>
+      <chart>
+        <search ref="StepWise HTTP Errors by Status/URL"></search>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Stepwise Errors by Time and Object ID</title>
+      <table>
+        <search ref="Stepwise Errors Metadata by Object ID"></search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Performance Metrics: Memory (Available)(GB) MP-STP-A0*</title>
+      <table>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:Memory" counter="Available MBytes" host="MP-STP-A0*") 
+		  |eval GB_Free=Value/1024
+          | stats sparkline(avg(GB_Free)) as Trend avg(GB_Free) as Average,  max(GB_Free) as Peak, latest(GB_Free) as Current, latest(_time) as "Last Updated" by host 
+          | eval host=lower(host)
+          | rename host as Host
+          | convert ctime("Last Updated") 
+          | sort-Current 
+          | eval Average=round(Average, 2) 
+          | eval Peak=round(Peak, 2) 
+          | eval Current=round(Current, 2)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Performance Metrics: Memory (Available)(GB) MP-STP-D0*/MP-STP-FW*</title>
+      <table>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:Memory" counter="Available MBytes" host="MP-STP-D0*" OR host="MP-STP-FW*") 
+		  |eval GB_Free=Value/1024
+          | stats sparkline(avg(GB_Free)) as Trend avg(GB_Free) as Average,  max(GB_Free) as Peak, latest(GB_Free) as Current, latest(_time) as "Last Updated" by host 
+          | eval host=lower(host)
+          | rename host as Host
+          | convert ctime("Last Updated") 
+          | sort-Current 
+          | eval Average=round(Average, 2) 
+          | eval Peak=round(Peak, 2) 
+          | eval Current=round(Current, 2)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Mem % Commited MP-STP-A0*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive host="MP-STP-A0*" sourcetype="Perfmon:Memory" sourcetype="Perfmon:Memory"  counter="% Committed Bytes In Use")  
+		  | eval DEMO=host." : ".counter  
+		  | timechart span=5m  avg(Value) by DEMO useother=0</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Mem % Commited MP-STP-D0*/MP-STP-FW*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive host="MP-STP-D0*" OR host="MP-STP-FW*" sourcetype="Perfmon:Memory" sourcetype="Perfmon:Memory"  counter="% Committed Bytes In Use")  
+		  | eval DEMO=host." : ".counter  
+		  | timechart span=5m  avg(Value) by DEMO useother=0</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>CPU Utilization % MP-STP-A0*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:CPU" host="MP-STP-A0*" collection=CPU counter="% Processor Time") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | timechart span=5m avg(Value) by host</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>CPU Utilization % MP-STP-D0*/MP-STP-FW*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:CPU" host="MP-STP-D0*" OR host="MP-STP-FW*" collection=CPU counter="% Processor Time") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | timechart span=5m avg(Value) by host</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>CPU Idle % MP-STP-A0*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:CPU" host="MP-STP-A0*" collection=CPU counter="% Idle Time") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | timechart span=5m avg(Value) by host</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>CPU Idle % MP-STP-D0*/MP-STP-FW*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:CPU" host="MP-STP-D0*" OR host="MP-STP-FW*" collection=CPU counter="% Idle Time") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | timechart span=5m avg(Value) by host</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Processor Queue Length MP-STP-A0*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:System" host="MP-STP-A0*" collection=System counter="Processor Queue Length") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | timechart span=5m avg(Value) by host</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Processor Queue Length MP-STP-D0*/MP-STP-FW*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:System" host="MP-STP-D0*" OR host="MP-STP-FW*" collection=System counter="Processor Queue Length") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | timechart span=5m avg(Value) by host</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Thread Count MP-STP-A0*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:Process" host="MP-STP-A0*" collection=Process counter="Thread Count") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | timechart span=5m avg(Value) by host</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Thread Count MP-STP-D0*/MP-STP-FW*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:Process" host="MP-STP-D0*" OR host="MP-STP-FW*" collection=Process counter="Thread Count") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | timechart span=5m avg(Value) by host</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Disc Latency MP-STP-A0*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:LogicalDisk" host="MP-STP-A0*" collection=LogicalDisk counter="Avg. Disk sec/Transfer" instance!="_Total" instance!="HarddiskVolume1") 
+		  | eval hour = tonumber(strftime(_time,"%H"))
+		  | eval ReportKey = instance." ".counter." : ".host
+		  | timechart avg(Value) perc95(Value) by ReportKey useother=false</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Disc Latency MP-STP-D0*/MP-STP-FW*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:LogicalDisk" host="MP-STP-D0*" OR host="MP-STP-FW*" collection=LogicalDisk counter="Avg. Disk sec/Transfer" instance!="_Total" instance!="HarddiskVolume1") 
+		  | eval hour = tonumber(strftime(_time,"%H"))
+		  | eval ReportKey = instance." ".counter." : ".host
+		  | timechart avg(Value) perc95(Value) by ReportKey useother=false</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Disc Read/Write I/O MP-STP-A0*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:Process" host="MP-STP-A0*" collection=Process counter="IO Read Bytes/sec" OR "IO Write Bytes/sec" ) 
+		  | eval hour = tonumber(strftime(_time,"%H"))
+		  | eval ReportKey = counter." : ".host
+		  | timechart avg(Value) perc95(Value) by ReportKey useother=false</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Disc Read/Write I/O MP-STP-D0*/MP-STP-FW*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:Process" host="MP-STP-D0*" OR host="MP-STP-FW*" collection=Process counter="IO Read Bytes/sec" OR "IO Write Bytes/sec" ) 
+		  | eval hour = tonumber(strftime(_time,"%H"))
+		  | eval ReportKey = counter." : ".host
+		  | timechart avg(Value) perc95(Value) by ReportKey useother=false</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Disc Queueing MP-STP-A0*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:LogicalDisk" host="MP-STP-A0*" collection=LogicalDisk counter="Current Disk Queue Length") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | eval ReportKey = counter." : ".host
+		  | timechart span=5m avg(Value) by ReportKey</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Disc Queueing MP-STP-D0*/MP-STP-FW*</title>
+      <chart>
+        <search>
+          <query>(index=perfmon OR index=perfmon_archive sourcetype="Perfmon:LogicalDisk" host="MP-STP-D0*" OR host="MP-STP-FW*" collection=LogicalDisk counter="Current Disk Queue Length") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | eval ReportKey = counter." : ".host
+		  | timechart span=5m avg(Value) by ReportKey</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+</dashboard>
+
+

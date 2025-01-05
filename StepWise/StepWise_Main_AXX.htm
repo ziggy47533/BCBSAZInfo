@@ -1,0 +1,100 @@
+<html>
+<head>
+
+<!  list of colors: https://www.w3schools.com/colors/colors_names.asp    royal blue - #4169E1 -->
+</br> </br></br> </br>
+
+<style>
+  table {border-collapse: collapse;}
+
+  table, th, tr, td {border: 1px solid black;}
+
+  tr:nth-child(even) {background-color: #f2f2f2;}
+
+  html {font-family: sans-serif;}
+
+  td {text-align: center;}
+</style>
+
+</head>
+	
+<body>
+
+<table border="1" align="center" width="1000" height="700">
+  <tr>
+    <td bgcolor="#4169E1" colspan="4"> <center> <h1> Stepwise Management Studio </h1> </center> </td>
+  </tr> 
+
+  <tr>
+    <th>Production in FP7 </th>
+    <th>Stage in FP7 </th>		
+    <th>Test in FP7 </th>
+    <th>Dev in FP7 </th>
+  </tr>
+
+  <tr>
+    <td bgcolor="#f2f2f2"> &nbsp; </td>
+    <td bgcolor="#f2f2f2"> &nbsp; </td>
+    <td bgcolor="#f2f2f2"> &nbsp; </td>
+    <td bgcolor="#f2f2f2"> &nbsp; </td>
+  </td>
+  </tr>
+  <tr>
+    <td>
+       MP-STP-A01 </br></br>
+       MP-STP-A02 </br></br>
+      <button class="btn btn-success" onclick=" window.open('http://mp-stp-a03/StepWiseShop/ManagementStudio','_blank')"> MP-STP-A03 </button> </br></br>
+       MP-STP-A04 </br> 
+    </td>
+    <td>
+       &nbsp; </br></br>
+       &nbsp; </br></br>
+      <button class="btn btn-success" onclick=" window.open('http://ms-stp-a01/StepWiseShop/ManagementStudio','_blank')"> MS-STP-A01 </button> </br></br> 
+       MS-STP-A02 </br> 
+    </td>
+    <td>
+       &nbsp; </br></br>
+       &nbsp; </br></br>
+      <button class="btn btn-success" onclick=" window.open('http://mu-stp-a01/StepWiseShop/ManagementStudio','_blank')"> MU-STP-A01 </button> </br></br> 
+    </td>
+    <td>
+       &nbsp; </br></br>
+       &nbsp; </br></br>
+      <button class="btn btn-success" onclick=" window.open('http://md-stp-a01/StepWiseShop/ManagementStudio','_blank')"> MD-STP-A01 </button> </br></br> 
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#f2f2f2">
+      MP-STP-D01 </br></br>
+      MP-STP-FW01N02 </br>
+    </td>
+    
+    <td bgcolor="#f2f2f2"> MS-STP-D01 </td>
+    
+    <td bgcolor="#f2f2f2"> MT-STP-D01 </td> 
+    
+    <td bgcolor="#f2f2f2">
+      MD-STP-D01 </br></br>
+      MD-STP-SW02 </br>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4">
+      <center>
+        </br>
+        *POC: Anita Dunn (if any issues) </br></br></br>
+
+	Steps in Productin to promote package: </br>
+	Step 1) On servers MP-STP-A03 and MP-STP-A04, kill any open Excel files. </br></br>
+	Step 2) Go to Service Manager link, then "stop" the services on MP-STP-A03 and MP-STP-A04. </br></br>
+	Step 3) Go to Migrator link, then deploy package per CTASK. </br></br>
+	Step 4) Go to Service Manager link, then "start" the services on MP-STP-A03 and MP-STP-A04. </br>
+
+      </center>
+    </td>
+  </tr> 
+</table>
+
+
+</body>
+</html>
