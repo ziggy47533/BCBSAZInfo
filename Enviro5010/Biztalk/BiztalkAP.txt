@@ -1,0 +1,14 @@
+
+
+biztalkserver_orchestration -- Host Instance
+
+these are the application :
+
+27X.CoreiiInterchange/
+
+270.DataGrid/
+
+270.EligibilityBenefits/
+
+27X.RealTimeInterchange
+

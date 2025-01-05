@@ -1,0 +1,11 @@
+
+
+
+index=mssql sourcetype="sqldm:dbx:sql_dm_repository:prd" "pub" | eval Session=DatabaseName.":".InstanceName."<---".HostName| stats values(ApplicationName) as "Client_App" values(SQLStatement) as "SQL_Statement" avg(BlockTimeSeconds) as "Avg_Blocktime" perc95(BlockTimeSeconds) as "95%_Blocktime" sum(BlockTimeSeconds) as "Total_Block_Time" latest(BlockStartLocalTime) as "Last Blocking Event" count by Session | sort -Total_Block_Time
+
+
+
+index=mssql sourcetype="sqldm:dbx:sql_dm_repository:prd" "tip" | eval Session=DatabaseName.":".InstanceName."<---".HostName| stats values(ApplicationName) as "Client_App" values(SQLStatement) as "SQL_Statement" avg(BlockTimeSeconds) as "Avg_Blocktime" perc95(BlockTimeSeconds) as "95%_Blocktime" sum(BlockTimeSeconds) as "Total_Block_Time" latest(BlockStartLocalTime) as "Last Blocking Event" count by Session | sort -Total_Block_Time
+
+
+

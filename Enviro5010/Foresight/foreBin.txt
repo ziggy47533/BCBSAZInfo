@@ -1,0 +1,4 @@
+
+Check what servers is assoc for foresight servers
+
+D:\Foresight\Instream\Bin

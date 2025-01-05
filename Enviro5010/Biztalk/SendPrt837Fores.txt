@@ -1,0 +1,17 @@
+
+
+
+log in mp-bts-sa03
+
+
+for to Biz Admin 
+
+look for 837.RoutingService
+
+goto send ports
+
+look for 837_BT_FS_TO_MV_MQSC - enabled
+
+After 20 minutes disabled the send ports
+
+END

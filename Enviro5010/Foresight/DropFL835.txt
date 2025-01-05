@@ -1,0 +1,16 @@
+
+
+
+
+
+Drop folder location:
+
+\\mp-frs-a01\Foresight\Systems\AZBlue\workflows\1.0\835Out_MVBX\Archiver_835ToTPBX
+
+
+\\mp-frs-a01\Foresight\Systems\AZBlue\workflows\1.0\835Out_MVBX\Archiver_835FromMVBX
+
+
+
+
+

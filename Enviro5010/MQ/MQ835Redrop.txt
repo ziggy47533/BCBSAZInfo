@@ -1,0 +1,15 @@
+
+
+[12:29 PM] Shorty, Rodney
+i go on MP-FRS-A07
+
+[12:29 PM] Shorty, Rodney
+open explorer, drop from I:\MVLibrary\Production File fix log\Large Volume file fixes\MQDXC\DMD00xxxxxx
+
+[12:29 PM] Shorty, Rodney
+open explorer, drop to \\mp-bts-ss02\HIPAAProd\BizTalk\835\Retry\MV\
+
+[12:29 PM] Shorty, Rodney
+only for 835s though. just 835s
+
+go from big to small file size

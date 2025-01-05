@@ -1,0 +1,10 @@
+Biztalk / foresight / MQ Issue
+
+
+Assoc goto MQ then goto Azure routing
+
+VC RT 270 Q
+
+
+incoming to Assoc from Azure
+

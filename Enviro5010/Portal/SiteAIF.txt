@@ -1,0 +1,137 @@
+SiteCore and AIF servers - Credential
+
+My Note:
+
+index=* host="mp-scr-fw*"
+
+
+https://azblue.com/credentialing
+
+https://provider.services.azblue.com:8193/credentialing
+
+index=bcbsaz_weblogs host="mp-scr-*" OR host="mp-wss-*" cs_uri_stem="*" "*Credential*" OR "*provider.services.azblue.com*"
+
+index=bcbsaz_weblogs host="mp-scr-*" OR host="mp-wss-*" "provider.services.azblue.com:8193/cred*"
+
+index=bcbsaz_weblogs host="mp-scr-*" cs_Referer="https://www.azblue.com/credentialing"
+
+index=bcbsaz_weblogs host="mp-scr-*" cs_Referer="https://www.azblue.com/credentialing" sc_status>299 | stats values(action) as action by host, _time, sc_status | rename sc_status as status | table _time, host, status, action
+
+IIS WebSite Avg Duration By URI - 24 Hour View:
+(index=bcbsaz_weblogs host=mp-scr-* sourcetype="ms:iis:auto" cs_uri_stem!="/" cs_Referer=https://www.azblue.com/credentialing) 
+| eval duration=(duration/1000) | eval URL="//".cs_host.":".cs_uri_stem
+| timechart avg(duration) as "Avg" max(duration) as "Max" by URL useother=false
+
+
+
+web Sites Ranked by Avg Response Times
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-*-*" cs_Referer="https://www.azblue.com/credentialing" cs_uri_stem="*"
+| stats avg(duration) as "Web Site Response Avg" values(host) as "Host(s)" by cs_host
+| sort -"Web Site Response Avg"
+
+
+
+Error Rate by Site (cs_host)
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-scr-fw*" cs_Referer="https://www.azblue.com/credentialing"
+| eval WebError=if((sc_status>499 OR sc_status=404),1,0)
+| eval Err_URI_Stem=if(WebError=1,cs_uri_stem,Err_URI_Stem)
+| stats  count as Total sum(WebError) as Errors by cs_host, host
+| eval  error_percentage=100*round(Errors/Total,4)
+| table  host error_percentage cs_host Total
+| sort  -error_percentage
+
+
+Metadata for Sites with elevated error rates
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-scr-fw*" cs_Referer="https://www.azblue.com/credentialing" [search index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-scr-fw*"
+| eval WebError=if((sc_status>499 OR sc_status=404),1,0)
+| eval Err_URI_Stem=if(WebError=1,cs_uri_stem,Err_URI_Stem)
+| stats  count as Total sum(WebError) as Errors by cs_host
+| eval  error_percentage=100*round(Errors/Total,4)
+| table  error_percentage cs_host
+| search error_percentage>2 | table cs_host]
+| search sc_status>499 OR sc_status=404 
+| lookup httpCodes.csv Status as sc_status OUTPUT StatusMeaning
+| eval Site-Error=cs_uri_stem."---".StatusMeaning
+| stats values(Site-Error) count by _time cs_host
+| sort - count
+
+
+
+URL Docs:
+
+https://docs.splunk.com/Documentation/Splunk/8.0.1/Viz/DrilldownLinkToURL
+
+https://docs.splunk.com/Documentation/Splunk/8.0.1/Viz/DrilldownLinkToSearch 
+
+
+-------------------------------------------------------------------
+
+web Sites Ranked by Avg Response Times
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-scr-fw*" cs_uri_stem="*.svc"
+| stats avg(duration) as "Web Site Response Avg" values(host) as "Host(s)" by cs_host
+| sort -"Web Site Response Avg"
+
+
+Error Rate by Site (cs_host)
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-scr-fw*"
+| eval WebError=if((sc_status>499 OR sc_status=404),1,0)
+| eval Err_URI_Stem=if(WebError=1,cs_uri_stem,Err_URI_Stem)
+| stats  count as Total sum(WebError) as Errors by cs_host
+| eval  error_percentage=100*round(Errors/Total,4)
+| table  error_percentage cs_host Total
+| sort  -error_percentage
+
+
+index=bcbsaz_weblogs sourcetype="ms:iis:auto"
+|search cs_uri_stem="*.svc" host="mp-scr-fw*"
+| stats count by status,uri_path
+| eventstats sum(count) as Error_Events by uri_path
+| eval percent=count/Error_Events*100
+| lookup httpCodes.csv Status as status OUTPUT StatusMeaning
+| search status>=399
+| sort -count -percent uri_path
+
+
+Metadata for Sites with elevated error rates
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-scr-fw*" [search index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-scr-fw*"
+| eval WebError=if((sc_status>499 OR sc_status=404),1,0)
+| eval Err_URI_Stem=if(WebError=1,cs_uri_stem,Err_URI_Stem)
+| stats  count as Total sum(WebError) as Errors by cs_host
+| eval  error_percentage=100*round(Errors/Total,4)
+| table  error_percentage cs_host
+| search error_percentage>2 | table cs_host]
+| search sc_status>499 OR sc_status=404 
+| lookup httpCodes.csv Status as sc_status OUTPUT StatusMeaning
+| eval Site-Error=cs_uri_stem."---".StatusMeaning
+| stats values(Site-Error) count by cs_host
+| sort - count
+
+
+(index=perfmon host=mp-scr-fw* sourcetype="perf*" collection=System counter="Processor Queue Length" sourcetype="Perfmon:System") 
+| timechart max(Value) by host useother=false
+
+index=windows host="mp-scr-fw*" sourcetype="Windows:Process:W3P" "cmsprod*"
+| timechart count(PID) by host
+
+
+index=bcbsaz_weblogs host="mp-scr-fw*" sourcetype="ms:iis:auto" sc_status=404
+| timechart count(sc_status) by host
+
+
+index=bcbsaz_weblogs host="mp-scr-fw*" sourcetype="ms:iis:auto" sc_status=500
+| timechart count(sc_status) by host
+
+
+index=perfmon host="mp-scr-fw*" sourcetype="Perfmon:Process" counter="% Processor Time"
+| timechart count(counter) by host
+
+index=perfmon host="mp-scr-fw*" sourcetype="Perfmon:System" counter="Processor Queue Length"
+| timechart count(counter) by host
+
+
+index=windows host="mp-scr-fw*" sourcetype="*" "*cmsprod*"
+| timechart count(CommandLine) by host
+
+
+index=windows host="mp-scr-fw*" sourcetype="Windows:Process:W3P" "*cmsprod*"
+| timechart count(ThreadCount) by host

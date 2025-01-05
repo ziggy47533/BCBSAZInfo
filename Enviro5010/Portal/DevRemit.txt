@@ -1,0 +1,11 @@
+
+app server baz=mdweb6v (10.1.64.137)
+
+db server mp-bts-sd01, mp-was-sd01
+
+my.dev.bcbsaz.com/remitLookupGUI/SecurePages/home.aspx
+that apparently sits on 10.1.64.138
+
+
+Check if this DB is offline InetSessionSate ?????
+

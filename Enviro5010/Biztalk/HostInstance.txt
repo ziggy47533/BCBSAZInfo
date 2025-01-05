@@ -1,0 +1,9 @@
+Date: 2-20-20
+
+Host Instance that stopped:
+
+(index=windows sourcetype="WMI:Services" host="MP-BTS-*" State=Stopped
+Name!="BTSSvc$BizTalkServerBatch" Name!="BTSSvc$BizTalkServerMqsc_Receive" Name!="BTSSvc$BizTalkServer_MQSocket")
+| search DisplayName="Biztalk*"
+| stats values(Name) as Name by _time host State
+| dedup Name

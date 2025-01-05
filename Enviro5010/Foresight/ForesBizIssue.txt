@@ -1,0 +1,43 @@
+
+
+Check the siteCore servers load balance
+
+mp-scr-fw01n01 - N03
+
+
+Biztalk host check
+
+.\check-hostsinstances-reset-v2.ps1
+
+.\receive_location_recovery.ps1
+
+
+
+http://bts.azblue.com/BTS270COREIIServices/BZT270Service.svc
+
+
+\\mp-bts-ss01\HIPAAProdRT\WorkflowData\BT\Outbound\271FromBX\processing reports\Importing\271FromBX
+
+
+
+
+
+Uncaught exception (see the 'inner exception' below) has suspended an instance of service 'RealTimeInterchange.ForesightOutbound(836b11fd-3125-d87c-1bcd-87e99347bdb3)'.
+The service instance will remain suspended until administratively resumed or terminated.
+If resumed the instance will continue from its last persisted state and may re-throw the same unexpected exception.
+InstanceId: 59bef701-82f7-4db7-8695-441ca0dff2b6
+Shape name:
+ShapeId:
+Exception thrown from: segment -1, progress -1
+Inner exception: Exception occurred when persisting state to the database.
+Exception type: PersistenceException
+Source: Microsoft.XLANGs.BizTalk.Engine
+Target Site: Void Commit()
+The following is a stack trace that identifies the location where the exception occured at Microsoft.BizTalk.XLANGs.BTXEngine.BTXXlangStore.Commit()
+at Microsoft.XLANGs.Core.Service.Persist(Boolean dehydrate, Context ctx, Boolean idleRequired, Boolean finalPersist, Boolean bypassCommit, Boolean terminate)
+at Micros
+
+restart in the app pool on the WSS Servers
+CORERouterService
+
+

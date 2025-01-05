@@ -1,0 +1,13 @@
+
+
+Biztalk avg time:
+
+(index=bcbsaz_weblogs sourcetype="ms:iis:auto" cs_uri_stem="*COREII*")
+| eval TIER=case(host=="MP-WAS-FW01N01","Web",host=="MP-WAS-FW01N02","Web",host=="MP-WAS-FW01N03","Web",
+  host=="MP-WAS-FW01N04","Web",host=="MP-BTS-SA01","BizTalk",host=="MP-BTS-SA02","BizTalk",host=="MP-BTS-SA03","BizTalk")
+| eval duration=(duration/1000)
+| eval WebTime=if(TIER=="Web",duration,WebTime)
+| eval BizTalk_Time=if(TIER=="BizTalk",duration,BizTalk_Time)
+| timechart span=15m avg(WebTime) as "Avg_WebTime" avg(BizTalk_Time) as "Avg_BizTalk_Time"
+  perc95(WebTime) as "95pct_WebTime" perc95(BizTalk_Time) as "95pct_BizTalk_Time" by host
+| eval Approx_Velocity_Time=(Avg_WebTime-Avg_BizTalk_Time)

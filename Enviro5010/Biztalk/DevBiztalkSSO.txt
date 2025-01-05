@@ -1,0 +1,6 @@
+
+Dev Biztalk issue:
+
+
+Enterprise Single SIgn on was not running on the BTS server and the main service for that on MD-SQL-D02
+the SQL server holds the key for SSO

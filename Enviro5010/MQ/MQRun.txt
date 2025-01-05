@@ -1,0 +1,11 @@
+
+
+MQ Issue
+
+use the script to help resolve issue
+
+name: RunMQ or MQRun (powershell)
+
+
+
+

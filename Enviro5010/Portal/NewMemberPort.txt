@@ -1,0 +1,15 @@
+
+
+New Member Portal
+
+Linux boxes (Load Bal) :
+LP-MBP-W01
+LP-MBP-W02
+LP-MBP-W03
+
+ON TDC-DMZ17 172.17.0.241
+
+
+index=* host="lp-mbp-*" status="*"| timechart count(status) by host
+
+

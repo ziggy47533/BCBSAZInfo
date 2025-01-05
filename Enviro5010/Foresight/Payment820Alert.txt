@@ -1,0 +1,28 @@
+
+
+The 820 payments continue to stall each month .. What needs to be done or who do I need to work with to get a fix for this problem?
+
+
+(index=5010 sourcetype=bts_frs_dir DirectoryName="\\\\mp-frs-a01\\Foresight\\Systems\\AZBlue\\workflows\\1.0\\820In_HIX\\InStream_For999\\Error\\ReportedErrors")
+| stats count by _time, CreationTime, DirectoryName, FileName, Age
+| rename CreationTime AS DateCreated
+| rename Age AS MinutesWaiting
+| eval MinutesWaiting=round('MinutesWaiting',2)
+| sort -DirectoryName
+
+
+5010 820 Hix Payment
+
+
+
+0 11,14,17 * * 1-5
+
+
+
+inline
+trigger time
+
+
+820 HIX file failed
+
+

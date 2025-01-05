@@ -1,0 +1,8 @@
+
+
+Impersonate: 
+http://impersonate1.services.azblue.com:8190/ 
+ 
+ 
+ Will need to create a serving Blue Request to get access...
+ 

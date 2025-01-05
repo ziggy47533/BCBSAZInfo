@@ -1,0 +1,34 @@
+
+
+(index=5010 host="mp-frs-*") sourcetype="foresight:glassfish:webservices:log"
+| transaction fs_gf_msg_id startswith="End Realtime 270" endswith="initializing realtime 271"
+| eval duration=round(duration,3)
+| eval BX_Time=if(fs_gl_tp_type=="BX",duration,BX_Time)
+| eval MV_Time=if(fs_gl_tp_type=="MV",duration,MV_Time)
+| stats avg(BX_Time) as "Avg_BX_Response" perc95(BX_Time) as "95pct_BX_Response" avg(MV_Time) as "Avg_MV_Response" perc95(MV_Time) as "95pct_MV_Response"
+
+
+http://mp-bts-sa03.corp.net.bcbsaz.com/BTS270COREIIServices/BZT270Service.svc
+
+
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/search?earliest=-4h%40m&latest=now&q=search%20index%3D%22bcbsaz_weblogs%22%20sourcetype%3D%22ms%3Aiis%3Aauto%22%20host%3Dmp-bts-sa*%20(cs_uri_stem%3D%22*grid*%22%20OR%20cs_uri_stem%3D%22*BTS*%22%20OR%20cs_uri_stem%3D%22*xml*%22)%20%7C%20eval%20ErrCount%3Dif(sc_status%3E399%2C1%2C0)%20%7C%20eval%20duration%3D(duration%2F1000)%20%7C%20timechart%20count%20as%20Count%20avg(duration)%20as%20%22Avg%20Resp%22%20sum(ErrCount)%20as%20%22errors%22%20by%20host%20%7C%20sort%20-_time&display.page.search.mode=verbose&dispatch.sample_ratio=1&display.page.search.tab=statistics&display.general.type=statistics&sid=1686146654.3628685
+
+
+
+
+index="bcbsaz_weblogs" sourcetype="ms:iis:auto" host=mp-bts-sa* (cs_uri_stem="*grid*" OR cs_uri_stem="*BTS*"
+ OR cs_uri_stem="*xml*")
+| eval ErrCount=if(sc_status>399,1,0)
+| eval duration=(duration/1000)
+| timechart count as Count avg(duration) as "Avg Resp" sum(ErrCount) as "errors" by host | sort -_time
+
+
+
+
+
+index="bcbsaz_weblogs" sourcetype="ms:iis:auto" host=mp-bts-sa* (cs_uri_stem="*grid*" OR cs_uri_stem="*BTS*"
+ OR cs_uri_stem="*xml*")  cs_uri_stem="/BTS270COREIIServices/BZT270Service.svc"
+| eval Host_URI=host."----".cs_uri_stem
+| eval duration=(duration/1000)
+| timechart  span=1m count as Count avg(duration) as "Avg Resp" by Host_URI

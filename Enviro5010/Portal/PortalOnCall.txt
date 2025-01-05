@@ -1,0 +1,16 @@
+
+On call
+
+Team Fusion
+- Broker Portal Validation
+- Employer Portal Validation
+- Group Portal Validation
+ 
+Team Alpha
+- Member Portal Validation
+ 
+Team Phoenix
+- Provider Portal Validation
+ 
+Team Nexus
+- Public Portal Validation

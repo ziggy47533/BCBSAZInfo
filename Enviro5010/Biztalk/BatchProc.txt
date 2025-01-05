@@ -1,0 +1,14 @@
+Issue Date: 2-12-20
+
+(index="wineventlog"    TaskCategory="BizTalk Server")    Type!=Information  host=mp-bts-*  "*privilege*"| rex "(?:BizTalk host)(?:\s+)(?P<BTSHost>(\w+))"  | rex "(?:throttled because)(?:\s+)(?P<ThrottleType>(\w+))"  | eval Demo=BTSHost.":".ThrottleType." ".host   | rex "(?:cannot open file\s+)(?P<Path>(.*?)(?=\s))"  | eval temp=split(Path,"\\") | timechart  span=1h  count(EventCode) by host 
+
+
+
+Remdedy:
+
+Kill the workflow on A01 and A08 for Foresight servers
+
+Rebooted servers MP-BTS-SS01 and SS02 - Folder
+
+Rebooted servers MP-BTS-CA01N01 and N02 - Node Clusters
+

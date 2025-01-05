@@ -1,0 +1,20 @@
+
+2-12-20
+
+
+Production:
+
+5010 Alert: Production Biztalk RuleEngineUpdateService Stopped
+
+Rule Engine Update Service needs to up 
+
+Need a special account to get it started
+
+
+
+fix:
+rekey in the password for the service
+
+
+
+

@@ -1,0 +1,10 @@
+
+
+BX Close out
+
+might need to change the update chrome drive time to time...
+
+
+Search chrome drive and goto Chroium.com
+
+find what version you need and download it on your desktop and move it to the mm-ops-a02 or a03....

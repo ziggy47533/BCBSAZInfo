@@ -1,0 +1,11 @@
+
+
+log into mm-swd-a01
+
+goto Orion Service Manager
+
+See if any of the service(s) are in stopped mode.
+If so restart
+
+
+that it....

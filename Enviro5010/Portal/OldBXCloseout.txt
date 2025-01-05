@@ -1,0 +1,66 @@
+
+
+BXCloseOut 271 RT (MA:Velocity 530PHXA)
+
+(index=5010 sourcetype=bx_closeout host=mm-ops-a02)
+| stats latest(530PHXA.271.realtime.closeouts)
+
+
+BXFault 271 RT (MA:Velocity 530PHXA)
+
+(index=5010 sourcetype=bx_closeout host=mm-ops-a02)
+| stats latest(530PHXA.271.realtime.bxfault)
+
+
+BXCloseOut 277 Batch (MA:Velocity 530PHXA)
+
+(index=5010 sourcetype=bx_closeout host=mm-ops-a02)
+| stats latest(530PHXA.277.realtime.closeouts)
+
+BXFault 277 Batch (MA:Velocity 530PHXA)
+
+(index=5010 sourcetype=bx_closeout host=mm-ops-a02)
+| stats latest(530PHXA.277.realtime.bxfault)
+
+
+________________________________________________________________________
+
+
+
+BXCloseOut 271 RT (530PTSA)
+
+(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PTSA.271.realtime.closeouts)
+
+
+BXFault 271 RT (ASSOC - 530PTSA)
+
+(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PTSA.271.realtime.bxfault)
+
+
+BXCloseOut 277 Batch (530PTSA)
+
+(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PTSA.277.realtime.closeouts)
+
+
+BXFault 277 Batch (ASSOC - 530PTSA)
+
+(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PTSA.277.realtime.bxfault)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

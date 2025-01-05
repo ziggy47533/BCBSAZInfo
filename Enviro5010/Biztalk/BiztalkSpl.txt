@@ -1,0 +1,14 @@
+
+
+indes=5010 host=mp-bts-* sourcetype=biztalk_active 
+
+
+index=5010 host="mp-bts-*" sourcetype=biztalk_active| timechart span=30m count by SERVICSNAME
+
+
+index=wineventlog host="mp-bts-sd*" sourcetype="WinEventLog:Application" Message="The transaction log for database 'BizTalkMsgBoxDb' is full.*" 
+| timechart  count(Message) by host
+
+
+URL
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/5010_biztalk_mpbtsss02_system_summary?form.time_dropdown.earliest=%40d&form.time_dropdown.latest=now

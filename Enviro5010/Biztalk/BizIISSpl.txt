@@ -1,0 +1,11 @@
+
+
+Biztalk IIS
+
+index="bcbsaz_weblogs" sourcetype="ms:iis:auto" host=mp-bts-sa* 
+(cs_uri_stem="*grid*" OR cs_uri_stem="*BTS*" OR cs_uri_stem="*xml*")  
+cs_uri_stem="/BTS270COREIIServices/BZT270Service.svc"
+ | eval duration=(duration/1000)
+ | timechart  span=1h count as Count avg(duration) as "Avg Resp" by host
+ 
+ 

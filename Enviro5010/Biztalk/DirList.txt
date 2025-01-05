@@ -1,0 +1,15 @@
+
+
+Old
+(index=5010 sourcetype=bts_frs_dir DirectoryName=* FileName=*)
+| stats count(FileName) as Counts by date_hour, DirectoryName
+| dedup date_hour
+| sort date_hour
+
+New - directory counts (6hrs)
+(index=5010 sourcetype="directory_monitor:fs_bts:log" file_name="*") 
+| stats count(file_name) as Counts by date_hour, directory_name
+| dedup date_hour
+| sort date_hour
+
+

@@ -1,0 +1,8 @@
+
+MP-MQS-A01 disk is full:
+
+Look like folder eating up the disk space:
+
+D:\Program Files\IBM\WebSphere MQ\bin64
+
+Delete the .dmp files

@@ -1,0 +1,17 @@
+
+
+
+
+835 check count for the day....  :
+
+(index=5010 sourcetype = INSTRWorkflow OR sourcetype=glassfish_instream_workflow host=mp-frs-a01)
+| search FileCount!="0" WorkflowName=835Out_MVBX
+| timechart span=1d sum(FileCount) by WorkflowNam
+
+
+
+
+The Aveage :
+(index=5010 sourcetype = INSTRWorkflow OR sourcetype=glassfish_instream_workflow host=mp-frs-a01) 
+| search FileCount!="0" WorkflowName=835Out_MVBX
+| timechart span=1d avg(FileCount) by WorkflowName

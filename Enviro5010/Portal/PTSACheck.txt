@@ -1,0 +1,9 @@
+
+
+Check PTSA timings:
+
+index=5010 sourcetype=bx_closeout
+| timechart span=15m latest("530PTSA.271.realtime.closeouts") as "CloseOuts"
+  latest("530PTSA.271.realtime.valid_responses") as "Valid"
+| eval TimeoutPCT=(CloseOuts/Total)*100
+

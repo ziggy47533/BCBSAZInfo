@@ -1,0 +1,16 @@
+
+Netscaler:
+
+
+https://vpx-dmz17-prod-tier.bcbsaz.com/menu/neo - (WAS Servers)
+
+https://vpx-int-prod-tier.bcbsaz.com/menu/neo - (WSS Servers)
+
+
+
+
+Old:
+
+https://10.1.123.149/ - L3 (web services)
+https://172.17.0.241/ - DMZ17
+

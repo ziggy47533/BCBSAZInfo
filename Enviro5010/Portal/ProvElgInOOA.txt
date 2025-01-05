@@ -1,0 +1,69 @@
+
+
+OLD
+
+
+User Eligibility In Area (Users)
+
+(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="42" OR MSGSTRING="999" BLUEPLANS="BCBS of Arizona")
+| timechart count by UserId usenull=false useother=false
+
+Eligibility In Area Timeouts (270/271)
+
+index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="999" OR MSGSTRING="42"BLUEPLANS="BCBS of Arizona" 
+| dedup MSGNUMBER 
+| eval hour = tonumber(strftime(_time,"%H")) 
+| where hour>=6 AND hour<=18 
+| timechart span=1h count(MSGTYPE)
+
+
+
+User Eligibility OOA (Users)
+
+(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="42" OR MSGSTRING="999" BLUEPLANS!="BCBS of Arizona")
+| timechart count by UserId limit=10 usenull=false useother=false
+
+Eligibility OOA Timeouts (270/271)
+
+index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="999" OR MSGSTRING="42"BLUEPLANS!="BCBS of Arizona" 
+| dedup MSGNUMBER 
+| eval hour = tonumber(strftime(_time,"%H")) 
+| where hour>=6 AND hour<=18 
+| timechart span=1h count(MSGTYPE)
+
+
+
+NEW
+
+
+
+
+PE In Area
+(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="42" OR MSGSTRING="999" BLUEPLANS="BCBS of Arizona")
+| timechart count by UserId usenull=false useother=false
+
+
+index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="999" OR MSGSTRING="42"BLUEPLANS="BCBS of Arizona" 
+| dedup MSGNUMBER 
+| eval hour = tonumber(strftime(_time,"%H")) 
+| where hour>=6 AND hour<=18 
+| timechart span=1h count(MSGTYPE)
+
+
+PE OOA
+
+(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="42" OR MSGSTRING="999" BLUEPLANS!="BCBS of Arizona")
+| timechart count by UserId limit=10 usenull=false useother=false
+
+
+index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="999" OR MSGSTRING="42"BLUEPLANS!="BCBS of Arizona" 
+| dedup MSGNUMBER 
+| eval hour = tonumber(strftime(_time,"%H")) 
+| where hour>=6 AND hour<=18 
+| timechart span=1h count(MSGTYPE)
+
+
+
+
+
+

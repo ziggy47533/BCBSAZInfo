@@ -1,0 +1,8 @@
+
+
+Make sure cisco amp is not running for services
+
+
+check this folder in case C drive is fulling up...
+
+C:\Program Files\Cisco\AMP\tmp

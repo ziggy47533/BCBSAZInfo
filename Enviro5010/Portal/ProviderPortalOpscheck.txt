@@ -1,0 +1,65 @@
+
+
+Old
+(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" BLUEPLANS="BCBS of Arizona")
+| dedup MSGNUMBER
+| stats count(MSGTYPE)
+
+
+(index=5010 sourcetype="webportal:dbx:system_internal:prd" MSGTYPE=P_ET blueplan_name="BCBS of Arizona")
+| dedup MSGNUMBER
+| stats count(MSGTYPE)
+
+index=5010 sourcetype="edifecs:xes_route_events:log" "BCBS of Arizona"
+
+
+Old
+index=5010 sourcetype=web_portal_claim_status  source="mp-was-d03_systemlogs_tblinternallogs" |
+fields RequestId  EDIProcessTime Userid MSGSTRING PostProcessTime TotalProcessTime |
+join RequestId [search index=5010 sourcetype=web_portal_claim_status source="mp-was-d03_providerinet_claim_request" |
+fields RequestId SubscriberId AlphaPrefix RequestType UserId InsertDate IsDependent StartDate EndDate ResponseId] |
+search  RequestType!=OOA |
+stats  count(RequestId)
+
+
+index=5010 sourcetype="webportal:dbx:system_internal:prd" source="mp-was-d03_systemlogs_tblinternallogs" |
+fields RequestId  EDIProcessTime Userid MSGSTRING PostProcessTime TotalProcessTime |
+join RequestId [search index=5010 sourcetype=web_portal_claim_status source="mp-was-d03_providerinet_claim_request" |
+fields RequestId SubscriberId AlphaPrefix RequestType UserId InsertDate IsDependent StartDate EndDate ResponseId] |
+search  RequestType!=OOA |
+stats  count(RequestId)
+
+
+index=5010 sourcetype="web_portal" MSGTYPE="P_ET" BLUEPLANS!="BCBS of Arizona"
+| dedup MSGNUMBER 
+| stats count(MSGTYPE)
+
+
+index=5010 sourcetype="webportal:dbx:system_internal:prd" MSGTYPE="P_ET"  MSGSTRING="42"
+| lookup blueplans_lookup.csv alpha_prefix AS AlphaPrefix OUTPUT blueplan_group AS blueplan_group blueplan_name AS blueplan_name home_control_plan AS home_control_plan route AS route
+| dedup MSGNUMBER
+| search home_control_plan!="30"
+| stats count(MSGTYPE)
+
+
+index=5010 sourcetype="webportal:dbx:provider_inet_claimstatus:prd" source=web_portal_claim_status RequestType=OOA | stats count(RequestType)
+
+
+index=5010 sourcetype="webportal:dbx:system_internal:prd" MSGTYPE="P_ET" MSGSTRING="42"
+| lookup blueplans_lookup.csv alpha_prefix AS AlphaPrefix OUTPUT blueplan_group AS blueplan_group blueplan_name AS blueplan_name home_control_plan AS home_control_plan
+| dedup MSGNUMBER
+| search home_control_plan!="30"
+| stats count(MSGTYPE)
+
+
+index=5010 sourcetype="webportal:dbx:provider_inet_claimstatus:prd" - wrong
+
+
+
+index=5010 sourcetype="webportal:dbx:system_internal:prd"
+
+
+
+bluePlan?
+index=5010 sourcetype="webportal:dbx:system_internal:prd" MSGSTRING="42" AlphaPrefix!="XB*"
+

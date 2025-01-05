@@ -1,0 +1,44 @@
+
+Foresight Studio
+
+**** Make sure to stopped workflow ******
+
+goto foresight folder 
+
+goto foresight Studio
+
+v 8.2
+
+FSStudio.ide
+
+then goto AZBlue
+
+workflow
+
+then the name of the processed in question ..... 
+
+click on run
+
+
+color code :
+
+Purple is idle Ok
+
+Green is good
+
+Any other color might have issue.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

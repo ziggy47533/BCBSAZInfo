@@ -1,0 +1,23 @@
+
+
+How to change the log on services:
+http://www.cryer.co.uk/brian/windows/how_to_2008_grant_log_on_as_a_service.htm
+
+
+In case the biztalk services has stopped
+
+
+Run script check_host_v2.ps1 in D:\Utilities
+
+pw - PrDbts5vc
+
+
+
+if issue look at the GPO - first....
+
+goto run and type secpol.msc
+
+Local Policies
+User Rights Assignment
+Log on as a service
+

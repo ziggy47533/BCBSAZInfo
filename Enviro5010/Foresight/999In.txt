@@ -1,0 +1,18 @@
+
+
+This will (MP-BTS-SS02) stopped from going to the In folder on mp-frs-a01...
+
+move all files out of \\mp-bts-ss02\HIPAAProd\WorkflowData\BT\Outbound\835FromMVBX\Input
+
+to \\mp-bts-ss02\HIPAAProd\WorkflowData\BT\Outbound\835FromMVBX\012922 backlog
+
+
+
+Moved dates 1/27 and 1/28 to the In folder.....
+D:\Foresight\Systems\AZBlue\workflows\1.0\835Out_MVBX\InStream_For999\backlog
+
+
+see files from 1/29 moved them to the 01292022 folder....
+D:\Foresight\Systems\AZBlue\workflows\1.0\835Out_MVBX\InStream_For999\In
+
+D:\Foresight\Systems\AZBlue\workflows\1.0\835Out_MVBX\InStream_For999\backlog\01292022

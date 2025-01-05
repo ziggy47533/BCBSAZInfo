@@ -1,0 +1,12 @@
+
+
+
+(index=* host="mp-wss-fw0*" sourcetype=WinHostMon Name="w3svc" State=Stopped)
+| stats values(State) as State by _time host
+
+
+
+
+(index=* host="mp-bts-sa0*" OR host="mp-wss-fw0*" sourcetype=WinHostMon Name="w3svc" State=Stopped)
+| stats values(State) as State by _time host
+

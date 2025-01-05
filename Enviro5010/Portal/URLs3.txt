@@ -1,0 +1,174 @@
+﻿
+Public Portal - Team Nexus - Carlos Cordaba
+
+Three URL's
+
+https://www.azblue.com/individualsandfamilies/shop-plans/short-term-medical-insurance
+
+https://www.azblue.com/misc/update-login-credentials
+
+https://www.azblue.com/misc/updatecredentials
+
+
+uri_path="https://www.azblue.com/individualsandfamilies/shop-plans/short-term-medical-insurance" 
+
+uri_path="https://www.azblue.com/misc/update-login-credentials"
+
+uri_path="https://www.azblue.com/misc/updatecredentials"
+
+
+Search:
+
+(index=bcbsaz_weblogs host="mp-scr-*" OR host="ms-scr-* "sourcetype="ms:iis:auto" uri_path="/individualsandfamilies/shop-plans/short-term-medical-insurance" OR uri_path="misc/update-login-credentials" OR uri_path="/misc/updatecredentials") sc_status>299
+[search index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-scr-*"
+| eval WebError=if((sc_status>299 OR sc_status=404),1,0)
+| eval Err_URI_Stem=if(WebError=1,cs_uri_stem,Err_URI_Stem)
+| stats count as Total sum(WebError) as Errors by cs_host
+| eval error_percentage=100*round(Errors/Total,4) 
+| table _time, error_percentage cs_host 
+| search error_percentage>2 
+| table cs_host]
+| search sc_status>299 OR sc_status=404
+| lookup httpCodes.csv Status as sc_status OUTPUT StatusMeaning
+| search host="mp-scr-*" | eval Site-Error=uri_path."---".StatusMeaning
+| sort - count
+| timechart span=1d count by uri_path
+
+
+(index=bcbsaz_weblogs host="mp-scr-*" OR host="ms-scr-* "sourcetype="ms:iis:auto" uri_path="/individualsandfamilies/shop-plans/short-term-medical-insurance" OR uri_path="misc/update-login-credentials" OR uri_path="/misc/updatecredentials" sc_status>299)
+| stats count(uri_path) as Count_Hit by host _time uri_path sc_status
+| dedup uri_path
+
+
+[‎3/‎26/‎2020 6:19 AM]  Mitchell, Chris:  
+James did you guys do a buf restore?
+last night?
+ 
+[‎3/‎26/‎2020 6:19 AM]  Brewer, James:  
+CHG0084807 
+No we did not do a restore
+there was a change that caused some issues with buf
+ 
+[‎3/‎26/‎2020 6:20 AM]  Mitchell, Chris:  
+there a ticket INC0240632
+from Sean Newman
+ 
+[‎3/‎26/‎2020 6:22 AM]  Brewer, James:  
+Nope, we did not do this restpr, I see it unassigned.
+ 
+[‎3/‎26/‎2020 6:23 AM]  Mitchell, Chris:  
+it was created at 10PM
+that was not part of the roll back?
+ 
+[‎3/‎26/‎2020 6:25 AM]  Brewer, James:  
+no, looks like they did something in error, roll back happened way after that. I can do the restore quickly.
+ 
+[‎3/‎26/‎2020 6:25 AM]  Mitchell, Chris:  
+i would hold off..
+ 
+[‎3/‎26/‎2020 6:26 AM]  Brewer, James:  
+Yea I see he created it after 10pm, that would kind of make since if it was in error, I'll shoot him an email.
+ 
+[‎3/‎26/‎2020 6:26 AM]  Mitchell, Chris:  
+ok, thanks
+ 
+[‎3/‎26/‎2020 6:26 AM]  Brewer, James:  
+Yea rollback didnt happen until almost 2am
+ 
+[‎3/‎26/‎2020 6:30 AM]  Mitchell, Chris:  
+questions
+ 
+[‎3/‎26/‎2020 6:31 AM]  Brewer, James:  
+yea whats up?
+ 
+[‎3/‎26/‎2020 6:35 AM]  Mitchell, Chris:  
+those url that you ttacking in splunk what is ? that Rob put in Yammer
+ 
+[‎3/‎26/‎2020 6:36 AM]  Brewer, James:  
+Those are Public Portal links hosed on the sitecore servers.
+ 
+[‎3/‎26/‎2020 6:37 AM]  Mitchell, Chris:  
+they want to make sure user can get those url's?
+ 
+[‎3/‎26/‎2020 6:39 AM]  Brewer, James:  
+They want to make sure the users arent getting errors even after validating their credintials correctly.
+I tried to pin point the exact error but didn't quite get it, I'll definitley need some assistance from the pros
+But if you read the change, they listed the BUG buy each of the links.
+ 
+[‎3/‎26/‎2020 6:40 AM]  Brewer, James:  
+SO I was trying to find a error for each link so we can monitor that directly.
+ 
+[‎3/‎26/‎2020 6:40 AM]  Mitchell, Chris:  
+the short term is not about credentials it get quote
+ 
+[‎3/‎26/‎2020 6:41 AM]  Brewer, James:  
+Yea, different issue for each link.
+ 
+[‎3/‎26/‎2020 6:42 AM]  Mitchell, Chris:  
+would it be easier to do them as separate then in all in one? 
+ 
+[‎3/‎26/‎2020 6:43 AM]  Brewer, James:  
+Yes I thought about that as well, 
+ 
+[‎3/‎26/‎2020 6:43 AM]  Mitchell, Chris:  
+have it in one dashboard
+ 
+[‎3/‎26/‎2020 6:43 AM]  Brewer, James:  
+However, Ill still need to try capturing the current errors they are receiving and thats what I need help with.
+ 
+[‎3/‎26/‎2020 6:44 AM]  Mitchell, Chris:  
+who is in charge of these url's
+person name?
+maybe we can get a dumby account
+so we can actually see what it does
+ 
+[‎3/‎26/‎2020 6:44 AM]  Brewer, James:  
+Team Nexus, Carlos Cordoba..
+ 
+[‎3/‎26/‎2020 6:44 AM]  Mitchell, Chris:  
+ok
+ 
+[‎3/‎26/‎2020 6:45 AM]  Brewer, James:  
+Id appreciate your help sir, seems like you already have a plan.
+Anything else you need from me?
+ 
+[‎3/‎26/‎2020 6:45 AM]  Mitchell, Chris:  
+i dont know aobut a plan
+but i can try and help
+ok let me see if i can talk to him today..
+ 
+[‎3/‎26/‎2020 6:46 AM]  Brewer, James:  
+Lol, ok well if you find anything out today I can def resume the efforts tonight but the change goes in at 6pm so Ill have to log in earlier.
+ 
+[‎3/‎26/‎2020 6:46 AM]  Mitchell, Chris:  
+did these urls are real time ?
+ 
+[‎3/‎26/‎2020 6:46 AM]  Brewer, James:  
+ok thanks Chris
+yes, its prod
+ 
+[‎3/‎26/‎2020 6:46 AM]  Mitchell, Chris:  
+now right. it was but of the stuff you did last night?
+ 
+[‎3/‎26/‎2020 6:46 AM]  Brewer, James:  
+Testing in UAT already passed
+Yes its part of everything I was working on last night
+ 
+[‎3/‎26/‎2020 6:47 AM]  Mitchell, Chris:  
+ok
+there is ascript?
+said you made update to a file
+ 
+[‎3/‎26/‎2020 6:47 AM]  Brewer, James:  
+Thats for the EDM script.
+ 
+[‎3/‎26/‎2020 6:48 AM]  Mitchell, Chris:  
+ok
+ 
+[‎3/‎26/‎2020 6:48 AM]  Brewer, James:  
+just updated new benefitfocus info
+ok later
+ 
+[‎3/‎26/‎2020 6:48 AM]  Mitchell, Chris:  
+night
+ 

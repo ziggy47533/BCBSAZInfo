@@ -1,0 +1,12 @@
+
+
+Biztalk
+\\mp-bts-ss02\HIPAAProd\WorkflowData\BT\Outbound\835FromMVBX\Input - DXC drop files to the MQ(a02) to Foresight
+
+
+Foresight
+\\mp-frs-a01\Foresight\Systems\AZBlue\workflows\1.0\835Out_MVBX\InStream_For999\In - goto biztalk
+
+
+​Biztalk
+\\mp-bts-ss02\HIPAAProd\BizTalk\835\Out - goto SI5

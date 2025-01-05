@@ -1,0 +1,7 @@
+
+
+Listing port for Glassfish
+
+used this command
+
+netstat -an | select-string 8090 or 4848

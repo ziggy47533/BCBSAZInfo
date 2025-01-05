@@ -1,0 +1,15 @@
+
+
+
+
+Please restart the below UAT workflows:
+UAT
+1.	mu-frs-a01    region s Batch
+2.	mu-frs-a02    region S Real Time
+3.	mu-frs-a03    region A Batch
+4.	mu-frs-a04    region A Real Time
+5.	mu-frs-a05    region B Batch
+6.	mu-frs-a06    region B Real Time
+
+
+

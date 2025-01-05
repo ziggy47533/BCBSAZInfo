@@ -1,0 +1,12 @@
+
+
+
+TI Uti - 98% of the disk space is being used for those 4 folders
+
+
+dir.log - 6GB
+
+
+Track_WF_crash.log - 5GB
+
+

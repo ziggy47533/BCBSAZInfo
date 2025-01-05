@@ -1,0 +1,16 @@
+
+
+Possible AZBlue.com is down....
+
+
+might need to reboot the SCR servers
+
+MP-SCR-FW01N01
+MP-SCR-FW01N02
+MP-SCR-FW01N03
+
+Load Balance is  TDC DMZ17
+172.17.0.241
+
+Also :
+MP-WAS serves

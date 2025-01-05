@@ -1,0 +1,9 @@
+
+Biztalk servers are in vpx-int-prod
+
+SiteCore servers are in vpx-dmz17
+
+WAS servers are in vpx-dmz17
+
+WSS servers are in vnt-int-prod
+

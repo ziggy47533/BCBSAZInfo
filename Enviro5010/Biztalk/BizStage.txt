@@ -1,0 +1,98 @@
+﻿
+
+
+
+
+[‎5/‎21/‎2020 8:59 AM]  Mitchell, Chris:  
+yes, glad all is good at your place.
+log in to ms-mqs-a02 channel bt.chn is not running should this channel be running?
+ 
+[‎5/‎21/‎2020 9:00 AM]  Hall, Robert:  
+1 sec
+ 
+[‎5/‎21/‎2020 9:00 AM]  Mitchell, Chris:  
+bes.chn is running
+ 
+[‎5/‎21/‎2020 9:00 AM]  Hall, Robert:  
+bt should be for BizTalk connections
+BES is for BES
+so may need to verify BizTalk
+ 
+[‎5/‎21/‎2020 9:00 AM]  Mitchell, Chris:  
+correct
+ms-bts-sa03 - log into that i do not see anything out of the normal..
+ 
+[‎5/‎21/‎2020 9:09 AM]  Hall, Robert:  
+stage BizTalk is completely down..
+ 
+[‎5/‎21/‎2020 9:11 AM]  Mitchell, Chris:  
+so i complete missed it 
+ 
+[‎5/‎21/‎2020 9:15 AM]  Hall, Robert:  
+no you didn't
+ 
+[‎5/‎21/‎2020 9:15 AM]  Mitchell, Chris:  
+what did you see the next time i be more aware
+ 
+[‎5/‎21/‎2020 9:15 AM]  Hall, Robert:  
+I misread the situation
+there is something weird going on though
+ 
+[‎5/‎21/‎2020 9:16 AM]  Hall, Robert:  
+so BizTalk is "up"... but the channel the BizTalk uses to communicate with MQ is inactive.. which means the send port/recv locations are not communicating with it...
+I just BizTalk services are running...
+so this is odd...
+ 
+[‎5/‎21/‎2020 9:18 AM]  Mitchell, Chris:  
+that is odd it usually the first thing i check in biztalk send and recv location.. i did not notice anything usually.. it was acting it was running but not..
+ 
+[‎5/‎21/‎2020 9:19 AM]  Hall, Robert:  
+agreed....
+I'm checking the Alias for MQSStage/MS-MQS-A02 and that is correct...
+ 
+
+
+[‎5/‎21/‎2020 1:10 PM]  Soza, Gilbert:  
+you going to reboot sa01, sa02 sa03 again and the two nodes?
+ 
+[‎5/‎21/‎2020 1:11 PM]  Mitchell, Chris:  
+i can 
+ 
+[‎5/‎21/‎2020 1:43 PM]  Mitchell, Chris:  
+what is sso on the database sd01?
+ 
+[‎5/‎21/‎2020 1:43 PM]  Soza, Gilbert:  
+enterprise single sign on
+biztalk uses that 
+sa01, sa02, a03 not sure about n01 and n02
+ 
+[‎5/‎21/‎2020 1:44 PM]  Mitchell, Chris:  
+ok
+ 
+[‎5/‎21/‎2020 1:44 PM]  Soza, Gilbert:  
+but i checked all the other dbs and sd01 was also the only other one
+ 
+[‎5/‎21/‎2020 1:46 PM]  Mitchell, Chris:  
+that sd03?
+ 
+[‎5/‎21/‎2020 1:47 PM]  Soza, Gilbert:  
+ms-bts-sd01 was barking in event viewer of ms-bts-sa03 that it was having issues talking sso to ms-bts-sd01
+ 
+
+
+look for these severs:
+
+ms-sql-sd01 sd03
+
+ms-bts-sa01, sa02, sa03
+
+ms-mqs-a02 and mu-mqs-a02
+
+ms-bts-ca01n01 n02
+
+
+
+
+
+
+

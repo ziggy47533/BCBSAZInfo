@@ -1,0 +1,15 @@
+
+
+(index=bcbsaz_weblogs host=mp-scr-* sourcetype="ms:iis:auto" earliest=-30h) OR
+(index=perfmon host=mp-scr-fw* earliest=-30h sourcetype="Perfmon:System" counter="Processor Queue Length" )
+| eval duration=(duration/1000)
+| timechart span=10m avg(duration) as "Avg Web Resp" perc95(duration) as "95% Web Resp" avg(Value) as "Avg Queue"
+  perc95(Value) as "95% Queue" by host
+  
+  
+  
+(index=* host=mp-scr-fw* sc_status=404 OR sc_status=500)| timechart count(status) by host
+
+
+
+(index=* host=mp-scr-fw* sc_status=404 OR sc_status=500)| timechart avg(duration) by host

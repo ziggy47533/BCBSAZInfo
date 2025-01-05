@@ -1,0 +1,5 @@
+
+Biztalk instance:
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/search?q=search%20index%3Dwindows%20sourcetype%3D%22WMI%3AServices%22%20host%3D%22mp-bts-*%22%20State%3D%22Stopped%22%20%0A%7Cstats%20count%20latest(State)%20AS%20State%20by%20host%20DisplayName%20Name%20%7C%20where%20count%3E1%0A%7Crename%20DisplayName%20AS%20%22Display%20Name%22%20%7C%20search%20%22Display%20Name%22%3D%22Biztalk*%22&display.page.search.mode=verbose&dispatch.sample_ratio=1&workload_pool=&earliest=-15m&latest=now&display.page.search.tab=statistics&display.general.type=statistics&sid=1594310672.1617409 
+
