@@ -1,0 +1,15 @@
+
+
+URL: 
+
+http://mp-ssr-fa01.corp.net.bcbsaz.com/ReportServer_SS01P
+
+report
+
+pick which report needs to be look at...
+
+
+
+not able to see report goto mp-ssr-fa01
+reset iis
+

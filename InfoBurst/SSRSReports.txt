@@ -1,0 +1,22 @@
+
+
+
+
+Can you go into Serving Blue today and  go to the "Other System Access" section and make a request for SSRS access::
+
+SSRS Access to the following:
+
+SSRS DEV: 
+
+http://md-ssr-fa01.corp.net.bcbsaz.com/Reports_SS03D
+
+SSRS UAT:
+
+http://mt-ssr-fa01.corp.net.bcbsaz.com/Reports_SS01Q
+
+SSRS PRD:
+
+http://mp-ssr-fa01.corp.net.bcbsaz.com/Reports_SS01P
+
+To manage DSAS PDM reports
+

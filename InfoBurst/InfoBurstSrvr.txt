@@ -1,0 +1,14 @@
+
+
+mp-bii-a01  -  Bussiness
+mp-bii-a02  - Info burst
+
+mp-bii-d01
+mp-bii-d03
+
+mp-bii-w01
+
+
+mp-ssr-fa01
+
+mp-sql-fr01n01

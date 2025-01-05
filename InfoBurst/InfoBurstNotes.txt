@@ -1,0 +1,8 @@
+
+G:\OPS\Documentation\1_Operations Monitoring\InfoBurst 
+
+
+
+Burst failure.. its pretty simple though.. you see the failure in schedules. Remember the path of it, close schedules and find it in the Enterprise column, match it up and then click on it, history of it, burst
+it will either succeed or fail
+succeeds cool... fails - send email

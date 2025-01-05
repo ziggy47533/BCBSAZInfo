@@ -1,0 +1,8 @@
+
+
+
+(index="perfmon" source=Perfmon:LogicalDisk counter="Free Megabytes" NOT "_Total" NOT "Hard*" host="mp-bii-a01" instance="C*")
+          | eval host=lower(host)
+		  | eval DEMO=host." : ".counter." : ".instance  
+		  | timechart span=5m  avg(Value) by DEMO useother=0
+          | sort host

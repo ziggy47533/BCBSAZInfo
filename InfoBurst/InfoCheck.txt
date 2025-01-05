@@ -1,0 +1,15 @@
+
+
+[‎9/‎1/‎2020 1:12 PM]  Shorty, Rodney:  
+Inforburst, Ops monitors only after non-prod hours/weekends per Surya
+so Monday 6pm to Friday 6am
+
+then Friday 6pm to Monday 6am 
+ 
+[‎9/‎1/‎2020 1:16 PM]  Shorty, Rodney:  
+idc. I am sitll gonna check it at 12pm for any morning failures
+and at 7pm for them 4 evening jobs 
+so twice on 2nd shift 
+you should/1st add check at 6am and 9pm
+*6am and 9am
+ 
