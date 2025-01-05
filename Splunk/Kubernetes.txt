@@ -1,0 +1,29 @@
+
+
+Kubernetes?
+
+
+“Kubernetes, or k8s, is an open source platform that automates Linux container operations.
+... “In other words, you can cluster together groups of hosts running Linux containers,
+and Kubernetes helps you easily and efficiently manage those clusters.”
+
+
+index=* "kubernetes"
+
+
+
+[12:28 PM] Hall, Robert
+    the issue is tied to a "liveness" check in the kubernetes pod, basically a failsafe type health check...
+    it appears that healthcheck was taking too long to respond...
+    the liveness check will fail the pod if it doesn't complete...
+    at the request of the development team, I removed the liveness check...
+    there's no real understanding as to why it was behaving that way...
+
+
+
+
+
+
+
+
+

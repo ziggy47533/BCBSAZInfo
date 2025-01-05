@@ -1,0 +1,9 @@
+
+
+
+index=perfmon host="mp-scr-fw01n0*" Name="BCBSAZ.Provider.WebUI" OR counter="Private Bytes"
+| timechart span=15m perc95(Value) as AlertValue by host
+
+
+(index=windows host="VPCW10PNDA37*" sourcetype=WinHostMon DisplayName="Cisco*")
+| timechart count(DisplayName) by host

@@ -1,0 +1,13 @@
+
+
+
+(index=windows host="VPCW7SPANPRD*" sourcetype="WMI:Services" DisplayName="OpenSpan") 
+| search DisplayName="Openspan" State=Running OR State=Stopped
+| stats  values(State) as "State" values(Status) as "Status" values(ProcessId) as "ProcessID" by host
+
+
+
+(index=wineventlog sourcetype="WinEventLog:Application" host="VPCW7SPANPRD*" eventtype=wineventlog_application SourceName="ProcessEvent*" started OR "shut down") 
+| timechart span=1h count(Message) by host
+
+

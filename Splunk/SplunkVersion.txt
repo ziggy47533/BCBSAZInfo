@@ -1,0 +1,7 @@
+
+
+URL to check if splunk is cambatible to other OS....
+
+
+
+https://www.splunk.com/page/previous_releases/universalforwarder#x86_64windows 

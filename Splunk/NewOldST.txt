@@ -1,0 +1,18 @@
+
+
+
+index=sterling sourcetype=hrp:dbx:bazpdwpr_gg:eop:extract:prd
+
+
+
+hrp:dbx:bazpdwpr_gg:eop:extract:prd
+
+
+sourcetype = file_processing:eop_redcard_hrp_prd:csv
+sourcetype = file_processing:eop_redcard_prd:csv
+
+
+
+sourcetype = eop:hrp:prod	sourcetype = file_processing:eop_redcard_hrp_prd:csv
+sourcetype = eop:redcard	sourcetype = file_processing:eop_redcard_prd:csv
+

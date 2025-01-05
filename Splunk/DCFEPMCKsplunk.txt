@@ -1,0 +1,79 @@
+
+
+
+
+(index=sterling sourcetype="SI5:Jobs" file_name="Data*" OR file_name="FEPReturn*")
+| rex "(createts=\"\d{4}\-\d{2}\-\d{2}\s(?<createts>.*?)\")"
+| rex "(modifyts=\"\d{4}\-\d{2}\-\d{2}\s(?<modifyts>.*?)\")"
+| eval STime=strptime(createts,"%H:%M:%S")
+| eval ETime=strptime(modifyts,"%H:%M:%S")
+| eval Duration=ETime-STime
+| eval Duration=round(Duration, 3)
+| eval Size=file_size/1024
+| eval Size=round(Size, 2)
+| stats values(file_name) AS FileName by _time, Duration, state, delivery_state, user_id, Size
+| table _time, user_id, FileName, Size, Duration, state, delivery_state
+| sort - _time
+
+
+index=sterling sourcetype="SI5:Jobs" file_name="PCPCC-MCK2BCBSCalls*.txt" prog_org_name="9195MKIU65" state="*"
+| timechart count by state
+
+
+
+
+
+index=sterling* sourcetype="sterling:dbx:siapp:filegateway:prd" file_name="Data*" OR file_name="FEPReturn*"
+| rex "(createts=\"\d{4}\-\d{2}\-\d{2}\s(?<createts>.*?)\")"
+| rex "(modifyts=\"\d{4}\-\d{2}\-\d{2}\s(?<modifyts>.*?)\")"
+| eval STime=strptime(createts,"%H:%M:%S")
+| eval ETime=strptime(modifyts,"%H:%M:%S")
+| rename Time_Taken_to_Route as Duration
+| eval Duration=ETime-STime
+| eval Duration=round(Duration, 3)
+| eval Size=file_size/1024
+| eval Size=round(Size, 2)
+| stats values(file_name) AS FileName by _time, Duration, state, delivery_state, user_id, Size
+| rename user_id as Producer
+| table _time, FileName, Producer, Size, Duration, state, delivery_state
+| sort - _time
+
+
+
+index=sterling* sourcetype="sterling:dbx:siapp:filegateway:prd" file_name="PCPCC-MCK2BCBSCalls*"
+| rex "(createts=\"\d{4}\-\d{2}\-\d{2}\s(?<createts>.*?)\")"
+| rex "(modifyts=\"\d{4}\-\d{2}\-\d{2}\s(?<modifyts>.*?)\")"
+| eval STime=strptime(createts,"%H:%M:%S")
+| eval ETime=strptime(modifyts,"%H:%M:%S")
+| rename Time_Taken_to_Route as Duration
+| eval Duration=ETime-STime
+| eval Duration=round(Duration, 3)
+| eval Size=file_size/1024
+| eval Size=round(Size, 2)
+| stats values(file_name) AS FileName by _time, Duration, state, delivery_state, user_id, Size
+| rename user_id as Producer
+| table _time, FileName, Producer, Size, Duration, state, delivery_state
+| sort - _time
+
+
+
+
+
+
+(index=sterling* sourcetype="sterling:dbx:siapp:filegateway:prd"
+ file_name="PCPCC-MCK2BCBSCalls*" OR file_name="Data*" OR file_name="FEPReturn*")
+| rex "(createts=\"\d{4}\-\d{2}\-\d{2}\s(?<createts>.*?)\")"
+| rex "(modifyts=\"\d{4}\-\d{2}\-\d{2}\s(?<modifyts>.*?)\")"
+| eval STime=strptime(createts,"%H:%M:%S")
+| eval ETime=strptime(modifyts,"%H:%M:%S")
+| rename Time_Taken_to_Route as Duration
+| eval Duration=ETime-STime
+| eval Duration=round(Duration, 3)
+| eval Size=file_size/1024
+| eval Size=round(Size, 2)
+| stats values(file_name) AS FileName by _time, Duration, state, delivery_state, user_id, Size
+| rename user_id as Producer
+| table _time, FileName, Producer, Size, Duration, state, delivery_state
+| sort - _time
+
+

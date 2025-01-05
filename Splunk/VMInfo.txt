@@ -1,0 +1,7 @@
+
+
+Find VM information :
+
+| inputlookup vm-meta-data.csv | search FQDN="mu-mqs*" | table FQDN IP_Address
+
+

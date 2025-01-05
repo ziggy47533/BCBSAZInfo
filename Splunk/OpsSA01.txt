@@ -1,0 +1,12 @@
+6-10-20
+
+Splunk Search:
+
+index=_internal host="mm-ops-a01"
+
+
+index=* host="mm-ops-a01" - use this
+
+
+rebooted mm-ops-a01 and also restart the forwarder.
+ 

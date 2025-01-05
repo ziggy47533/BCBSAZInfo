@@ -1,0 +1,17 @@
+
+
+
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/broker_portal_overview?form.field1.earliest=-24h%40h&form.field1.latest=now
+
+
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/search?earliest=-4h%40m&latest=now&q=search%20index%3D%22bcbsaz_weblogs%22%20sourcetype%3D%22ms%3Aiis%3Aauto%22%20host%3Dmp-bts-sa*%20(cs_uri_stem%3D%22*grid*%22%20OR%20cs_uri_stem%3D%22*BTS*%22%20OR%20cs_uri_stem%3D%22*xml*%22)%20%7C%20eval%20ErrCount%3Dif(sc_status%3E399%2C1%2C0)%20%7C%20eval%20duration%3D(duration%2F1000)%20%7C%20timechart%20count%20as%20Count%20avg(duration)%20as%20%22Avg%20Resp%22%20sum(ErrCount)%20as%20%22errors%22%20by%20host%20%7C%20sort%20-_time&display.page.search.mode=verbose&dispatch.sample_ratio=1&display.page.search.tab=statistics&display.general.type=statistics&sid=1696792794.718699
+
+
+Provider Portal | Claims Status Searches by LOB (last 48 hours) | Splunk 8.2.4 (bcbsaz.com)
+
+
+
+index=5010 sourcetype="tiportal:834s:dbx:prd" "*HPS_BCBSAZ_ON_DAILY_D20231013_T081037800*"
+| stats values(DocumentID) as Doc_Id by OrigFileName

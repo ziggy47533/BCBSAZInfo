@@ -1,0 +1,147 @@
+
+
+index=* host="m*-pmm-*"
+
+index=* host="m*-pmm-*" State=Stopped | timechart  count(State) by host
+
+index=* host="m*-pmm-*" Started=false | timechart count(Started) by host
+
+index=* host="m*-pmm-*" Status=Degraded | timechart count(Status) by host
+
+index=* host="m*-pmm-*" Name="Profisee.MasterDataMaestro.Host" | timechart count(Name) by host
+
+index=* host="m*-pmm-*" Name="Profisee.MasterDataMaestro.Host.exe" | timechart count(Name) by host
+
+All Active Maestro Processes by ID/ CommandLine
+(index=windows host=m*-pmm-* sourcetype="wmi:Services" )
+| search Maestro  State=Running OR State=Stopped
+| stats  values(State) as "State" values(Status) as "Status" values(ProcessId) as "ProcessID" values(host) as Host by Name
+| appendcols [ search (index=Windows host="m*-pmm-*" "*Profisee.MasterDataMaestro.*") sourcetype=WinHostMon
+| dedup CommandLine,Name
+| addinfo
+| table Name,CommandLine]
+
+(index=perfmon host="m*-pmm-*" counter="% User Time" OR "Processor Time" OR "Elapsed Time" OR "Virtual Bytes peak" OR "% Committed Bytes In Use")
+| stats avg(Value) by _time, host, counter
+
+
+
+
+
+index=* host="m*-pmm-d*" "profisee" Message="The transaction log for database 'Profisee_UAT' is full due to 'LOG_BACKUP'."
+
+
+
+
+
+
+
+
+Peformance Metrics: (CPU) (7D)
+(index=perfmon host="m*-pmm-*" sourcetype="Perfmon:CPU" counter="% Processor Time")
+          |stats sparkline(avg(Value)) as Trend avg(Value) as Average,  max(Value) as Peak, latest(Value) as Current, latest(_time) as "Last Updated" by host 
+          | eval host=lower(host)
+          | rename host as Host
+          | convert ctime("Last Updated") 
+          | sort-Current 
+          | eval Average=round(Average, 2) 
+          | eval Peak=round(Peak, 2) 
+          | eval Current=round(Current, 2)
+		  
+		  
+
+
+Pefromance Metrics: Memory (Available)(GB)
+(index=perfmon host="m*-pmm-*" sourcetype="Perfmon:Memory" counter="Available MBytes") 
+		  |eval GB_Free=Value/1024
+          | stats sparkline(avg(GB_Free)) as Trend avg(GB_Free) as Average,  max(GB_Free) as Peak, latest(GB_Free) as Current, latest(_time) as "Last Updated" by host 
+          | eval host=lower(host)
+          | rename host as Host
+          | convert ctime("Last Updated") 
+          | sort-Current 
+          | eval Average=round(Average, 2) 
+          | eval Peak=round(Peak, 2) 
+          | eval Current=round(Current, 2)
+		  
+		  
+		  
+		  
+		  
+Logical Disk Space (Free) (7D)		  
+		  
+(index=perfmon host="m*-pmm-*" source=Perfmon:LogicalDisk counter="Free Megabytes" NOT "_Total" NOT "Hard*") 
+		  | eval host=lower(host) 
+		  | eval ReportKey = instance." ".counter 
+		  | chart latest(Value) over host by ReportKey 
+		  | rename host as "Host
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+CPU Utilization % MP-FRS-A01 (1D)		  
+(index="perfmon" host="m*-pmm-*" sourcetype="Perfmon:CPU" collection=CPU counter="% Processor Time") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | timechart span=5m avg(Value) by host
+
+
+	
+
+Mem % Commited MP-FRS-A01 (1D)
+(index="perfmon" host="m*-pmm-*" sourcetype="Perfmon:Memory" sourcetype="Perfmon:Memory"  counter="% Committed Bytes In Use")  
+		  | eval DEMO=host." : ".counter  
+		  | timechart span=5m  avg(Value) by DEMO
+
+
+
+
+
+DB CPU Utilization % MP-TIP-D01\MP-BTS-SD01 (1D)
+(index="perfmon" host="m*-pmm-d*" sourcetype="Perfmon:CPU" collection=CPU counter="% Processor Time") 
+		  | eval hour = tonumber(strftime(_time,"%H")) 
+		  | timechart span=5m avg(Value) by host
+
+
+
+DB Mem % Commited MP-TIP-D01\MP-BTS-SD01 (1D)
+(index="perfmon" host="m*-pmm-d*" sourcetype="Perfmon:Memory" counter="% Committed Bytes In Use")  
+		  | eval DEMO=host." : ".counter  
+		  | timechart span=5m  avg(Value) by host
+		  
+		  
+Status: OK or Degraded	  
+(index=windows host="m*-pmm-*" sourcetype="WMI:Services" Status=*)
+| timechart span=1h count by Status
+
+ 
+		  
+		  
+Avg Queuing Per Server		  
+(index=perfmon host="m*-pmm-*" sourcetype="Perfmon:System" counter="Processor Queue Length")
+		  | timechart span=5m avg(Value) as "Avg Run Q" by host	  
+
+
+
+
+SQL DB Thread Waits/Process Queue
+(index=perfmon host=mp-mdm-sd01 sourcetype="Perfmon:System" counter="Processor Queue Length")
+| timechart span=15m avg(Value) max(Value)
+
+
+Maestro State
+(index=windows ) | rex "(?:Caption=)(?P<ProcCaption>(.*?)(?=\r))" | search ProcCaption="*Maestro*" | eval PCS=ProcCaption."--".State
+| timechart span=1h count by PCS limit=10 
+
+
+
+
+		  
+		  
+		  
+
+
+
+
+

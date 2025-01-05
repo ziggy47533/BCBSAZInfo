@@ -1,0 +1,28 @@
+
+
+
+
+
+index=sterling host=mm-ops-a03 sourcetype="directory_monitor:sterling_non_interval_job:log"
+ directory_name="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\RedCard\\IDCards\\Prod" file_name="*8917DX*"
+| eval file_size=case(file_size>=(1000*1000*1000),round(file_size/(1000*1000*1000),2)." GB",     
+file_size>=(1000*1000),round(file_size/(1000*1000),2)." MB", 
+file_size>=1000,round(file_size/1000,2)." KB", 1=1,
+file_size." B") 
+| table file_creation_time, file_name, file_size
+
+
+
+
+
+index=sterling host=mm-ops-a03 sourcetype="directory_monitor:sterling_non_interval_job:log" 
+  directory_name="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\RedCard\\IDCards\\*"
+  
+  
+
+
+
+
+
+
+

@@ -1,0 +1,95 @@
+
+
+
+
+index=5010 host=mp-pin-*  sourcetype="pinnacle:application:logs" "*error*"
+| eval Pinnacle_Process=mvindex(split(source,"\\"),3)
+| search Pinnacle_Process="*"
+| rex "(?:Total\s+Errors\s+=\s+)(?P<Total_Errors>\d+)"
+| rex "(?:Last\s+Process\s+ID\s+=\s+)(?P<Last_Process_ID>(.*?)(?=$))"
+| rex "(?:Last\s+Process\s+Time\s+=\s+)(?P<Last_Process_Time>(.*?)(?=$))"
+| rex "(?:Last\s+Alive\s+Time\s+=\s+)(?P<Last_Alive_Time>(.*?)(?=$))"
+| rex "(?:\s+(A|P)M\s+-\s+)(?P<Pinnacle_Activity>(.*?)(?=Called))"
+| rex "(?:ProcessStep\(\)\:\s+)(?P<ProcessStep>(.*?)(?=$))"
+| timechart avg(Total_Errors) by Pinnacle_Process
+
+
+
+
+index=5010 host=mp-pin-* sourcetype="pinnacle:application:logs" "*1028166190*" OR "*tgrang01*"
+| rex "(?:P\w+\s\w+)(?<WorkObj>(.*?)(?=$))"
+| timechart count by WorkObj limit=10
+
+
+
+
+index=wineventlog host="mp-pin-s*01" sourcetype=XmlWinEventLog Name="'*Auto Process*'"
+| eval Pinnacle_Process=case(Name=="'GroupRenewal Auto Process'","GroupRenewalAP",Name=="'VAT Auto Process'",
+  "VATAP",Name=="'FileNET Auto Process'","FileNetAP",Name=="'SMS Auto Process'","SMSAP",Name=="'Pinnacle Auto Process Service'",
+  "EntryPointService",Name=="'Pinnacle Email Auto Process'","EmailAP",Name=="'Broker Auto Process'","BrokerAP")
+| search Pinnacle_Process="*"
+| timechart count(EventData_Xml) by Name
+
+
+
+
+
+
+
+index=wineventlog host="mp-pin-s*" sourcetype=XmlWinEventLog Name="'*Auto Process*'" EventData_Xml="*" Name="*"
+
+
+
+index=wineventlog host="mp-pin-s*" sourcetype=XmlWinEventLog Name="'*Auto Process*'" EventData_Xml="*" Name="*"
+| timechart count(Name) by  EventData_Xml useother=false
+
+
+
+Workflow object 1028141041 already locked by: ckimbr01
+
+
+
+Workflow object 1028141041
+(?:Workflow\so\w+)(?<WorkObj>(.*?)(?=$))
+
+
+already locked by: ckimbr01
+(?:a\w+\sl\w+\sby:)(?<User>(.*?)(?=$))
+
+ 
+ 
+ 
+ index=wineventlog host="mp-pin-s*" sourcetype=XmlWinEventLog Name="'*Auto Process*'" EventData_Xml="*" Name="*"  "tag::eventtype"=error | rex "(?:Workflow\so\w+)(?<WorkObj>(.*?)(?=$))" | rex "(?:a\w+\sl\w+\sby:)(?<User>(.*?)(?=$))"
+ 
+ 
+ 
+ 
+ 
+index=wineventlog host="mp-pin-s*" sourcetype=XmlWinEventLog Name="'*Auto Process*'"
+ EventData_Xml="*" Name="*"
+| rex "(?:Workflow\so\w+)(?<WorkObj>(.*?)(?=$))"
+| rex "(?:a\w+\sl\w+\sby:)(?<User>(.*?)(?=$))"
+
+
+
+
+index=pinnacle sourcetype=pinnacle:dbx:locked_objects:prd LOCKED_BY="*" UNIQUE_VALUE="*"
+| dedup LOCKED_BY
+| rename LOCKED_BY as Locked_By_User
+| rename UNIQUE_VALUE as WorkObj
+| table _time, Locked_By_User, WorkObj
+
+
+Use this search ----
+index=pinnacle sourcetype=pinnacle:dbx:locked_objects:prd LOCKED_BY="*" UNIQUE_VALUE="*"
+| dedup LOCKED_BY
+| rename LOCKED_BY as Locked_By_User
+| rename UNIQUE_VALUE as WorkObj
+| table _time, Locked_By_User, WorkObj
+
+
+
+
+
+
+

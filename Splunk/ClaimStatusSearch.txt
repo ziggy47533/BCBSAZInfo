@@ -1,0 +1,19 @@
+
+
+ 
+ 
+New Splunk on a07 - Claim Status
+index=5010 MSGTYPE=P_ClaimSum sourcetype="webportal:dbx:claimstatus:prd" 
+ MSGSTRING=Timeout OR MSGSTRING=Success
+ | dedup MSGNUMBER
+ | timechart span=15m count by MSGSTRING
+ 
+
+New Splunk on A07 - Timeouts Claims in Area
+index=5010 MSGTYPE=P_ClaimSum sourcetype="webportal:dbx:claimstatus:prd" MSGSTRING=Timeout
+| dedup MSGNUMBER 
+| eval hour = tonumber(strftime(_time,"%H"))
+| where hour>=6 AND hour<=18
+| timechart span=1h count(MSGTYPE)
+ 
+ 

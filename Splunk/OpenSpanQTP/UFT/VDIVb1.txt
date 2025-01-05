@@ -1,0 +1,64 @@
+
+
+UAT VDI's in VB1
+
+VPCW10PD0206 - Done
+VPCW10PD0207 - Done
+VPCW10PD0208 - Done
+VPCW10PD0209 - Done
+VPCW7XDPD3031 - Done
+VPCW7XDPD3032 - Done
+VPCW7XDPD3035 - Done
+VPCW7XDPD3036 - Done
+VPCW7XDPD3038 - Done
+VPCW7XDPD3337 - Done
+VPCW7XDPD3360 - No need to install this (Need PW) 
+
+host="*VPCW10PD020*" OR host="VPCW7XDPD303*" OR host="VPCW7XDPD33*"
+
+
+vSphere: Win 7.6 Nutanix QTP
+
+index=* host="VPCW10PD0206" "*UFT*" Name="UFT.exe"| stats values(host) by Name
+
+
+index=* host="VPCW10PD0206" "*UFT*" CommandLine="C:\\Program Files (x86)\\HP\\Unified Functional Testing\\bin\\UFT4WinRt.exe"
+
+
+index=* host="VPCW10PD0206" "*jenkins*"
+
+index=* host="VPCW10PD0206" "*jenkins*"| timechart count by StartTime useother=false
+
+
+index=* host="VPCW10PD0206" sourcetype="Windows:Process" java ProcessName=jp2launcher| timechart count(ProcessName) by host
+
+
+Restart or Shutdown
+(index=wineventlog sourcetype="WinEventLog:Application" host="vpcw10pd020*" OR host="VPCW7XDPD303*" OR host="VPCW7XDPD33*" eventtype=wineventlog_application SourceName="ProcessEvent*" started OR "shut down") 
+| timechart span=1h count(Message) by host
+
+CPU Utilization %
+index=perfmon host="VPCW10PD020*" OR host="VPCW7XDPD303*" OR host="VPCW7XDPD33*" sourcetype="Perfmon:CPU" counter="% Processor Time"
+| eval hour = tonumber(strftime(_time,"%H")) 
+| timechart span=5m avg(Value) by host
+
+Mem % Committed
+(index="perfmon" host="VPCW10PD020*" OR host="VPCW7XDPD303*" OR host="VPCW7XDPD33*" sourcetype="Perfmon:Memory"  counter="% Committed Bytes In Use")  
+| eval DEMO=host." : ".counter  
+| timechart span=5m  avg(Value) by DEMO useother=0
+
+
+Avg Run Queue 
+(index="perfmon" host="VPCW10PD020*" OR host="VPCW7XDPD303*" OR host="VPCW7XDPD33*" sourcetype="Perfmon:System" counter="Processor Queue Length") 
+| timechart span=5m avg(Value) as "Avg Run Q" by host
+
+
+JP2Launcher
+(index=windows host="VPCW10PD020*" OR host="VPCW7XDPD303*" OR host="VPCW7XDPD33*" sourcetype="Windows:Process" ProcessName=jp2launcher) 
+| timechart count(ProcessName) by host
+
+
+
+
+
+

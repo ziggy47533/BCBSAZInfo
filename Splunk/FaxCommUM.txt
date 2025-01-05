@@ -1,0 +1,17 @@
+
+
+
+
+
+
+(index=5010 sourcetype=faxcom:dirlist)
+| search FolderName="*Prod*"  FolderName="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\GuidingCare\\Prod\\Fax\\UM_Inpatient_Initial_Notification_5653"
+ OR FolderName="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\GuidingCare\\Prod\\Fax\\UM_Continuity_of_Service_5660"
+| rex "(?:FolderLastUpdated)(?P<FolderLastUpdated>(.*?)(\s\=\s\d{2}\/\d{2}\/\d{4}\s\d{2}\:\d{2}\:\d{2}\.\d{3}))"
+| rex "\b(?:Age)(?P<AgeDegraded>(.*?)(\s\=\s\d*\.\d*))"
+| eval MinutesWaiting = round(Age/1,2)
+| rangemap field=MinutesWaiting Normal=0-10.00 Note=10.01-12.49 Review=12.50-100000000000
+| eval OpsStatus=range 
+| stats count(FolderLastUpdated) as Count by FolderName FolderLastUpdated MinutesWaiting _time, FileName OpsStatus
+
+

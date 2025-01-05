@@ -1,0 +1,8 @@
+
+
+Kanban dashboard
+
+server - LM-KBN-A01
+
+
+Site not reached - reboot server.....

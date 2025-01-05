@@ -1,0 +1,20 @@
+
+
+VPCW7SPANDEV212
+VPCW7SPANDEV213
+VPCW7SPANDEV214
+VPCW7SPANDEV215
+
+
+VPCW7SPANUAT211
+VPCW7SPANUAT212
+VPCW7SPANUAT213
+
+
+(index=windows host="VPCW7SPANDEV21*" OR host="VPCW7SPANUAT21*"sourcetype="WMI:LocalProcesses" Name="OpenSpan.Runtime")
+| timechart span=10m count(Name) by host
+
+
+(index=windows host="VPCW7SPANDEV21*" OR host="VPCW7SPANUAT21*" sourcetype="WMI:LocalProcesses" Name=HX01W00W)
+| timechart span=10m avg(PercentProcessorTime) by host
+

@@ -1,0 +1,110 @@
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/5010_Provider_Timeouts
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/5010_Prov_Trans_Logs
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_webanalytics/prod_web_cpu_queue_and_utilization_by_web_role?form.v_TIME_TOK.earliest=-24h%40h&form.v_TIME_TOK.latest=now&form.v_WF_TOK=*&form.v_SERVER_TOK=*&form.v_CSH_TOK=*&form.v_WCS_TOK=*&form.v_WSV_TOK=*
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/openspansummary
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/biztalk__system_status
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/biztalk_performanceincident_review?form.v_DATE_TOK.earliest=%40d&form.v_DATE_TOK.latest=now
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/sql_dashboard_classic?form.v_TIME_TOK.earliest=-24h%40h&form.v_TIME_TOK.latest=now&form.v_TEXT_TOK=*
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_ops/SI5_Files
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/sterling__infrastructure_performance_prod?form.time_token.earliest=-24h%40h&form.time_token.latest=now&form.evironment_token=prd&form.host_token=MP-SI0-A06&form.proc_token=*&form.v_WNE_tok=*
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/sterling_qualitative_transfer_view?form.v_DATE_TOK.earliest=-24h%40h&form.v_DATE_TOK.latest=now&form.v_HOP_TOK=*&form.v_GB_TOK=adapter_type
+https://lm-spl-a11.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_data_tracking/sterling_integrator_si_file_dashboard_V2?form.search_filename=&form.route_status=*&form.time_picker.earliest=%40d&form.time_picker.latest=now
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_ops/ops_monitoring_checks
+http://splunkops.azblue.com/en-US/app/bcbsaz_data_tracking/eop_hrp_primary_db?form.time_dropdown.earliest=%40d&form.time_dropdown.latest=now
+http://splunkops.azblue.com/en-US/app/bcbsaz_data_tracking/eop_files_processed_inbound_from_hrp_to_si5__to_redcard_wip_testing?form.time_dropdown.earliest=%40d&form.time_dropdown.latest=now
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_app_5010/edi_incident_reference_dashboard?form.v_DATE_TOK.earliest=-24h%40h&form.v_DATE_TOK.latest=now&form.v_HOST_TOK=*&form.v_WFT_TOK=*&form.v_EDIS_TOK=*
+
+
+Filenet/Image Retriever Performance | Splunk 8.2.4 (bcbsaz.com)
+
+Check files status use line 11
+
+
+More search :
+
+
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_app_5010/mirth_v1__dashboard?form.v_CHANNEL_MIRTH=*&form.v_TIME_TOK.earliest=%40d&form.v_TIME_TOK.latest=now&form.v_PROVNAME_TOK=*
+
+
+index=perfmon collection="*system*" counter="System Up Time" host=mp-hms-sa01| timechart span=30m max(Value)
+
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/biztalk_incident_review?form.v_TIME_TOK.earliest=rt-1m&form.v_TIME_TOK.latest=rt&form.v_SERVICS_TOK=*&form.v_RCV_TOK=*
+
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/5010_biztalk_general_wellbeing?form.v_TIME_TOK.earliest=rt-1m&form.v_TIME_TOK.latest=rt&form.v_SERVICS_TOK=*&form.v_RCV_TOK=*
+
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/web_app_pool_tracking?form.v_TIME_TOK.earliest=-24h%40h&form.v_TIME_TOK.latest=now&form.v_APPPOOL_TOK=DeductibleBalance&form.v_HOST_TOK=MP-WSS-FW01N01&form.v_HOST_TOK=MP-WSS-FW01N02&form.v_HOST_TOK=MP-WSS-FW01N03&form.v_HOST_TOK=MP-WSS-FW01N04&form.v_HOST_TOK=MP-WSS-FW01N05&form.v_HOST_TOK=MP-WSS-FW01N06&form.v_BY_TOK=host
+
+
+restore
+
+nable to connect to remote machine [MM-CMV-A40].  Please check Network Connectivity.
+all the servers are able to see each other....
+
+
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/image_retrieverdoc_management__app_pools?form.v_TIME_TOK.earliest=-24h%40h&form.v_TIME_TOK.latest=now&form.v_APPPOOL_TOK=*&form.v_HOST_TOK=*&form.v_BY_TOK=host
+
+
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_app_5010/health_edge__hosted_systems_socket_connect_times?form.v_TIME_TOK.earliest=-15m&form.v_TIME_TOK.latest=now&form.v_CONN_TOK=*
+
+
+Blue2 - 
+
+host=mp-pxs* index=bcbsaz_weblogs
+| eval ErrCount=if(sc_status>=299,1,0)
+| timechart count as Count avg(duration) as "Duration" sum(ErrCount) as "Errors"
+| eval ErrPct=(Errors/Count)*100
+
+Rob gave me that... to search with
+
+
+Non-prod for foresight and biztalk and TiPortal.....
+
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_app_5010/biztalk__region_s?form.v_TIME_TOK.earliest=-24h%40h&form.v_TIME_TOK.latest=now&form.v_PROCESS_TOK=*&form.v_QUEUE_TOK=*&form.v_QLIST_TOK=*&form.v_BTSS_TOK=*
+
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_app_5010/foresight_uat_summary
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/5010_non_prod_foresight_general_wellbeing?form.time_dropdown.earliest=-24h%40h&form.time_dropdown.latest=now
+
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_app_5010/glassfish_tracking?form.v_TIME_TOK.earliest=-24h%40h&form.v_TIME_TOK.latest=now
+
+
+
+Cisco Amp Trans:
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/5010_prod_foresight_and_biztalk_general_wellbeing_and_performance?form.time_dropdown.earliest=%40d&form.time_dropdown.latest=now
+
+
+
+Biztalk/foresight :
+index=5010 sourcetype=webservices_glassfish_frs GFEventStatus=*
+| eval DiskTime=(DSKIO/1000000000)
+| eval DBASE_Time=(DBASE/1000000000)
+| eval WEBSV=(WEBSV/1000000000)
+| eval ETime=(ETIME/1000000000)
+| timechart span=2h avg(DiskTime) avg(DBASE_Time) avg(ETime) avg(WEBSV)
+
+
+
+SOS issue on Biztalk :
+index=wineventlog host=mp-bts-* "*SSO*" TaskCategory="Enterprise Single Sign-On"
+| rex field=Message "(?:Application Name\:\s+)(?P<Application>(.*?)(?=\s+))"
+
+
+HealthEdge : Socket on splunk.Azblue.com 5010 then search health....
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_app_5010/health_edge__hosted_systems_socket_connect_times?form.v_TIME_TOK.earliest=-24h%40h&form.v_TIME_TOK.latest=now&form.v_CONN_TOK=*
+
+
+StoreSafe:
+
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_app_5010/sql_server_trackingmonitoring?form.v_TIME_TOK.earliest=-7d%40h&form.v_TIME_TOK.latest=now&form.v_PROC_TOK=cscm&form.v_INST_TOK=*&form.v_HOST_TOK=MP-SQL-SD08
+
+
+New Splunk
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/windows__infrastructure_perfomance?form.time_token.earliest=-24h%40h&form.time_token.latest=now&form.host_token=mp-hrp-d04
+
+
+SQL DB
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/sql_dashboard_classic?form.v_TIME_TOK.earliest=1648198800&form.v_TIME_TOK.latest=now&form.v_HOST_TOK=MP-HRP-D04&form.v_TEXT_TOK=killed

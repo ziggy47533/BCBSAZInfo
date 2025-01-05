@@ -1,0 +1,4 @@
+
+Biztalk Metric
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/edi_biztalkforesight_infrastructure_performance_prd_?form.time_token.earliest=-24h%40h&form.time_token.latest=now&form.evironment_token=prd&form.host_token=mp-bts-sd01&form.host_token=mp-bts-sd02&form.host_token=mp-bts-sd03&form.host_token=mp-bts-sd04&form.host_token=mp-bts-sd05&form.host_token=mp-bts-ss02&form.proc_token=*&form.v_WNE_tok=*

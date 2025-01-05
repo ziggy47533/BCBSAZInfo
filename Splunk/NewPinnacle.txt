@@ -1,0 +1,79 @@
+
+
+
+(index=pinnacle sourcetype=pinnacle)
+| rex "AutoComplete=\"(?P<AutoComplete>\d+)\""
+| timechart span=5m max(AutoComplete) AS Value
+
+
+(index=pinnacle sourcetype=pinnacle)
+| rex max_match=0 "(AutoCom\w+(?:=\"))(?P<Value>(\d+)(?=\"))"
+| timechart span=5m max(Value) as AC_Counts
+
+
+
+
+index=wineventlog host="mp-pin-s*01" sourcetype=XmlWinEventLog Name="'Broker Auto Process'" | timechart count by EventData_Xml
+
+
+
+index=wineventlog host="mp-pin-s*01" sourcetype=XmlWinEventLog Name="'GroupRenewal Auto Process'" 
+ EventData_Xml!="<Data>ProcessERAGRPOStep(): Previous step ERAGRPO not handled<Data>"
+| timechart  count by EventData_Xml useother=false
+
+
+
+
+Correspondence Server
+index=wineventlog host="mp-pin-s*01" sourcetype=XmlWinEventLog Name="'Correspondence Server'"
+| stats count(host) as Count
+
+
+
+SMS AP
+
+index=wineventlog host="mp-pin-s*01" sourcetype=XmlWinEventLog Name="'SMS Auto Process'" 
+| stats  count(host) as Count
+
+index=wineventlog host="mp-pin-s*01" sourcetype=XmlWinEventLog Name="'Broker Auto Process'" | timechart  count by EventData_Xml
+
+
+
+index=wineventlog host="mp-pin-s*01" sourcetype=XmlWinEventLog Name="'*'" | dedup Name | timechart values(Name) as AutoProcess | table _time, Name, EventData_Xml
+
+
+EventData_Xml
+
+
+
+index=windows host=mp-pin-sa* OR host=mp-pin-sw* sourcetype="WMI:Services" "*pinn*" | eval ErrCount=if(State!="Running" OR Status!="OK",1,0) | eval Error_Time=if(ErrCount==1,_time,Error_Time) | eval currentTime=now() |eval Minutes_Ago=(currentTime-Error_Time)/60 | stats count as Count latest(State) as Current_State latest(Status) as Current_Status sum(ErrCount) as "Service_Status_in_Err_Number_of_Events" latest(Minutes_Ago) as "Last Service Issue - Minutes Ago" by host | eval Err_Pct=(Service_Status_in_Err_Number_of_Events/Count)*100
+
+
+
+(index=wineventlog host="mp-pin-s*" sourcetype="WinEventLog:System" Shutdown_Type=restart)
+| timechart  count(Shutdown_Type) by host
+
+
+index=windows host=mp-pin-s*0* sourcetype="WMI:Services" State!="stopped"
+| timechart count(State) by host
+
+
+index=windows host=mp-pin-s*0* sourcetype="WMI:Services" State!="stopped" 
+| timechart count(State) by host
+
+
+
+
+
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/biztalksystemsatus
+
+
+
+REQ0248948 Created - Chris --- Azure requested
+
+
+More info ---
+
+
+index=wineventlog host="mp-pin-s*01" sourcetype=XmlWinEventLog Name="'*'" | timechart  count by EventData_Xml

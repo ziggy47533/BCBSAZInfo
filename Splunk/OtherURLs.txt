@@ -1,0 +1,44 @@
+
+DynaTrace
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/dynatrace_phase_i_v2?form.HOST_TOK=*&form.FUNCTION_TOK=*&form.CS_HOST_TOK=*&form.FAM_TOK=*&form.TOK_PLATFORM=BizTalk&form.TIER_TOK=Prod&form.v_TEXT_TOK=*&form.OT2_TOK=*&form.OT3_TOK=*
+
+
+835 workflow
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/835_workflow_server?form.TIME_TOK.earliest=-4h%40m&form.TIME_TOK.latest=now
+
+
+Sterling SQL
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/sql_dashboard__si_sterling?form.v_TIME_TOK.earliest=-24h%40h&form.v_TIME_TOK.latest=now&form.v_TEXT_TOK=*
+
+HRP DB
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/hrp_d04_database?form.Time_TOK.earliest=-24h%40h&form.Time_TOK.latest=now&form.SERVER_TOK=MP-HRP-D04
+
+Provider Web
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_webanalytics/prod_web_cpu_queue_and_utilization_by_web_role?form.v_TIME_TOK.earliest=-24h%40h&form.v_TIME_TOK.latest=now&form.v_WF_TOK=*&form.v_SERVER_TOK=*&form.v_CSH_TOK=*&form.v_WCS_TOK=*&form.v_WSV_TOK=*
+
+
+foresight
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/frs_servers__infrastructure_performance_prod?form.time_token.earliest=-24h%40h&form.time_token.latest=now&form.evironment_token=prd&form.host_token=mp-frs-a01&form.host_token=mp-frs-a02&form.host_token=mp-frs-a03&form.host_token=mp-frs-a04&form.host_token=mp-frs-a06&form.host_token=mp-frs-a05&form.host_token=mp-frs-a08&form.host_token=mp-frs-a07&form.proc_token=*&form.v_WNE_tok=*
+
+
+SQL Classic
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/sql_dashboard_classic?form.v_TIME_TOK.earliest=-24h%40h&form.v_TIME_TOK.latest=now&form.v_TEXT_TOK=*&form.v_HOST_TOK=MP-BTS-SD03&form.v_INST_TOK=BizTalkCustomConfig
+
+Info Burst
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/infoburst_monitoring
+
+
+Apps - Operations
+
+BizTalk Prod: IIS/Application Performance Clone
+
+
+

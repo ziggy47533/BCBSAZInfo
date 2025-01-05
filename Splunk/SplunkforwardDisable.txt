@@ -1,0 +1,6 @@
+
+
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/splunk_asset_maintenance
+
+missing Splunk forward are disable…. Ok

@@ -1,0 +1,13 @@
+
+IR issue
+
+
+index=docmgmt sourcetype=imgrtrv "*excess*"  earliest=-14d
+| rex "(?:strReturnValue=)(?P<ReturnString>(.*?)(?=\n))"
+| fillnull value="NA" ReturnString
+| search ReturnString!="*OSAR*"
+| timechart span=1h count as Count
+| predict Count algorithm=LLP future_timespan=0
+| tail 4
+| where Count>'prediction(Count)'
+

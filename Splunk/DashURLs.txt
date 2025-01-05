@@ -1,0 +1,11 @@
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/5010_Provider_Timeouts
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/5010_Prov_Trans_Logs
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/biztalk__system_status
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/biztalk_performanceincident_review?form.v_DATE_TOK.earliest=%40d&form.v_DATE_TOK.latest=now
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/biztalk_incident_review?form.v_TIME_TOK.earliest=-60m%40m&form.v_TIME_TOK.latest=now&form.v_SERVICS_TOK=*&form.v_RCV_TOK=*
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_app_5010/edi_incident_reference_dashboard?form.v_DATE_TOK.earliest=-24h%40h&form.v_DATE_TOK.latest=now&form.v_HOST_TOK=*&form.v_WFT_TOK=*&form.v_EDIS_TOK=*
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/openspansummary
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_ops/ops_monitoring_checks
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_ops/SI5_Files
+http://splunkops.azblue.com/en-US/app/bcbsaz_data_tracking/eop_files_processed_inbound_from_hrp_to_si5__to_redcard_wip_testing?form.time_dropdown.earliest=%40d&form.time_dropdown.latest=now
+http://splunkops.azblue.com/en-US/app/bcbsaz_data_tracking/eop_hrp_primary_db?form.time_dropdown.earliest=%40d&form.time_dropdown.latest=now

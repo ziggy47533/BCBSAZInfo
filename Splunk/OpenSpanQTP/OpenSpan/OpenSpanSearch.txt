@@ -1,0 +1,6 @@
+
+
+(index=main OR index=openspan sourcetype=openspanlog)
+| transaction ClaimNumber startswith="Starting activity;" endswith="Completed activity;"
+| timechart count as Count span=1h avg(duration) as "Processing Time"
+

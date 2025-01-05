@@ -1,0 +1,2247 @@
+Ops Check :
+
+<dashboard stylesheet="dark.css" theme="dark">
+  <label>Ops Checks</label>
+  <search>
+    <query>(index="wineventlog"  MP-BTS EventCode=7001   TaskCategory="BizTalk Server") 
+| rex"(?:BizTalk host)(?:\s+)(?P&lt;BTSHost&gt;(\w+))" 
+| rex"(?:throttled because)(?:\s+)(?P&lt;ThrottleType&gt;(\w+))" 
+| eval Demo=BTSHost.":".ThrottleType." ".host 
+| stats count(EventCode) by host</query>
+    <earliest>-24h@h</earliest>
+    <latest>now</latest>
+    <refresh>5m</refresh>
+    <refreshType>delay</refreshType>
+  </search>
+  <search>
+    <query>(index="wineventlog"  MP-BTS EventCode=7001   TaskCategory="BizTalk Server") 
+| rex"(?:BizTalk host)(?:\s+)(?P&lt;BTSHost&gt;(\w+))" 
+| rex"(?:throttled because)(?:\s+)(?P&lt;ThrottleType&gt;(\w+))" 
+| eval Demo=BTSHost.":".ThrottleType." ".host 
+| stats count(EventCode) by host</query>
+    <earliest>-24h@h</earliest>
+    <latest>now</latest>
+    <refresh>5m</refresh>
+    <refreshType>delay</refreshType>
+  </search>
+  <row>
+    <panel>
+      <title>270 Core II Response Performance Analysis - Web, BizTalk,  Velocity Last Hour</title>
+      <table>
+        <search>
+          <query>(index=bcbsaz_weblogs sourcetype="ms:iis:auto"  cs_uri_stem="*COREII*") 
+| eval TIER=case(host=="MP-WAS-FW01N01","Web",host=="MP-WAS-FW01N02","Web",host=="MP-WAS-FW01N03","Web",host=="MP-WAS-FW01N04","Web",host=="MP-BTS-SA01","BizTalk",host=="MP-BTS-SA02","BizTalk",host=="MP-BTS-SA03","BizTalk") 
+| eval duration=(duration/1000) | eval WebTime=if(TIER=="Web",duration,WebTime) | eval BizTalk_Time=if(TIER=="BizTalk",duration,BizTalk_Time)
+| stats avg(WebTime) as "Avg_WebTime" avg(BizTalk_Time) as "Avg_BizTalk_Time" perc95(WebTime) as "95pct_WebTime" perc95(BizTalk_Time) as "95pct_BizTalk_Time" | eval Approx_Velocity_Time=(Avg_WebTime-Avg_BizTalk_Time)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Provider Portal 270/271 Last Hour</title>
+      <single>
+        <title>Local Count</title>
+        <search>
+          <query>(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" BLUEPLANS="BCBS of Arizona")
+| dedup MSGNUMBER
+| stats count(MSGTYPE)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Transaction Counts</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_270271_local</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Local Eligibility</title>
+        <search>
+          <query>(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="999" OR MSGSTRING="42" BLUEPLANS="BCBS of Arizona")
+| dedup MSGNUMBER
+| stats count(MSGTYPE)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[20,40]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Last 60 Min Time Outs</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_270271_ooa</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Out Of Area Count</title>
+        <search>
+          <query>index=5010 sourcetype="web_portal" MSGTYPE="P_ET" BLUEPLANS!="BCBS of Arizona"
+| dedup MSGNUMBER 
+| stats count(MSGTYPE)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Transaction Counts</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_276277_local</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Out Of Area Eligibility</title>
+        <search>
+          <query>index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="999" OR MSGSTRING="42" BLUEPLANS!="BCBS of Arizona" 
+| dedup MSGNUMBER 
+| stats count(MSGTYPE)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[20,40]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Last 60 Min Time Outs</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_276277_ooa</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Provider Portal 276/277 Last Hour</title>
+      <single>
+        <title>Local Count</title>
+        <search>
+          <query>index=5010 sourcetype=web_portal_claim_status  source="mp-was-d03_systemlogs_tblinternallogs"   | fields RequestId  EDIProcessTime Userid MSGSTRING PostProcessTime TotalProcessTime | join RequestId [search index=5010 sourcetype=web_portal_claim_status source="mp-was-d03_providerinet_claim_request" | fields RequestId SubscriberId AlphaPrefix RequestType UserId InsertDate IsDependent StartDate EndDate ResponseId]  | search  RequestType!=OOA | stats  count(RequestId)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Transaction Counts</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_270271_local</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Local Claims</title>
+        <search>
+          <query>index=5010 sourcetype=web_portal_claim_status  source="mp-was-d03_systemlogs_tblinternallogs"   | fields RequestId  EDIProcessTime Userid MSGSTRING PostProcessTime TotalProcessTime | join RequestId [search index=5010 sourcetype=web_portal_claim_status source="mp-was-d03_providerinet_claim_request" | fields RequestId SubscriberId AlphaPrefix RequestType UserId InsertDate IsDependent StartDate EndDate ResponseId]  | search  RequestType!=OOA | search MSGSTRING=Timeout  | stats  count(RequestId)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[20,40]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Last 60 Min Time Outs</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_270271_ooa</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Out Of Area Count</title>
+        <search>
+          <query>index=5010 sourcetype=web_portal_claim_status  source="mp-was-d03_systemlogs_tblinternallogs"   | fields RequestId  EDIProcessTime Userid MSGSTRING PostProcessTime TotalProcessTime | join RequestId [search index=5010 sourcetype=web_portal_claim_status source="mp-was-d03_providerinet_claim_request" | fields RequestId SubscriberId AlphaPrefix RequestType UserId InsertDate IsDependent StartDate EndDate ResponseId]  | search  RequestType=OOA | stats  count(RequestId)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Transaction Counts</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_276277_local</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Out Of Area Claims</title>
+        <search>
+          <query>index=5010 sourcetype=web_portal_claim_status  source="mp-was-d03_systemlogs_tblinternallogs"   | fields RequestId  EDIProcessTime Userid MSGSTRING PostProcessTime TotalProcessTime | join RequestId [search index=5010 sourcetype=web_portal_claim_status source="mp-was-d03_providerinet_claim_request" | fields RequestId SubscriberId AlphaPrefix RequestType UserId InsertDate IsDependent StartDate EndDate ResponseId]  | search  RequestType=OOA | search MSGSTRING=Timeout  | stats  count(RequestId)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[20,40]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Last 60 Min Time Outs</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_276277_ooa</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Blue Exchange (271/277) Commercial</title>
+      <!--><-->
+      <single>
+        <title>271 CloseOuts</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PTSA.271.realtime.closeouts)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Plan Closeouts</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>271 BX Fault</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PTSA.271.realtime.bxfault)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Fault</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>277 CloseOuts</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PTSA.277.realtime.closeouts)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Plan Closeouts</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>277 BX Fault</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PTSA.277.realtime.bxfault)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Fault</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Blue Exchange (271/277) 530PHXA MA</title>
+      <!--><-->
+      <single>
+        <title>271 CloseOuts</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PHXA.271.realtime.closeouts)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Plan Closeouts</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>271 BX Fault</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PHXA.271.realtime.bxfault)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Fault</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>277 CloseOuts</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PHXA.277.realtime.closeouts)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Plan Closeouts</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>277 BX Fault</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(530PHXA.277.realtime.bxfault)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Fault</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Blue Exchange (271/277) 030AZMA</title>
+      <!--><-->
+      <single>
+        <title>271 CloseOuts</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(030AZMA.271.realtime.closeouts)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Plan Closeouts</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>271 BX Fault</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(030AZMA.271.realtime.bxfault)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Fault</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>277 CloseOuts</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(030AZMA.277.realtime.closeouts)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Plan Closeouts</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>277 BX Fault</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(030AZMA.277.realtime.bxfault)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Fault</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Blue Exchange (271/277) 031AZMA</title>
+      <!--><-->
+      <single>
+        <title>271 CloseOuts</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(031AZMA.271.realtime.closeouts)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Plan Closeouts</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>271 BX Fault</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(031AZMA.271.realtime.bxfault)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Fault</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>277 CloseOuts</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(031AZMA.277.realtime.closeouts)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Plan Closeouts</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>277 BX Fault</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*)
+| stats latest(031AZMA.277.realtime.bxfault)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[25,50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">BX Fault</option>
+        <option name="useColors">0</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_provider_portal_overview</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Valid Responses 271/277 : 530PTSA</title>
+      <single>
+        <title>Blue Exchange (271)</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*) 
+| stats latest(530PTSA.271.realtime.valid_responses)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Valid Responses</option>
+      </single>
+      <single>
+        <title>Blue Exchange (277)</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*) 
+| stats latest(530PTSA.277.realtime.valid_responses)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Valid Responses</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Valid Responses 271/277 : 530PHXA</title>
+      <single>
+        <title>Blue Exchange (271)</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*) 
+| stats latest(530PHXA.271.realtime.valid_responses)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Valid Responses</option>
+      </single>
+      <single>
+        <title>Blue Exchange (277)</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*) 
+| stats latest(530PHXA.277.realtime.valid_responses)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Valid Responses</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Valid Responses 271/277 : 030AZMA</title>
+      <single>
+        <title>Blue Exchange (271)</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*) 
+| stats latest(030AZMA.271.realtime.valid_responses)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Valid Responses</option>
+      </single>
+      <single>
+        <title>Blue Exchange (277)</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*) 
+| stats latest(030AZMA.277.realtime.valid_responses)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Valid Responses</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Valid Responses 271/277 : 031AZMA</title>
+      <single>
+        <title>Blue Exchange (271)</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*) 
+| stats latest(031AZMA.271.realtime.valid_responses)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Valid Responses</option>
+      </single>
+      <single>
+        <title>Blue Exchange (277)</title>
+        <search>
+          <query>(index=5010 sourcetype=bx_closeout host=mm-ops-a0*) 
+| stats latest(031AZMA.277.realtime.valid_responses)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Valid Responses</option>
+      </single>
+    </panel>
+    <panel>
+      <title>PCS Time Outs 270/276 : 530PHXA</title>
+      <single>
+        <title>270</title>
+        <search>
+          <query>inindex=azure sourcetype="mscs:storage:blob:saloggingp001" /Interfaces/Eligibility/intfProcessEligibility-service.serviceagent/intfwsProcessEligibilityEndpoint1  "remoteDependency{}.resultCode"!=200 | stats count("remoteDependency{}.resultCode")</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[10]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Last 60 Min Time Outs</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>276</title>
+        <search>
+          <query>index=5010 sourcetype=velocity_connect_mq_v1 host=mp-mqs-a02 source="D:\\utilities\\MQClient276RT\\Logs\\*" LogLevel=ERROR | stats count(LogLevel)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[10]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Last 60 Min Time Outs</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Glassfish</title>
+      <chart>
+        <title>GlassFish - Process Spikes</title>
+        <search>
+          <query>(index=5010 sourcetype=WebServices_Glassfish_FRS OR sourcetype=webservices_glassfish_frs "Elapsed" host="mp-frs-a*")
+| eval ETIME=(ETIME/1000000000)
+| eval WEBSV=(WEBSV/1000000000)
+| timechart avg(WEBSV) as "Avg BizTalk Resp Time" by host</query>
+          <earliest>-12h@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.drilldown">all</option>
+        <option name="height">174</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_glassfish_27x_combo</link>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel>
+      <title>Provider Portal Claim Status</title>
+      <chart>
+        <title>Provider Portal Claim Status - Success/Timeout Count</title>
+        <search>
+          <query>index=5010 sourcetype="web_portal" MSGTYPE="P_ClaimSum"    MSGSTRING=Timeout OR MSGSTRING=Success   | dedup MSGNUMBER   | timechart span=5m count by MSGSTRING</query>
+          <earliest>-12h@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">174</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Foresight Workflows Processes</title>
+      <chart>
+        <title>Foresight Workflows - A01-32, A03-19, A05-10, A07-10, A08-2</title>
+        <search>
+          <query>index=5010 sourcetype=glassfish_instream_workflow host=mp-frs-a0* source="D:\\Foresight\\utilities\\log_fsservice\\track_fsservice.log" | eval Foresight=host." -- ".FSChildProcessName | timechart span=1h count by Foresight</query>
+          <earliest>-12h@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">all</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_foresight_system_summary</link>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel>
+      <title>BT CPU</title>
+      <chart>
+        <title>BT CPU Idle Time</title>
+        <search>
+          <query>index=perfmon host=mp-bts-sa* sourcetype="Perfmon:CPU" counter="% Idle Time"| timechart min(Value) by host</query>
+          <earliest>-12h@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="height">175</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_foresight_system_summary</link>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel>
+      <title>Image Retriever</title>
+      <chart>
+        <title>Image Retriever Errors</title>
+        <search>
+          <query>(index=docmgmt sourcetype=imgrtrv host="baz-mpir*" "Error") 
+| timechart span=1h count by host</query>
+          <earliest>-12h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_ops/image_retriever_summary</link>
+        </drilldown>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Biz Talk</title>
+      <!--><-->
+      <single>
+        <title>Biztalk Send Port Errors and Page Pool Errors</title>
+        <search>
+          <query>(index="wineventlog"  MP-BTS    TaskCategory="BizTalk Server")   Type!=Information  Details="Insufficient system resources exist to complete the requested service."  EventCode=5754 
+| rex "(?:BizTalk host)(?:\s+)(?P&lt;BTSHost&gt;(\w+))" 
+| stats  count(EventCode) as "BIZTalkSendPortErrors" 
+| appendcols [ search index=wineventlog host=mp-bts-ss02 Type!=Information Message="The server was unable to allocate from the system nonpaged pool because the pool was empty." EventCode=2019
+| addinfo  
+| stats count(EventCode) as "PagePoolErrors" ]</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">none</option>
+        <option name="drilldown">all</option>
+        <option name="height">82</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,20]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Send Port Errors</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_biztalk_general_wellbeing</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>BT Throttling</title>
+        <search>
+          <query>(index="wineventlog"  MP-BTS EventCode=7001   TaskCategory="BizTalk Server") 
+| rex"(?:BizTalk host)(?:\s+)(?P&lt;BTSHost&gt;(\w+))" 
+| rex"(?:throttled because)(?:\s+)(?P&lt;ThrottleType&gt;(\w+))" 
+| eval Demo=BTSHost.":".ThrottleType." ".host 
+| stats count(EventCode)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">none</option>
+        <option name="drilldown">all</option>
+        <option name="height">81</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,20]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Throttling Count</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_biztalk_general_wellbeing</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>BT Response</title>
+        <search>
+          <query>(index=5010 sourcetype=WebServices_Glassfish_FRS OR sourcetype=webservices_glassfish_frs "Elapsed" host="mp-frs-a*")
+| eval ETIME=(ETIME/1000000000)
+| eval WEBSV=(WEBSV/1000000000)
+| stats avg(WEBSV) as "Avg BizTalk Resp Time"</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">none</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0.000</option>
+        <option name="rangeColors">["0x53a051","0xf1813f","0xdc4e41"]</option>
+        <option name="rangeValues">[0.6,1.5]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Response Times</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_biztalk_general_wellbeing</link>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>MIX</title>
+      <single>
+        <title>WAS</title>
+        <search>
+          <query>(index=bcbsaz_weblogs sourcetype=ms:iis:auto host="mp-was-fw01n0*")  | search cs_host="provider.secure.azblue.com:80" OR cs_host="provider.secure.azblue.com" | eval time_taken = time_taken/1000  | stats avg(time_taken) as Average</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[1,2]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">WAS Response Time</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/WebStatusCheck</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>WSS</title>
+        <search>
+          <query>(index=bcbsaz_weblogs sourcetype=ms:iis:auto host="mp-wss-fw01n0*")  | search cs_host="provider.services.azblue.com:8190" | eval time_taken = time_taken/1000  | stats avg(time_taken) as Average</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[1,2]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">WSS Response Time</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_web_tier_status_check</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Recon\DEIS</title>
+        <search>
+          <query>index="wineventlog" host="mm-ops-a01" sourcetype="WinEventLog:Application" SourceName="ReconDEIS" EventCode="54" | rex "(?:FileCountOverall=)(?P&lt;FileCountOverall&gt;(.*?)(?=,))" | rex "(?:hour=)(?P&lt;GT1HR&gt;(.*?)(?=\W))" | stats count(FileCountOverall)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,70]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">File Check</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>AnotherSHOV</title>
+        <search>
+          <query>index="wineventlog" host="mm-ops-a01" sourcetype="WinEventLog:Application" SourceName="AnotherSHOV" EventCode="74" | rex "(?:FileCountOverall=)(?P&lt;FileCountOverall&gt;(.*?)(?=,))" | rex "(?:hour=)(?P&lt;GT1HR&gt;(.*?)(?=\W))" | stats count(FileCountOverall)</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-24h</option>
+        <option name="underLabel">File Check</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>Pinnacle</title>
+        <search>
+          <query>index="wineventlog" host="mp-pin-sa01" sourcetype="WinEventLog:Application" "SourceName=FileNET Auto Process" "Type=Error" | stats count(SourceName)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Pinnacle FileNet Errors</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_834_move_script</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>EviCore</title>
+        <search>
+          <query>index="wineventlog" host="mm-ops-a01" sourcetype="WinEventLog:Application" SourceName="EviCore" EventCode="34" earliest=-15m@m latest=@m 
+| rex "FileCountOverall=(?&lt;FileCountOverall&gt;\d+)"
+| stats sum(FileCountOverall)</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0xdc4e41","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">File Check</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_ops/evicore</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>BUF</title>
+        <search>
+          <query>index="wineventlog" sourcetype="WinEventLog:Application" EventCode="100" host="mp-abs*"  SourceName=BUF | table  _time, host, SourceName, EventCode, Message  | stats  count</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Check</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_ops/buf</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>ABat Jobs</title>
+        <search>
+          <query>index="activebatch" sourcetype=activebatch 
+| rex "(?:JobName: )(?P&lt;JobName&gt;(.*?)(?=,))" 
+| rex "(?:ExecStartTime: )(?P&lt;JobStartTime&gt;(.*?)(?=,))" 
+| rex "(?:ExpectedRunTime: )(?P&lt;JobExpectedTime&gt;(.*?)(?=,))" 
+| rex "(?:QueueNAme: )(?P&lt;JobQueue&gt;(.*?)(?=,))" 
+| rex "(?:ActualCPUTime: )(?P&lt;JobCPUTime&gt;(.*?)(?=,))" 
+| rex "(?:Status:)(?P&lt;JobStatus&gt;(.*?)(?=:))" 
+| eval Epoch_Time=strptime(JobStartTime,"%m/%d/%Y %H:%M:%S") 
+| eval DELTA=(_time - Epoch_Time) 
+| eval Minutes=(DELTA/60) 
+| eval Hours=(DELTA/360) 
+| stats max(Hours) as "Max" avg(Hours) as "Avg" values(JobStatus) as "Status" values(JobExpectedTime) by JobName JobQueue 
+| search Avg&gt;24 Max&gt;24 
+| stats count(JobName)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[5,8]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Long Running</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_ops/active_batch_general_wellbeing</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>FEPMember360</title>
+        <search>
+          <query>(index=5010 sourcetype=FEPMember360 source=FEPMember360_UnprocessedRows OR source=mi_input://FEPMember360_UnprocessedRows) | stats count(UnprocessRows)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Hourly Check</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_hms/hms_vws_crashes</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>VWS Crashes</title>
+        <search>
+          <query>(index=wineventlog sourcetype="WinEventLog:System" host="mp-hms-a0*" Message="The Apache Tomcat 7.0 Tomcat7-vws service terminated unexpectedly*") | stats  count(Message)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">Hourly Check</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_hms/hms_vws_crashes</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>VAT TPS</title>
+        <search>
+          <query>(index=bcbsaz_extrahop sourcetype=bcbsaz_extrahop object_name="mp-hms-md01n01" alert_name="Database Server Errors") 
+| stats count(alert_name) as "HMS DB Errors Current" 
+| fillnull "HMS DB Errors Current"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-24h</option>
+        <option name="underLabel">Check</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>VAT PRD</title>
+        <search>
+          <query>index="wineventlog" host="mp-pin-sa01" sourcetype="WinEventLog:Application" "SourceName=FileNET Auto Process" "Type=Error" | stats count(SourceName)</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Check</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_hms/hms_vws_crashes</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>MIX</title>
+      <single>
+        <title>HMS</title>
+        <search>
+          <query>(index=bcbsaz_extrahop sourcetype=bcbsaz_extrahop object_name="mp-hms-md01n01" alert_name="Database Server Errors") 
+| stats count(alert_name) as "HMS DB Errors Current" 
+| fillnull "HMS DB Errors Current"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[10]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">DB Error Notification</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_hms/hms_vital_system_summary</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>SharePoint</title>
+        <search>
+          <query>(index=_internal source=*metrics.log group=tcpin_connections hostname="mp-spt-a*" OR hostname="mp-spt-d*" OR hostname="mp-spt-w*") 
+| eval hostname=lower(hostname) 
+| eval Host=coalesce(hostname, Host) 
+| eval age = (now()-_time ) 
+| stats first(age) as age, first(_time) as LastTime by Host 
+| eval Status= case(age &lt; 160,"Up") 
+| stats count(Status)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Server Status</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_ops/sharepoint_monitoring</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Cincom</title>
+        <search>
+          <query>(index=wineventlog  sourcetype="WinEventLog:Application"  host=mm-ops-a01 Message="m*-hms-sa01 ActiveMQ stopped") | stats count(Message)</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Cincomm ActiveMQ</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>MQC</title>
+        <search>
+          <query>(index=5010 host=mp-mqs-a02 sourcetype=mqc OR source="D:\\prod_logs\\mq\\splunk-mq-v2c.log" ChannelName="AZ.TO.BCBSA" MQCStatus="Running" OR "Inactive")
+| table ChannelName, MQCStatus, _time | stats first(MQCStatus) as State | eval StateBool = if (MQCStatus=="Running", 0, 1) | rangemap field=StateBool low=0-0 severe=1-1</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="underLabel">AZ.TO.BCBSA Channel Status</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>MQC</title>
+        <search>
+          <query>(index=5010 host=mp-mqs-a02 sourcetype=mqc OR source="D:\\prod_logs\\mq\\splunk-mq-v2c.log" ChannelName="BCBSA.TO.AZ" MQCStatus="Running" OR "Inactive")
+| table ChannelName, MQCStatus, _time | stats first(MQCStatus) as State | eval StateBool = if (MQCStatus=="Running", 0, 1) | rangemap field=StateBool low=0-0 severe=1-1</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="underLabel">BCBSA.TO.AZ Channel Status</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>MQC</title>
+        <search>
+          <query>(index=5010 host=mp-mqs-a02 sourcetype=mqc OR source="D:\\prod_logs\\mq\\splunk-mq-v2c.log" ChannelName="*" MQCStatus="Running" OR "Inactive")  ChannelName="AZRP.QWP1.MTV.5010" | table  ChannelName, MQCStatus, _time  | stats  first(MQCStatus) as State  | eval  StateBool = if (MQCStatus=="Running", 0, 1)  | rangemap  field=StateBool low=0-0 severe=1-1</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="underLabel">AZRP.QWP1.MTV.5010 Channel Status</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>MQC</title>
+        <search>
+          <query>(index=5010 host=mp-mqs-a02 sourcetype=mqc OR source="D:\\prod_logs\\mq\\splunk-mq-v2c.log" MQCStatus="Running" OR "Inactive" ChannelName="QWP1.AZRP.MTV.5010") | table  ChannelName, MQCStatus, _time  | stats  first(MQCStatus) as State  | eval  StateBool = if (MQCStatus=="Running", 0, 1)  | rangemap  field=StateBool low=0-0 severe=1-1</query>
+          <earliest>@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="underLabel">QWP1.AZRP.MTV.5010 Channel Status</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>MQC</title>
+        <search>
+          <query>(index=5010 sourcetype=mqq OR sourcetype=MQQ host=mp-mqs-a02) | rex "^(?:[^:\n]*:){4}(?P&lt;Qdepth&gt;\s+\d+)"  | rex "^(?:[^ \n]* ){4}(?P&lt;Qname&gt;[^ ]+)" | search Qname="FS.RT.TO.BES.270" 
+| stats latest(Qdepth)</query>
+          <earliest>@d</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="underLabel">FS.RT.TO.BES.270 Queue</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>MQC</title>
+        <search>
+          <query>(index=5010 sourcetype=mqq OR sourcetype=MQQ host=mp-mqs-a02) | rex "^(?:[^:\n]*:){4}(?P&lt;Qdepth&gt;\s+\d+)"  | rex "^(?:[^ \n]* ){4}(?P&lt;Qname&gt;[^ ]+)" | search Qname="BES.RT.TO.FS.271" 
+| stats latest(Qdepth)</query>
+          <earliest>@d</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="underLabel">BES.RT.TO.FS.271 Queue</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>MQC</title>
+        <search>
+          <query>(index=5010 sourcetype=mqq OR sourcetype=MQQ Qname="AZ.RT.270.Q.5010" host="mp-mqs-*" Qdepth&gt;5) | stats count(Qdepth)</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="underLabel">AZ.RT.270.Q.5010 Queue</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>MQC</title>
+        <search>
+          <query>(index=5010 sourcetype=mqq OR sourcetype=MQQ Qname="QM.BX" host="mp-mqs-*" Qdepth&gt;5) | stats count(Qdepth)</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[0,1]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="underLabel">QM.BX Queue</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>ActiveBatch</title>
+        <search>
+          <query>index=activebatch sourcetype=activebatch    | rex "(?:Status:\s+)(?P&lt;Status&gt;(.*?)(?=\s+))"     | search Status=failed  | rex "(?:JobName:\s+)(?P&lt;JobName&gt;(.*?)(?=,))"    | rex "(?:QueueNAme:\s+)(?P&lt;QueueName&gt;(.*?)(?=,))"    | rex "(?:JobOwner:\s+)(?P&lt;JobOwner&gt;(.*?)(?=,))"    | rex "(?:JobRunner:\s+)(?P&lt;JobRunner&gt;(.*?)(?=,))"    | rex "(?:ExpectedRunTime:\s+)(?P&lt;ExpectedRunTime&gt;(.*?)(?=,))"    | rex "(?:ExpectedBeginExecutionTime:\s+)(?P&lt;ExpectedBeginExecutionTime&gt;(.*?)(?=,))"    | rex "(?:ActualCPUTime:\s+)(?P&lt;ActualCPUTime&gt;(.*?)(?=,))"   | rex "(?:AverageCPUTime:\s+)(?P&lt;AverageCPUTime&gt;(.*?)(?=,))" | stats count(host)</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xd93f3c"]</option>
+        <option name="rangeValues">[10,60]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Active Batch Errors</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>ForesightAutomator Count</title>
+      <single>
+        <title>MP-FRS-A01 (32)</title>
+        <search>
+          <query>index=5010 sourcetype=glassfish_instream_workflow host=mp-frs-a01 source="D:\\Foresight\\utilities\\log_fsservice\\track_fsservice.log" | eval Foresight=host." -- ".FSChildProcessName | stats count(Foresight)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[31,32]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Automator Count</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_ops/evicore</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>MP-FRS-A03 (19)</title>
+        <search>
+          <query>index=5010 sourcetype=glassfish_instream_workflow host=mp-frs-a03 source="D:\\Foresight\\utilities\\log_fsservice\\track_fsservice.log" | eval Foresight=host." -- ".FSChildProcessName | stats count(Foresight)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[18,19]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Automator Count</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>MP-FRS-A05 (10)</title>
+        <search>
+          <query>index=5010 sourcetype=glassfish_instream_workflow host=mp-frs-a05 source="D:\\Foresight\\utilities\\log_fsservice\\track_fsservice.log" | eval Foresight=host." -- ".FSChildProcessName | stats count(Foresight)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[9,10]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">Automator Count</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>MP-FRS-A07 (10)</title>
+        <search>
+          <query>index=5010 sourcetype=glassfish_instream_workflow host=mp-frs-a07 source="D:\\Foresight\\utilities\\log_fsservice\\track_fsservice.log" | eval Foresight=host." -- ".FSChildProcessName | stats count(Foresight)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[9,10]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">Automator Count</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>MP-FRS-A08 (2)</title>
+        <search>
+          <query>index=5010 sourcetype=glassfish_instream_workflow host=mp-frs-a08 source="D:\\Foresight\\utilities\\log_fsservice\\track_fsservice.log" | eval Foresight=host." -- ".FSChildProcessName | stats count(Foresight)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[1,2]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">Automator Count</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>SI5 Monitoring</title>
+      <single>
+        <title>SI5 PROD Failure</title>
+        <search>
+          <query>(index=sterling sourcetype="SI5:Jobs" file_name="*.*" state=failed host="mp-si0-d01`") | stats count(state)</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Failure Count</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>SI5 PROD Routing</title>
+        <search>
+          <query>(index=wineventlog sourcetype="WinEventLog:System" host="mp-hms-a0*" Message="The Apache Tomcat 7.0 Tomcat7-vws service terminated unexpectedly*") | stats  count(Message)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Routing Count</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_hms/hms_vws_crashes</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Test</title>
+        <search>
+          <query>(index=wineventlog  sourcetype="WinEventLog:Application"  host=mm-ops-a01 Message="m*-hms-sa01 ActiveMQ stopped") | stats count(Message)</query>
+          <earliest>@d</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="underLabel">Check</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Vital HMS</title>
+      <single>
+        <title>McKesson IRS Proxy</title>
+        <search>
+          <query>index=windows sourcetype=WMI:Services source="WMI:Services" host="mp-hms-a0*" DisplayName="mckesson*" State=Stopped | stats count(State)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Stopped Count</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_ops/evicore</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Tomcat7-vws</title>
+        <search>
+          <query>index=windows sourcetype=WMI:Services source="WMI:Services" host="mp-hms-a0*" Name="Tomcat7-vws" State=Stopped | stats count(State)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Stopped Count</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>VITALPlatformServer</title>
+        <search>
+          <query>index=windows sourcetype=WMI:Services source="WMI:Services" host="mp-hms-a0*" Name=VITALPlatformServer State=Stopped   | stats  count(State)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">Stopped Count</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>CDS ext Block</title>
+        <search>
+          <query>index=sqldm sourcetype=sqldm DatabaseName=ccms_Prod ApplicationName=cdsext | stats count(BlockTimeSeconds)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">Stopped Count</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>empty</title>
+        <search>
+          <query>(index=wineventlog sourcetype="WinEventLog:System" host="mp-hms-a0*" Message="The Apache Tomcat 7.0 Tomcat7-vws service terminated unexpectedly*") | stats  count(Message)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-24h</option>
+        <option name="unitPosition">before</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">0</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Image Retriever</title>
+      <single>
+        <title>IIS Over 100secs</title>
+        <search>
+          <query>index=bcbsaz_weblogs sourcetype="ms:iis:auto" host=baz-mpir2*
+|eval duration=(duration/1000) 
+| where duration&gt;100
+| stats count(host) as count</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[20]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Host Count</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_ops/evicore</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>Doc Services gt 100s</title>
+        <search>
+          <query>index=docmgmt host=baz-mpir2* | rex"(?P&lt;Method&gt;(\|(Get|Set|Insert)(.*?)(?=\|)))" | rex"(?:Elapsed Time)(?:\s+)(?:\[)(?P&lt;ElapsedTime&gt;\d+\.\d+)" | search Method="|InsertFileNetDocumentTIFFByPDF" | where ElapsedTime&gt;12 | stats count(host) as count</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[2]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Host Count</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>App Pool failure</title>
+        <search>
+          <query>index=* host=baz-mpir2* "*Application pool 'DefaultAppPool' is being automatically disabled due to a series of failures in the process(es) serving that application pool*" | stats count(host) as count</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[2]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="underLabel">Failure Count</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>Empty</title>
+        <search>
+          <query>(index=wineventlog sourcetype="WinEventLog:System" host="mp-hms-a0*" Message="The Apache Tomcat 7.0 Tomcat7-vws service terminated unexpectedly*") | stats  count(Message)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-24h</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+      <single>
+        <title>empty</title>
+        <search>
+          <query>(index=wineventlog sourcetype="WinEventLog:System" host="mp-hms-a0*" Message="The Apache Tomcat 7.0 Tomcat7-vws service terminated unexpectedly*") | stats  count(Message)</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">0</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-24h</option>
+        <option name="unitPosition">before</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">0</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Pinnacle  (Running Count should not equal 0)</title>
+      <single>
+        <title>BrokerAP</title>
+        <search>
+          <query>(index=windows host="mp-pin-s*" Name=BrokerAP) | stats count(host) AS count</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>15m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Count</option>
+        <option name="useColors">1</option>
+      </single>
+      <single>
+        <title>FileNetAP</title>
+        <search>
+          <query>(index=windows host="mp-pin-s*" Name=FileNETAP) | stats count(host) AS count</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>15m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Count</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_hms/hms_vws_crashes</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>GroupRenewalAP</title>
+        <search>
+          <query>(index=windows host="mp-pin-s*" Name=GroupRenewalAP) | stats count(host) AS count</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>15m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Count</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_hms/hms_vws_crashes</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>VATAP</title>
+        <search>
+          <query>(index=windows host="mp-pin-s*" Name=VATAP) | stats count(host) AS count</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>15m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Count</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_ops/active_batch_general_wellbeing</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>blank</title>
+        <search>
+          <query>index=windows sourcetype="WMI:LocalProcesses" host=mp-mqs-* Name=Edi278BT | stats count(Name)</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>blank</title>
+        <search>
+          <query>index=windows sourcetype="WMI:LocalProcesses" host=mp-mqs-* Name=Edi278RT | stats count(Name)</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+      <single>
+        <title>blank</title>
+        <search>
+          <query>index=windows sourcetype="WMI:LocalProcesses" host=mp-mqs-* Name=Edi270TP | stats count(Name)</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="colorBy">trend</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trendColorInterpretation">inverse</option>
+        <option name="trendInterval">-1h</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_ta_app_5010/5010_prod_bx_and_mq</link>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>5010: Foresight Workflow Errors</title>
+      <chart>
+        <title>Automator.exe Crash (24H)</title>
+        <search>
+          <query>(index=wineventlog host="mp-frs-a0*"  sourcetype="WinEventLog:Application"   SourceName="Application Error" "ForesightAutomator.exe"   NOT Faulting_application_path="D:\\Program Files\\SplunkUniversalForwarder\\bin\\splunk-winevtlog.exe" NOT Faulting_application_path="D:\Program Files\SplunkUniversalForwarder\bin\splunk-netmon.exe")
+		  | timechart span=1m count by host limit=10</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.size">large</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>5010: Foresight Workflow Errors</title>
+      <chart>
+        <title>HVInStream.exe Crash  (24H)</title>
+        <search>
+          <query>(index=wineventlog host="mp-frs-a0*"  sourcetype="WinEventLog:Application"   SourceName="Application Error"    "HVInStream.exe"   NOT Faulting_application_path="D:\\Program Files\\SplunkUniversalForwarder\\bin\\splunk-winevtlog.exe" NOT Faulting_application_path="D:\Program Files\SplunkUniversalForwarder\bin\splunk-netmon.exe")
+		  | timechart span=5m count by host limit=10</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">-45</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>5010: Foresight Workflow Errors</title>
+      <chart>
+        <title>ISFile.exe Crash (24H)</title>
+        <search>
+          <query>(index=wineventlog host="mp-frs-a0*"  sourcetype="WinEventLog:Application"   SourceName="Application Error"    "ISfileID.exe"   NOT Faulting_application_path="D:\\Program Files\\SplunkUniversalForwarder\\bin\\splunk-winevtlog.exe" NOT Faulting_application_path="D:\Program Files\SplunkUniversalForwarder\bin\splunk-netmon.exe")
+		  | timechart span=5m count by host limit=10</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">-45</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisStart</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>5010: Foresight Workflow Errors</title>
+      <chart>
+        <title>Importer.exe Crash (24H)</title>
+        <search>
+          <query>(index=wineventlog host="mp-frs-a0*"  sourcetype="WinEventLog:Application"   SourceName="Application Error"    "Importer.exe"   NOT Faulting_application_path="D:\\Program Files\\SplunkUniversalForwarder\\bin\\splunk-winevtlog.exe" NOT Faulting_application_path="D:\Program Files\SplunkUniversalForwarder\bin\splunk-netmon.exe") 
+		  | timechart count by host limit=10</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">-45</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisStart</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>5010: Foresight Workflow Errors</title>
+      <chart>
+        <title>Java.exe Crash (24H)</title>
+        <search>
+          <query>(index=wineventlog host="mp-frs-a0*"  sourcetype="WinEventLog:Application"   SourceName="Application Error" "Java.exe"    NOT Faulting_application_path="D:\\Program Files\\SplunkUniversalForwarder\\bin\\splunk-winevtlog.exe" NOT Faulting_application_path="D:\Program Files\SplunkUniversalForwarder\bin\splunk-netmon.exe")
+		  | timechart span=5m count by host limit=10</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">-45</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisStart</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>5010: Foresight Workflow Errors</title>
+      <chart>
+        <title>DocSplitter.exe Crash (24H)</title>
+        <search>
+          <query>(index=wineventlog host="mp-frs-a0*"  sourcetype="WinEventLog:Application"   SourceName="Application Error"    "Docsplitter.exe"   NOT Faulting_application_path="D:\\Program Files\\SplunkUniversalForwarder\\bin\\splunk-winevtlog.exe" NOT Faulting_application_path="D:\Program Files\SplunkUniversalForwarder\bin\splunk-netmon.exe")
+		  | timechart span=5m count by host limit=10</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">-45</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisStart</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>5010: Foresight Workflow Errors</title>
+      <chart>
+        <title>TPARouter.exe Crash (24H)</title>
+        <search>
+          <query>(index=wineventlog host="mp-frs-a0*"  sourcetype="WinEventLog:Application"   SourceName="Application Error"    "TPARouter.exe"   NOT Faulting_application_path="D:\\Program Files\\SplunkUniversalForwarder\\bin\\splunk-winevtlog.exe" NOT Faulting_application_path="D:\Program Files\SplunkUniversalForwarder\bin\splunk-netmon.exe")
+		  | timechart span=5m count by host limit=10</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Finance EOP  Dashboard HRP EXTRACT Count</title>
+      <single>
+        <search>
+          <query>index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT*  | stats count(Payment_Amount) as "HRP Extract Count"</query>
+          <earliest>@d</earliest>
+          <latest>now</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_data_tracking/eop_files_processed_inbound_from_hrp_to_si5__to_redcard_wip_testing</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Finance EOP  Dashboard SI5 Inbound Count from HRP EOP</title>
+      <single>
+        <search>
+          <query>(index=main OR index=sterling sourcetype="eop:hrp:prod") | rex field=source "(EOP\W)(?&lt;file_name&gt;\w+)" | stats  count(file_name) as "SI5 Total Count"</query>
+          <earliest>@d</earliest>
+          <latest>now</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Click on count to re-direct to Dashboard</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_data_tracking/eop_files_processed_inbound_from_hrp_to_si5__to_redcard_wip_testing</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Finance EOP  Dashboard SI5 Outbound Count to REDCARD</title>
+      <single>
+        <search>
+          <query>(index=sterling sourcetype="eop:redcard" host=mm-ops-a02) | stats  count(totalAmount) as "Redcard Total Count"</query>
+          <earliest>@d</earliest>
+          <latest>now</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_data_tracking/eop_files_processed_inbound_from_hrp_to_si5__to_redcard_wip_testing</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <title>Finance EOP  Dashboard PCS OutBound Count</title>
+      <single>
+        <search>
+          <query>index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02 source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_egress_*.log" DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\PCS\\EOP\\Prod" | stats  dc(FileName)</query>
+          <earliest>@d</earliest>
+          <latest>now</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Finance EOP  Dashboard PCS OutBound Count needed to be routed from SI to PCS</title>
+      <single>
+        <search>
+          <query>index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02 source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_egress_*.log" DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\PCS\\EOP\\Prod" | stats  dc(FileName)</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+          <refresh>20m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+  </row>
+</dashboard>

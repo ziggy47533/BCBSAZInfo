@@ -1,0 +1,21 @@
+
+
+Overall Resp:
+(index=5010 sourcetype=WebServices_Glassfish_FRS OR sourcetype=webservices_glassfish_frs "Elapsed" host="mp-frs-a*")
+| eval ETIME=(ETIME/1000000000)
+| eval WEBSV=(WEBSV/1000000000)
+| stats avg(WEBSV) as "Avg BizTalk Resp Time"
+
+
+
+GF Resp Time:
+(index=5010 sourcetype=WebServices_Glassfish_FRS OR sourcetype=webservices_glassfish_frs "Elapsed" host="mp-frs-a*")
+| eval ETIME=(ETIME/1000000000)
+| eval WEBSV=(WEBSV/1000000000)
+| timechart span=15m avg(WEBSV) as "Avg BizTalk Resp Time" by host
+
+
+
+ sourcetype="foresight:glassfish:webservices:log"
+ 
+ 

@@ -1,0 +1,6 @@
+
+
+DNS Issue with ACtive Dir : Server losing conneciton:
+
+
+index=wineventlog sourcetype="WinEventLog:System" EventCode=5719| stats count(EventCode) by _time host | dedup host

@@ -1,0 +1,101 @@
+
+
+<dashboard theme="dark">
+  <label>5010: Provider Transaction Logs</label>
+  <row>
+    <panel>
+      <title>Eligibility In Area</title>
+      <table>
+        <search>
+          <query>(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="999" OR MSGSTRING="42"BLUEPLANS="BCBS of Arizona")
+| stats count by UserId, AlphaPrefix
+| sort - count</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Eligibility OOA</title>
+      <table>
+        <search>
+          <query>(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="999" OR MSGSTRING="42"BLUEPLANS!="BCBS of Arizona")
+| stats count by UserId, AlphaPrefix
+| sort - count</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Claims In Area</title>
+      <table>
+        <search>
+          <query>(index=5010 sourcetype="web_portal" MSGTYPE="P_ClaimSum" MSGSTRING="999" OR MSGSTRING="42" BLUEPLANS="BCBS of Arizona")
+| stats count by UserId, AlphaPrefix
+| sort - count</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Claims OOA</title>
+      <table>
+        <search>
+          <query>(index=5010 sourcetype="web_portal" MSGTYPE="P_ClaimSum" MSGSTRING="999" OR MSGSTRING="42" BLUEPLANS!="BCBS of Arizona")
+| stats count by UserId, AlphaPrefix
+| sort - count</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>

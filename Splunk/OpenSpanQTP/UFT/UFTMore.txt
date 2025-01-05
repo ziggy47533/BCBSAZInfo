@@ -1,0 +1,46 @@
+UFT
+
+
+
+
+On VPCW10PD0206, 207, and 208 we have the below Jenkins processing schedule set up M-F.
+
+1.	5:30am – a Metavance script that runs for 10-20 minutes.  The executable that runs is:
+                C:\Production Support Automation\Executables\RunMVCorrespondenceLetterScript.vbs
+
+2.	Immediately after script 1 completes – A Metavance script that processes claims found
+on a daily spreadsheet.  The number of claims varies day to day, so it’s hard to predict
+how long this process will run each day.
+
+Executable: C:\Production Support Automation\Executables\RunEvicoreScript.vbs
+
+3.	Immediately after script 2 completes – A Metavance script that processes claims
+found on 10 different work lists.  The size of the work lists vary widely day to day.
+This process can run for as little as 90 minutes to as much as 8 hours.
+
+Executable: C:\Production Support Automation\Executables\Run MV Return Letters.vbs
+
+4.	Immediately after script 3 completes – A Metavance script that processes claims found
+on spreadsheets.  Some days there are no spreadsheets to process, so the script starts
+and stops in less than a minute.  Some days there are large spreadsheets resulting
+in the script to run all the way until midnight.
+
+Executable: C:\Production Support Automation\Executables\Run BalanceDueReworkScript.vbs
+
+5.	Immediately after script 4 completes – A script that just writes a line to a log file every 5 minutes.
+This script quits running at 5:00pm.
+
+Executable: C:\Production Support Automation\Executables\Run PingLogFileScript.vbs
+
+
+All of the above scripts write to a log file at least once every 5 minutes.  The log file is:
+                \\baz-filer02\common\EDS\Performance Manager Logs\QTP Logs\UFT0207\<yyyymmdd>.txt
+
+I currently have an ActiveBatch script set up that monitors that log file from 7:00am – 5:00pm.  
+The ActiveBatch script sends my team an email anytime that log file has not been updated for more than 15 minutes.
+
+I have ActiveBatch scripts that check those log files every 15 minutes to make sure that the log files are getting updated regularly.  But I don't care about the content of the log entries.
+
+The Active Batch scripts check the Last Modified time of the log file, but the Active Batch scripts don't check the actual content of the log files.  
+
+

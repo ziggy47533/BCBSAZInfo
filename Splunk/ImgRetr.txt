@@ -1,0 +1,29 @@
+
+
+(index=docmgmt sourcetype=imgrtrv host="baz-mpir*" "Error") 
+| timechart span=1h count by host
+
+New Search
+index=docmgmt host="baz-mpir*" "Error"  sourcetype="image_retriever:filenet_diagnostic:log"
+| timechart  span=1h count by host useother=false
+
+
+
+
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" host=baz-mpir2*
+|eval duration=(duration/1000) 
+| where duration>100
+| stats count(host) as count
+
+
+index=docmgmt host=baz-mpir2* | rex"(?P<Method>(\|(Get|Set|Insert)(.*?)(?=\|)))" 
+| rex"(?:Elapsed Time)(?:\s+)(?:\[)(?P<ElapsedTime>\d+\.\d+)"
+| search Method="|InsertFileNetDocumentTIFFByPDF"
+| where ElapsedTime>12 | stats count(host) as count
+
+
+index=* host=baz-mpir2* "*Application pool 'DefaultAppPool' is being automatically disabled due to a series of failures in the process(es) serving that application pool*"
+| stats count(host) as count
+
+(index=wineventlog sourcetype="WinEventLog:System" host="mp-hms-a0*" Message="The Apache Tomcat 7.0 Tomcat7-vws service terminated unexpectedly*")
+| stats  count(Message)

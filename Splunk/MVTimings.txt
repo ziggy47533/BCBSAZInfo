@@ -1,0 +1,9 @@
+
+MV :
+
+(index=5010 sourcetype=WebServices_Glassfish_FRS OR sourcetype=webservices_glassfish_frs host="mp-frs-*")
+| transaction MessID startswith="End Realtime 270" endswith="initializing realtime 271"
+| eval duration=round(duration,2)
+| eval MINSTR=(INSTR/1000000000)
+| search TPTYPE="MV"
+| timechart span=5m avg(duration) as "Duration" mode(duration) as "Mode" perc90(duration) as "90th %"  by TPTYPE

@@ -1,0 +1,11 @@
+
+
+
+We have been seeing files sit in the path \\baz-filer01\share\EMFT_FTP\Inbound\GuidingCare\Prod\Letters\BAZ-AH-Letter*.zip
+for DAYS and not get picked up by FIS.  ABAT path:  Velocity Connect > FIS > GuidingCare FIS.  
+
+Re-dropping the file doesn't work and we have to end up adding a digit to the file name for it to get picked up.  
+
+Please set up monitoring for BAZ-AH-Letter*.zip if it sits for more than 15 minutes to trigger
+ an alert to Computer Ops and Guiding Care Support.  Ops will need to try redropping the file
+ and if that doesn't work, adding a digit to the number portion of the file name:  

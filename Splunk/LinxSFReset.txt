@@ -1,0 +1,17 @@
+
+
+Reset splunk forwarder on Linux server
+
+User splunk
+
+PW x4(pMxu\K5NC"gpz
+
+Pick one of these four command
+
+Sudo $SPLUNK_HOME/bin/splunk restart
+ 
+Sudo $SPLUNK_HOME/bin/splunk status
+
+Sudo $SPLUNK_HOME/bin/splunk start
+
+Sudo $SPLUNK_HOME/bin/splunk stop

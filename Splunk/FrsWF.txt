@@ -1,0 +1,9 @@
+
+index=5010 sourcetype=glassfish_instream_workflow host=mp-frs-a07
+source="D:\\Foresight\\utilities\\log_fsservice\\track_fsservice.log"
+FSChildProcessName="ForesightAutomator.exe"
+| eval Foresight=host." -- ".FSChildProcessName
+| stats count(Foresight)
+
+Might need to add this if the count is off.... 
+FSChild.....

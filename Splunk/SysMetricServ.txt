@@ -1,0 +1,32 @@
+
+
+
+IIS
+
+CPU
+
+Disk
+
+Memory
+
+
+index=* 
+
+host="mp-mbc-d01" OR
+
+host="mp-mqs-a02" OR
+
+host="mp-hrp-do*" OR
+
+host="mp-bts-sa0*" OR
+
+host="mp-frs-a0*" OR
+
+host="mp-wss-fw01n0*"
+
+
+
+
+
+Memory
+index=perfmon  collection=Memory (counter="Available MBytes" OR counter="% Committed Bytes In Use")

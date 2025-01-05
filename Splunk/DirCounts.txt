@@ -1,0 +1,30 @@
+
+
+(index=5010 sourcetype=bts_frs_dir DirectoryName=* FileName=*)
+| stats count(FileName) as Counts by date_hour, DirectoryName
+| dedup date_hour
+| sort date_hour
+
+(index=5010 sourcetype=bts_frs_dir)
+| stats count by _time, CreationTime, DirectoryName, FileName, Age
+| rename CreationTime AS DateCreated
+| rename Age AS MinutesWaiting
+| eval MinutesWaiting=round('MinutesWaiting',2)
+| stats count by DirectoryName
+| sort -count
+
+
+(index=5010 sourcetype=bts_frs_dir)
+| stats count by _time, CreationTime, DirectoryName, FileName, Age
+| rename CreationTime AS DateCreated
+| rename Age AS MinutesWaiting
+| eval MinutesWaiting=round('MinutesWaiting',2)
+| sort -DirectoryName
+
+
+(index=5010 sourcetype=faxcom:dirlist)
+| rex "(?:FolderLastUpdated)(?P<FolderLastUpdated>(.*?)(\s\=\s\d{2}\/\d{2}\/\d{4}\s\d{2}\:\d{2}\:\d{2}\.\d{3}))"
+| rex "\b(?:Age)(?P<AgeDegraded>(.*?)(\s\=\s\d*\.\d*))"
+| eval AgeDegraded = round(Age/1,3)
+| search FolderName="*Prod*"
+| stats count(FolderLastUpdated) as Count by _time FolderName FolderLastUpdated FileName AgeDegraded

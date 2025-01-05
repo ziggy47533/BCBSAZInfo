@@ -1,0 +1,35 @@
+
+Cicso AMP Service for Prod
+
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_applications/security_tool_tracking?form.v_DATE_TOK.earliest=-60m%40m&form.v_DATE_TOK.latest=now&form.v_SCT_TOK=*
+
+
+
+
+New search on A11 :
+https://lm-spl-a11.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_data_tracking/security_tool_tracking?form.field1.earliest=-24h%40h&form.field1.latest=now&form.v_DATE_TOK.earliest=-60m%40m&form.v_DATE_TOK.latest=now&form.v_SCT_TOK=*
+
+
+
+
+
+Security Tool Tracking
+
+
+index=perfmon ( instance="*sfc*" OR instance="*tanium*" OR instance="*observeit*" OR instance="*tpython*") earliest=-60m
+| eval instance=mvindex(split(instance,"#"),0)
+| eval PrivateBytes=if(counter=="Private Bytes",Value,PrivateBytes)
+| eval Priv_Time=if(counter=="% Privileged Time",'Value','Priv_Time')
+| eval Proc_Time=if(counter=="% Processor Time",'Value','Proc_Time')
+| eval Thread_Count=if(counter=="Thread Count",'Value','Thread_Count')
+| eval IO_Bytes_Per_Sec=if(counter=="IO Data Bytes/sec",'Value','IO_Bytes_Per_Sec')
+| stats max(PrivateBytes) as "Max PrivateBytes" avg(PrivateBytes) as "Avg PrivateBytes"
+   max(Proc_Time) as "Max Pct_Processor_Time" avg(Proc_Time) as "Avg Pct_Processor_Time"
+   max(Priv_Time) as "Max Pct_Priv_Time"  avg(Priv_Time) as "Avg_Pct_Priv_Time"
+   max(IO_Bytes_Per_Sec) as "Max IO_Bytes/Sec" avg(IO_Bytes_Per_Sec) as "Avg IO_Bytes_Per_Sec"
+   max(Thread_Count) as "Max Thread_Count" avg(Thread_Count) as "Avg_Thread_Count" by host instance
+| sort host instance
+| where 'Avg PrivateBytes'>2000000000
+| sort -"Avg PrivateBytes"
+
+

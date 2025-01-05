@@ -1,0 +1,14 @@
+
+
+WSS Status:
+
+
+index=bcbsaz_weblogs host=mp-wss-fw01n0* sc_status=50* NOT "*APO*" cs_host="*core*" OR cs_host="*provider*"
+| eval DEMO=host." : ".cs_uri_stem
+| timechart count(status) by DEMO useother=f
+
+
+
+
+ 500 Status for HTTP:
+index=bcbsaz_weblogs host=mp-wss-fw01n0* sc_status=50* | timechart count(status) by host

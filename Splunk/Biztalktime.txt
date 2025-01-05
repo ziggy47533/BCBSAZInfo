@@ -1,0 +1,21 @@
+
+
+time avg response:
+
+(index=5010 host="mp-frs-*") sourcetype="foresight:glassfish:webservices:log" 
+| transaction fs_gf_msg_id startswith="End Realtime 270" endswith="initializing realtime 271" 
+| eval duration=round(duration,3) 
+| eval BX_Time=if(fs_gl_tp_type=="BX",duration,BX_Time) 
+| eval MV_Time=if(fs_gl_tp_type=="MV",duration,MV_Time) 
+| stats avg(BX_Time) as "Avg_BX_Response" perc95(BX_Time) as "95pct_BX_Response" avg(MV_Time) as "Avg_MV_Response" perc95(MV_Time) as "95pct_MV_Response"
+
+
+time chart : BX time
+
+(index=5010 host="mp-frs-*") sourcetype="foresight:glassfish:webservices:log"
+| transaction fs_gf_msg_id startswith="End Realtime 270" endswith="initializing realtime 271"
+| eval duration=round(duration,3)
+| eval BX_Time=if(fs_gl_tp_type=="BX",duration,BX_Time)
+| eval MV_Time=if(fs_gl_tp_type=="MV",duration,MV_Time)
+| timechart avg(BX_Time) as "Avg_BX_Response" perc95(BX_Time) as "95pct_BX_Response" avg(MV_Time) as "Avg_MV_Response" perc95(MV_Time) as "95pct_MV_Response"
+

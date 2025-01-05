@@ -1,0 +1,18 @@
+
+
+3 new Splunk alerts to be aware of:
+
+MP-EDI-xxx
+(SPL-SPLUNK-0001) | Splunk | Missing Forwarder (EDI) (<host>)(<status>)
+Subject: Alert | SEV 2 | SPL-SPLUNK-0001 |  Missing Forwarder | Host: ($result.host$) Status: ($result.status$)
+For Server Unresponsiveness
+
+MP-PVD-S01 HIGH MEMORY USAGE
+(SPL-INFRA-0008) | Windows | High Memory Usage (PVD) (<host>)
+Subject: Alert | SEV 2 | SPL-INFRA-0008 |  High Memory Usage | Host: ($result.host$) State: ($result.mem_state$) MEM: ($result.commited_bytes_pct$%)
+High Memory Usage
+
+MP-PVD-S01 EVENT ID 2004 LOW VIRTUAL MEMORY
+(SPL-INFRA-0010) | Windows | Event ID (2004) (PVD) (<host>)(<event_id>)(<message>)
+Subject: Alert | SEV 2 | SPL-INFRA-0010 | Event ID | Host: ($result.host$) Event Id: ($result.event_id$) Message: ($result.message$)
+Low Virtual Memory

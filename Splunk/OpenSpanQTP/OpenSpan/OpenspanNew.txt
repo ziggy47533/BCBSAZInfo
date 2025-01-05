@@ -1,0 +1,76 @@
+
+
+index=openspan sourcetype="openspan:log"
+
+
+
+VPCW10PNDA37*
+
+
+source="Perfmon:Process"
+
+
+(index=windows host="VPCW10PNDA37*" source="Perfmon:Process" Name="OpenSpan.Runtime")
+
+
+
+index=perfmon host="VPCW10PNDA37*" source="Perfmon:Process" 
+
+
+(index=perfmon host="VPCW10PNDA37*" source="Perfmon:Process" instance="OpenSpan.Runtime")
+| timechart span=10m count(Name) by host
+
+
+
+(index=wineventlog host="VPCW10PNDA37*" source="WinEventLog:System" Message="*shutdown*")
+| timechart span=1h count(Message) by host
+
+
+
+(index=wineventlog host="VPCW10PNDA37*" source="WinEventLog:System" Message="*shutdown*")
+
+
+(index=perfmon host="VPCW7SPANPRD*" sourcetype="Perfmon:Memory" counter="% Committed Bytes In Use")
+| timechart span=10m max(Value) by host
+
+(index=perfmon host="VPCW10PNDA37*" source="Perfmon:Memory" counter="% Committed Bytes In Use")
+| timechart span=10m max(Value) by host
+
+
+(index=perfmon host="VPCW10PNDA37*" source="Perfmon:Memory" counter="% Committed Bytes In Use")
+| timechart span=10m max(Value) by host 
+| eval host = lower(host)
+| timechart span=10m max(Value) by hos
+
+
+(index=windows host="VPCW10PNDA371*" sourcetype="WMI:LocalProcesses" Name=HX01W00W)
+| timechart span=10m avg(PercentProcessorTime) by host
+
+
+index=windows host="vpcw10pnda371" sourcetype="Windows:Process" HX01W00W
+| dedup Name
+| table ProcessId, Name, UserModeTime, Username, ReadOperationCount, WriteOperationCount, VirtualSize, WorkingSetSize, ThreadCount
+| sort - WorkingSetSize
+
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/openspan__infrastructure_performance?form.time_token.earliest=-24h%40h&form.time_token.latest=now&form.evironment_token=prd
+
+index=perfmon host="vpcw10pnda37*" sourcetype="Perfmon*" counter="% Processor Time" HX01W00W
+| timechart avg(Value) by host
+
+index=perfmon $host_token$ sourcetype="Perfmon*" counter="% Processor Time"
+| search Name=HX01W00W
+| timechart avg(Value) as "% Process time" by host
+
+
+(index=perfmon host="VPCW10PNDA371*" sourcetype="Perfmon:System" counter="Processor Queue Length")
+| timechart span=10m count(counter) by host
+
+
+(index=windows host="VPCW10PNDA37*" sourcetype="WMI:Services" DisplayName="OpenSpan") 
+| search DisplayName="Openspan" State=Running OR State=Stopped
+| stats  values(State) as "State" values(Status) as "Status" values(ProcessId) as "ProcessID" by host
+
+
+(index=openspan host="VPCW10PNDA37*" source=openspan:log OSModule="'engineEventProcessor'")
+| timechart span=1h count(OSModule) by host

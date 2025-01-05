@@ -1,0 +1,37 @@
+
+
+
+New OSpan on the Exped.......
+
+VPCW10PNDSPN11
+VPCW10PNDSPN12
+VPCW10PNDSPN13
+VPCW10PNDSPN14
+VPCW10PNDSPN15
+VPCW10PNDSPN16
+VPCW10PNDSPN17
+
+
+
+Old OpenSpan server name....
+
+host="vpcw10pnda37*"
+
+
+
+
+Here is the layout for UAT and Prod. Let me know if you have any questions. Thanks
+
+VPCW10PNDSPN05	opietest01
+VPCW10PNDSPN06	opietest02
+VPCW10PNDSPN07	opietest03
+
+
+VPCW10PNDSPN11	opieprod01
+VPCW10PNDSPN12	opieprod02
+VPCW10PNDSPN13	opieprod03
+VPCW10PNDSPN14	opieprod04
+VPCW10PNDSPN15	opieprod05
+VPCW10PNDSPN16	opieprod06
+VPCW10PNDSPN17	opieprod07
+

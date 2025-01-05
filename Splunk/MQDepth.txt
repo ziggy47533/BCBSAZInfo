@@ -1,0 +1,7 @@
+
+
+
+(index=5010 sourcetype=mqq OR sourcetype=MQQ Qname="FS.RT.TO.BES.270" OR Qname="BES.RT.TO.FS.271" host="mp-mqs-*" Qdepth>5)
+| Stats values(Qdepth) by Qname, _time
+
+

@@ -1,0 +1,17 @@
+
+
+
+
+(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="42" OR MSGSTRING="999"
+ BLUEPLANS="BCBS of Arizona")
+| timechart count by UserId usenull=false useother=false
+
+
+New Search ----
+index=5010 sourcetype="webportal:dbx:system_internal:prd" MSGTYPE=P_ET MSGSTRING="42" OR MSGSTRING="999" AlphaPrefix=XBP| timechart count by UserId
+
+
+
+
+
+

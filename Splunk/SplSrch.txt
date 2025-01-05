@@ -1,0 +1,1790 @@
+
+http://splunk.azblue.com/en-US/app/bcbsaz_ta_app_5010/mq_nonprod_status
+
+case ops-a01 is hung......
+index=_internal host="mm-ops-a01" 
+
+
+| inputlookup vm-meta-data.csv
+
+BX ClosetOut Report:
+| inputlookup lookup_blue_plans.csv | search alpha_prefix=ZH*
+
+Claim Status:
+index=bcbsaz_weblogs sourcetype=ms:iis:auto  host="mp-wss*" OR host="mp-was*"  cs_uri_stem="/api/MemberClaims/GetClaimInquiry" OR cs_uri_stem="*MemberClaims*"
+| eval response_time=response_time/1000 
+| timechart span="1mon" avg(response_time) by cs_uri_stem useother=f
+
+Old
+index=wineventlog host="VPCW7SPANPRD*" TaskCategory="Application Crashing Events" "IEXPLORE.EXE"
+| timechart count by host limit=0
+
+New
+index=* host="VPCW7SPANPRD*" Name="iexplore.exe"
+
+index=perfmon host="MM-OPS-SA01" sourcetype="Perfmon:Process" counter="% Processor Time" OR "% Privileged Time" Value="*"
+| eval Time=strftime(_time, "%H:%M")
+| stats count by Time, counter, Value
+| table Time counter Value 
+ rename counter AS Counter
+
+index=windows host="VPCW7SPANPRD*" "*OpenSpan.EventHost.exe*" 
+| stats values(Name) as "Name" values(ProcessId) as "ProcessID" values(StartTime) as "StartTime" values(CommandLine)
+as "CommandLine" by host 
+ 
+index=windows host="VPCW7SPANPRD*" "*OpenSpan.Runtime.exe*"
+| stats values(Name) as "Name" values(ProcessId) as "ProcessID" values(StartTime) as "StartTime" values(CommandLine)
+as "CommandLine" by host
+
+index=windows host="VPCW7SPANPRD*" "*Metavance*"
+| stats values(Name) as "Name" values(ProcessId) as "ProcessID" values(StartTime) as "StartTime" values(CommandLine)
+as "CommandLine" by host
+
+index=WinEventLog host="VPCW7SPANPRD*" "*OpenSpan*" Message="The OpenSpan Services service entered the stopped state."
+| timechart count by host limit=10
+
+index=WinEventLog host="VPCW7SPANPRD*" "*OpenSpan*" Message="The OpenSpan Driver Service service entered the stopped state."
+| timechart count by host limit=10
+
+index=windows host="VPCW7SPANPRD*" sourcetype=WinHostMon Name="OpenSpan.Runtime.exe"
+| timechart count(Name) by host
+
+Old OpenSpan Search:
+(index=wineventlog sourcetype="WinEventLog:Application" host="VPCW7SPANPRD*"
+eventtype=wineventlog_application SourceName="ProcessEvent*" started OR "shut down") 
+| timechart span=1h count(Message) by host
+
+Updated OpenSpan Search:
+(index=wineventlog host="VPCW7SPANPRD*" sourcetype="WinEventLog:System" Message="*shutdown*")
+
+| timechart span=1h count(Message) by host
+
+index=Windows host="mp-mdm-sa01" "*Profisee.MasterDataMaestro.*"
+| timechart count by Name limit=0
+
+index="pinnacle" sourcetype=pinnacle
+| stats
+count(EntryPoint) as "EntryPoint"
+count(VAT_AP) as "VAT_AP"
+count(Get_VAT) as "Get_VAT"
+count(AutoCode) as "AutoCode"
+count(AutoComplete) as "AutoComplete"
+count(SMS_AP) as "SMS_AP"
+count(FileNet_AP) as "FileNet_AP"
+count(Group_AP) as "Group_AP"
+count(Correspondence_ServerEngine_Override) as "Correspondence"
+count(GroupSales_ServerEngine_Override) as "GroupSales"
+count(Correspondence_Server) as "Correspondence_Server"
+count(Group_Server) as "Group_Server"
+count(PNServer2) as "PNServer2"
+
+index="pinnacle" sourcetype=pinnacle
+| rex "\w+=(?P<WorkObj>(.*?)(\d\"))"
+| timechart span=5m
+avg(EntryPoint) as "EntryPoint"
+avg(VAT_AP) as "VAT_AP"
+avg(Get_VAT) as "Get_VAT"
+avg(AutoCode) as "AutoCode"
+avg(AutoComplete) as "AutoComplete"
+avg(SMS_AP) as "SMS_AP"
+avg(FileNet_AP) as "FileNet_AP"
+avg(Group_AP) as "Group_AP"
+avg(Correspondence_ServerEngine_Override) as "Correspondence"
+avg(GroupSales_ServerEngine_Override) as "GroupSales"
+avg(Correspondence_Server) as "Correspondence_Server"
+avg(Group_Server) as "Group_Server"
+avg(PNServer2) as "PNServer2"
+
+index=bcbsaz_weblogs host=MP-WSS-FW* sourcetype="ms:iis:auto"
+| eval response_time=(response_time/1000)
+| eval demo=host." : ".cs_uri_stem
+| timechart  span=1h max(response_time) by cs_uri_stem useother=false
+
+index=bcbsaz_weblogs host=MP-WAS-FW* sourcetype="ms:iis:auto" cs_uri_stem!="/"
+| timechart span=1h count by cs_uri_stem limit=5 useother=false
+
+index=5010 host="mp-frs-a*" sourcetype="java_Glassfish_FRS" JDBC
+| stats count by host, JDBC | rename host as Host | rename count as Count
+
+index=5010 host="mp-frs-a*" sourcetype=Java_Glassfish_FRS JDBC:*
+| stats values(JDBC) by host 
+
+index=perfmon counter="Processor Queue Length"  host="mp-hms*"
+
+| inputlookup serverInfo.csv 
+
+index=vmware sourcetype="vmware:syslog"
+
+index=firewall host=* sourcetype="cisco:asa"
+| timechart span=30m count by host limit=10
+
+index=firewall  sourcetype="cisco:asa"
+| rex "^(?:[^:\n]*:){7}\d+\s+\w+\s+\d+\s+(?P<Failover>[^ ]+)"
+| timechart span=5m count(Failover) by host
+
+
+index=wineventlog host="mp-bts-*" EventCode=7001 "Biztalk Throttling"
+| timechart span=15m count(Message) by host
+
+index=wineventlog host=mp-mdm-* sourcetype="WinEventLog:Application" SourceName="Profisee Master Data Maestro"
+EventCode="22*" Type=Error
+| rex "(?:Message=)(?P<EventCategory>\w+)"
+| rex "(?:Message=\w+\;\s+)(?P<EventAction>\w+)"
+| timechart span=1h count by EventCategory
+
+index=wineventlog host=mp-mdm-* sourcetype="WinEventLog:Application" SourceName="Profisee Master Data Maestro"
+EventCode="22*" Type=Error
+| rex "(?:Message=)(?P<EventCategory>\w+)"
+| rex "(?:Message=\w+\;\s+)(?P<EventAction>\w+)"
+| eval hour= tonumber(strftime(_time,"%H"))
+| stats values(EventCategory) values(Message) count by hour
+
+index=5010 host="mp-frs-a0*" sourcetype=WebServices_Glassfish_FRS GFEventStatus=ERROR
+
+index="_internal" sourcetype="scheduler" thread_id="AlertNotifier*" NOT (alert_actions="summary_index" OR alert_actions="")
+alert_actions=email savedsearch_name="BizTalk Throttling Errors by Type 15 minute window" earliest=-14d
+| timechart  span=1h count(alert_actions)
+
+index=5010 sourcetype="web_portal" MSGTYPE="P_ClaimSum" MSGSTRING="999" OR MSGSTRING="42"
+| timechart span=5m count(MSGSTRING) as "Timeouts"
+
+index=* host=mp-mdm-sa01 sourcetype="Perfmon:Memory"
+| stats count by Value
+
+index=windows host=mp-mdm-sa01 sourcetype="WMI:Services" State=Stopped
+| timechart span=1h count by DisplayName limit=5 useother=false
+
+index=windows host=mp-mdm-sa01 sourcetype="WMI:Services" DisplayName=Master Status=Degraded
+
+index=windows host=mp-mdm-sa01 sourcetype="WMI:Services" Status=*
+| timechart span=1h count by Status limit=10
+
+index=5010 sourcetype=WebServices_Glassfish_FRS GFEventStatus=ERROR
+| rex "(?P<GFErrCode>\d+)"
+| rex "(?P<ProviderName>(.*?))"
+| timechart count(ProviderName) by host
+
+
+index=bcbsaz_weblogs (host="mp-wss-fw01n0*" OR host!="mp-wss-fw01n05" OR host!="mp-wss-fw01n06") 
+sourcetype="ms:iis:auto" uri_path="/TokenService.svc"
+| rex "(?P<TokenService>(.*?))"
+| timechart count(TokenService) by host
+
+index="pinnacle" | rex "(?P<pn_uniqueid>(.*?))" | rex "(?P<PN_Steps>(.*?))"
+
+
+index=WinEventLog host="VPCW7SPANPRD*" sourcetype="WinEventLog:Application"
+TaskCategory="Application Crashing Events"
+| timechart count(TaskCategory) by host
+
+index=* sourcetype="infoblox:syslog" dhcpd network |
+rex "(dhcpd\[)(?P<DHCPDThread>\d+)" |
+rex "(?P<MACAddr>([0-9a-z]{2}\:[0-9a-z]{2}\:[0-9a-z]{2}\:[0-9a-z]{2}\:[0-9a-z]{2}\:[0-9a-z]{2}))" |
+eval XMAC=MACAddr |
+rex mode=sed field=XMAC "s/://g" |
+eval MacPreFix=substr(XMAC,0,6) |
+lookup MacToVendor.csv PreFix as MacPreFix OUTPUT Vendor |
+search Vendor=Vmware |
+rex "(?:dhcpd\[\d+\]\:\s+)(?P<DHCPAction>\w+)" |
+rex "(TransID\s+)(?P<DHCPTrans>([0-9a-z]{8}))" |
+rex "(?:DHCPREQUEST for\s+)(?P<DHCPReqIP>(\d+\.\d+\.\d+\.\d+))" |
+rex "(?:DHCPACK to\s+)(?P<DHCPAckIP>(\d+\.\d+\.\d+\.\d+))" |
+rex "(?:DHCPINFORM from\s+)(?P<DHCPFromIP>(\d+\.\d+\.\d+\.\d+))" |
+rex "(?:network\s+)(?P<DHCPNetwork>(.*?)(?=\:))" |
+rex "(?:network\s+\d+\.\d+\.\d+\.\d+\/\d+\:)(?P<DHCPMessg>(.*?)(?=$))" |
+eval NetMess=DHCPNetwork."--".DHCPMessg | 
+timechart span=1h count as Count by NetMess usenull=0
+
+index=5010 sourcetype=Java_Glassfish_FRS host=mp-frs-sa*
+| timechart avg(JDBC) max(JDBC) by host
+
+
+index=5010 sourcetype=Java_Glassfish_FRS host=mp-frs-sa*
+| rex "TotalProcessorTime:\s+(?<TPTime>[^ ]+)"
+| timechart avg(TPTime) max(TPTime) by host
+
+
+index=wineventlog host="mp-wss-fw01n0*" sourcetype="WinEventLog:Application" EventType=2
+| timechart span=5m count by host limit=0
+
+index=wineventlog host="mp-wss-fw01n0*" sourcetype="WinEventLog:Application" EventType=4
+| timechart span=5m count by host limit=0
+
+index=* host=mp-bts-sa0* sourcetype="WinEventLog:Application" | rex "(?P<exception>(.*?))"
+
+index=* (host="MP-WSS-FW01N0*" host!="MP-WSS-FW01N05" host!="MP-WSS-FW01N06") sourcetype="Perfmon:Memory" counter="Pages/sec"
+| timechart  span=30m max(Value) by host
+
+index=bcbsaz_weblogs host="MP-WSS-FW01N0*" status=500 
+| timechart  count(status) by host
+
+index=* host=mp-wss-fw01n0* sourcetype=w3ptrack
+| rex "(?:-ap\s+)(?P<AppPool>(.*?) (?=-v))"
+| timechart  max(WS) by AppPool useother=false
+
+index=* host="VPCW7SPANPRD*" Name="OpenSpan.*"
+| timechart span=1h count(Name) by host
+
+index=* host="VPCW7SPANPRD*" Name="OpenSpan.Runtime"
+| timechart count(Name) by host
+
+index=5010 host="mp-frs-a*" sourcetype="java_Glassfish_FRS"
+| rex "(?:JDBC)\:\s+\d\d(?P<JDBC>(.*?))"
+
+index=main host="VPCW7SPANPRD*" sourcetype=openspanlog
+
+index=main host="VPCW7SPANPRD*" sourcetype=openspanlog 
+| rex "(?P<metavance>(.*?))"
+| timechart count(metavance) by host
+
+index=main host="VPCW7SPANPRD*" sourcetype=openspanlog eventtype=err0r EXCEPTION
+| stats count by host
+
+index=main host="VPCW7SPANPRD*" sourcetype=openspanlog "The process iexplore.exe failed to start within the given timeframe.'*"
+| rex"(?<=EXCEPTION:)(?:\s)(?P<EXCEPTION>(.*)).*?(?=within the given timeframe)"
+| stats count by host
+
+index=main sourcetype=openspanlog "missing" | rex "(?P<missing>(.*))"
+| timechart count(missing) by host
+
+index=wineventlog host="VPCW7SPANPRD*" Faulting_application_path="C:\\Program Files (x86)\\Internet Explorer\\IEXPLORE.EXE"
+| timechart count by host
+
+index=main host="VPCW7SPANPRD*" sourcetype=openspanlog "blue2"
+
+index=main host="VPCW7SPANPRD*" sourcetype=openspanlog denial
+| rex "(?P<denial>(.*?))"
+| timechart count(denial) by host
+
+index=WinEventLog host="VPCW7SPANPRD*" sourcetype="WinEventLog:Application" TaskCategory="Application Crashing Events"
+| timechart count(TaskCategory) by host
+
+index=main host="VPCW7SPANPRD*" sourcetype=openspanlog
+| rex (?P<ClaimNumber>(\d{15}))
+| rex "(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d{3}\'\,\s+)(?P<WorkflowAction>(.*?)(?=,))"
+| rex "(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d{3}\'\,\s+\'(.*?)(?=\s+))(?P<OSModule>(.*?)(?=,))"
+| rex "(?:\'claimType'\,\s+\')(?P<ClaimType>(.*?)(?=\'))"
+| rex "(?:\'claimLineCount'\,\s+\')(?P<ClaimLineCount>\d+)"
+| rex "(?:\'lob'\,\s+\')(?P<LOB>(.*?)(?=\'))"
+| rex "(?:remark:)(?P<Remark>(.*?)(?=\'))"
+| transaction ClaimNumber startswith="'balance', 'in'" endswith="'balance', 'out'"
+| table _time,host,ClaimNumber,duration,WorkflowAction,OSModule,ClaimType,ClaimLineCount,LOB,Remark 
+
+index=main sourcetype=openspanlog
+| rex "(?:'loopEnd',\s+)(?P<LoopEndEvent>(.*?)(?=,))"
+| rex "(?:'claimLineCount'\,\s+\')(?P<ClaimLineCount>\d+)"
+| rex "(?P<ClaimNumber>[0-9]{15})"
+| rex "(?:[0-9]{4}\-[0-9]{2}\-[0-9]{2}\s+[0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{3}\'\,\s+)(?P<WorkflowAction>(.*?)(?=,))"
+| rex "(?:[0-9]{4}\-[0-9]{2}\-[0-9]{2}\s+[0-9]{2}\:[0-9]{2}\:[0-9]{2}\.[0-9]{3}\'\,\s+\'(.*?)(?=\s+))(?P<OSModule>(.*?)(?=,))"
+| rex "(?:\'lob\'\,\s+\')(?P<LOB>(.*?)(?=\'))"
+| rex "(?:\'claimType\'\,\s+\')(?P<ClaimType>(.*?)(?=\'))"
+| rex "(?:remark:)(?P<Remark>(.*?)(?=\'))"
+| rex "(?:\'SKIP\',\s+\')(?P<ErrDescription>(.*?)(?=\'))"
+| rex "(?:Dept:\s+)(?P<ErrDept>\w+)"
+| rex "(?:Location:\s+)(?P<ErrLocation>\w+)"
+| rex "(?:Activity failed;\s+)(?P<FailedActivity>(.*?)(?=\'))" 
+| search WorkflowAction="*SQLERROR*" OR (OSModule="'unknown'" OR OSModule="*Activity failed*")
+| rex "(?:\'SKIP\',\s+\')(?P<ErrDescription>(.*?)(?=\'))"
+| rex "(?:Dept:\s+)(?P<ErrDept>\w+)"
+| rex "(?:Location:\s+)(?P<ErrLocation>\w+)"
+| table host, ClaimNumber,FailedActivity, WorkflowAction, ErrDescription,ErrDept, ErrLocation
+
+index=main host="VPCW7SPANPRD*" sourcetype=openspanlog
+| rex "(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d{3}\'\,\s+)(?P<WorkflowAction>(.*?)(?=,))"
+| rex "(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d{3}\'\,\s+\'(.*?)(?=\s+))(?P<OSModule>(.*?)(?=,))" 
+| rex "(?P<ClaimNumber>(\d{15}))" 
+| rex "(?P<Start>)S(\w{7}\s+a\w{7})"
+| rex "(?P<Completed>)(C\w{8}\s+\w{8})"
+| transaction ClaimNumber startswith="Starting activity" endswith="Completed activity" 
+| table _time, host, ClaimNumber, WorkflowAction, OSModule, duration
+
+index=perfmon host=mp-xen-sd01 collection=CPU counter="% Processor Time" OR "% Idle Time" OR "% User Time"
+| stats sparkline(avg(Value)) as Trend avg(Value) as "Avg CPU", max(Value) as Peak, last(Value) as Current by host
+
+index=perfmon host=mp-xen-sd01 sourcetype="Perfmon:Memory" counter="% Committed Bytes In Use"
+| timechart avg(Value) as "Avg Host Memory" max(Value) as "Max Host Memory"
+
+index=main host="VPCW7SPANPRD*" sourcetype=openspanlog "skip" tag=error
+| rex "(?P<ClaimNumber>(\d{15}))"  | rex "(?P<FailedActivity>)(\'A\w{7}\s+\w{6}\;)"
+| timechart  count(tag) by host
+
+index=main host="VPCW7SPANPRD*" sourcetype=openspanlog "skip"
+| rex "(?P<ClaimNumber>[0-9]{15})" | rex "(?:\'SKIP'\,\s+\')(?P<Skip>(.*?)(?=\'))"
+| timechart count by Skip useother=false
+
+(index=windows host="VPCW7SPANPRD*" sourcetype="WMI:Services" Name="OpenSpan.Services" Status!=Ok OR State!=Running)
+
+| timechart span=1h count(Name) by host
+
+(index=windows host="VPCW7SPANPRD*" sourcetype="WMI:LocalProcesses" Name="OpenSpan.Runtime")
+
+| timechart span=1h count(Name) by host
+
+index=* (host=baz-mpir65 OR host=baz-mpir66 OR host=baz-mpir67 OR host=baz-mpir68) sourcetype=imgrtrv
+
+index=pinnacle sourcetype=pinnacle
+| rex max_match=0 "(?:\=\")(?P<Value>(\d+)(?=\"))"
+| rex max_match=0 "(?:\,\s+)(?P<WorkObjects>\w+)"
+| timechart span=5m sum(Value) as Totalcount
+
+index=5010 host="mp-bts-*" sourcetype=BizTalkSusp 
+| rex "(?:SERVICESTATUS :)(?:\s+)(?P<BTSSrvStatus>(\d+))"
+| rex "(?:segment)(?:\s+)(?P<BTSSegment>(\d+))" 
+| rex "(?:progress)(?:\s+)(?P<BTSProgress>(\d+))"
+| rex "(?:Shape name:)(?:\s+)(?P<BTSShape>(\w+))"
+| rex "(?:Exception type:)(?:\s+)(?P<BTSException>(\w+))"
+| anomalies
+| stats count by BizTalkServiceName, BizTalkHostInstance,BTSSrvStatus
+
+index=5010 host="mp-bts-*"  sourcetype=BizTalkSusp  | rex "(?:ERRORDESC :)(\s+)(?P<ErrDesc>(.*))"  | eval DescLength=len(ErrDesc)  | rex "(?:Shape name:)(?:\s+)(?P<ShapeName>(.*))" | rex "(?:Exception thrown from:)(?:\s+)(?P<ShapeException>(.*))" | rex "(?:Exception type:)(?:\s+)(?P<ExceptionType>(.*))" | rex "(?:Source:)(?:\s+)(?P<ExceptionSource>(.*))"  | rex "(?:Target Site:)(?:\s+)(?P<ExceptionTargetSite>(.*))" | rex "(?:SERVICECLASS :)(?:\s+)(?P<SERVICECASS>(\d+))" | rex "(?:SERVICESTATUS :)(?:\s+)(?P<SERVICESTATUS>(\d+))" |  rex "(?:PENDINGOPERATION :)(?:\s+)(?P<PENDINGOPERATION>(\d+))" | anomalies |stats values(ErrDesc) as "Description" values(SERVICESTATUS) as "Service Status" values(ExceptionSource) as "Source" values(ShapeException) as "Shape Exception" values(ShapeName) as "Shape Name" count by BizTalkServiceName
+
+index=* host=mp-bts-sa03 sourcetype="Perfmon:BizTalk" (counter="Throttled receive batches" OR counter="Pending receive batches" OR counter="Documents suspended" OR counter="Request/Response timeouts")
+| timechart count by counter limit=10
+
+sourcetype=BizTalkSusp host="mp-bts-*" BizTalkServiceName=SOITClaimStatusProcess
+| rex "(?:SERVICESTATUS :)(?:\s+)(?P<BTSSrvStatus>(\d+))"
+| rex "(?:segment)(?:\s+)(?P<BTSSegment>(\d+))"
+| rex "(?:progress)(?:\s+)(?P<BTSProgress>(\d+))"
+| rex "(?:Shape name:)(?:\s+)(?P<BTSShape>(\w+))" 
+| rex "(?:Exception type:)(?:\s+)(?P<BTSException>(\w+))"
+| anomalies
+
+index=* host=mp-bts-sa03 index=bcbsaz_weblogs status!="200"
+| timechart count by status limit=0
+
+index=activebatch host=mp-abs-sa0* sourcetype=activebatch
+| rex "(Begin\w{13}:(?P<BeginTime>\s+\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}:\d{2}))"
+| rex "(StartTime\:\s+(?P<StartTime>\d{2}\/\d{2}\/\d{4}\s+\d{2}\:\d{2}\:\d{2}))"
+| rex "(ExpectedRunTime:(?P<RunTime>(.*?)(?=,)))"
+| rex "(QueueNAme:\s+(?P<SrvName>(.*?)(?=,)))"
+| rex "(JobName:(?P<Job>(.*?)(?=,)))"
+| rex "(JobRunner:(?P<Account>(.*?)(?=,)))"
+| rex "(JobOwner:(?P<Owner>(.*?)(?=,)))"
+| rex "(JobError:(?P<Error>(.*?)(?=,)))"
+| rex "((?:Count:\s+)(?P<Count>\d+))"
+| rex "(Status:\s+(?P<Status>\w+))"
+|table BeginTime, StartTime, RunTime, SrvName, Job, Account, Owner, Error, Count, Status
+
+index=bcbsaz_weblogs host=mp-wss-fw01n0* sc_status=40*
+| timechart count(status) by host
+
+index=bcbsaz_weblogs host=mp-wss-fw01n0* sc_status=50*
+| timechart count(status) by host
+
+
+index=bcbsaz_weblogs host=mp-w*s-*
+| rex "(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s+(?P<Site>\w+))"
+
+
+index=bcbsaz_weblogs host=mp-w*s-* sc_status=50*
+| rex "(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s+(?P<Site>\w+))"
+| timechart count(sc_status) by host
+
+index=perfmon host=mp-mdm-sa01 sourcetype="Perfmon:System" counter="Processor Queue Length"
+| timechart avg(Value)
+
+index=5010 sourcetype=bx_closeout
+| rex D\w+=(?<DateTime>(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d+))
+
+index=* host="mp-pin-sa01" "Broker Auto Process" TimerInterval
+| top  limit=20 SourceName
+
+index=* host="mp-pin-sa01" SourceName="FileNET Auto Process" "Message=SpawnToNew"
+| top limit=20 Message
+
+
+index=main sourcetype=openspanlog
+| rex "'(?P<date>[^,]+)',?\s+'(?P<name1>[^']+)"
+
+
+index=perfmon host="*mp-frs-a*" OR host="*mp-frs-sd*"
+ counter="% Processor Time"
+| stats sparkline(avg(Value)) as Trend avg(Value) as Average,  max(Value) as Peak, latest(Value) as Current,
+latest(_time) as "Last Updated" by host
+| eval host=lower(host)
+
+| rename host as Host
+
+| convert ctime("Last Updated")
+| sort-Current 
+
+| eval Average=round(Average, 2)
+| eval Peak=round(Peak, 2)
+| eval Current=round(Current, 2)
+
+index=perfmon counter="Available MBytes" host="mp-frs-a*" OR host="mp-frs-sd*"
+| eval GB_Free=Value/1024
+
+| stats sparkline(avg(GB_Free)) as Trend avg(GB_Free) as Average,  max(GB_Free) as Peak, latest(GB_Free) as Current, latest(_time) as "Last Updated" by host
+| eval host=lower(host)
+
+| rename host as Host
+
+| convert ctime("Last Updated")
+
+| sort-Current
+| eval Average=round(Average, 2)
+| eval Peak=round(Peak, 2) 
+| eval Current=round(Current, 2)
+
+index=perfmon source=Perfmon:LogicalDisk counter="Free Megabytes" NOT "_Total" NOT "Hard*" host=*mp-frs-a* OR host=mp-frs-sd*
+|eval host=lower(host)
+|  eval ReportKey = instance." ".counter
+| chart latest(Value) over host by ReportKey
+| rename host as "Host"
+
+index=* host="mp-pin-*" collection=CPU  counter="% Processor Time"
+| eval hour=tonumber(strftime(_time, "%H"))
+| timechart span=5m avg(Value) by host
+
+index=perfmon host="dss-sqlprd01" collection=CPU counter="% Processor Time"
+| eval hour=tonumber(strftime(_time, "%H"))
+| timechart span=5m avg(Value) by host
+
+index=perfmon host="dss-sqlprd01" sourcetype="Perfmon:System" counter="Processor Queue Length"
+| timechart avg(Value) by host
+
+index=perfmon host="DSS-sqlprd01" sourcetype="Perfmon:Memory" counter="% Committed Bytes In Use"
+| eval Use=host." : ".counter
+| timechart avg(Value) by Use
+
+
+index="bcbsaz_extrahop" 
+| lookup dnslookup clientip as server_ip OUTPUT clienthost as DBHost
+| search DBHost="mp-sql-d01.corp.net.bcbsaz.com"
+| timechart avg(tprocess)
+
+index="sqldm" sourcetype=sqldm
+
+index=* host="mp-pin-*" sourcetype="WinEventLog:Application" ProcessStep
+ timechart count by ProcessStep limit=0 usenull=false 
+
+index=* host="mp-pin-*" sourcetype="WinEventLog:Application" ProcessStep
+| timechart count by Message limit=10
+
+
+Use: BCBSAZ:Operationis (App)
+index=wineventlog sourcetype="WinEventLog:Security" status=failure user="*cmitchel*"
+| rex "Client Address:\s+::ffff:(?<Client_IP>[^\s]+)"
+|  lookup dnslookup clientip as Client_IP OUTPUT clienthost as Resolved_Hostname
+| stats count by user, Resolved_Hostname| sort user
+
+5010 - Web Status Check
+(index=bcbsaz_weblogs host=mp-wss-fw01n0* sourcetype="ms:iis:auto" sc_status=20*)
+| timechart  span=1h count(status) by host
+
+(index=bcbsaz_weblogs host=mp-was-fw01n0* sourcetype="ms:iis:auto" sc_status=20*)
+| timechart  span=1h count(status) by host
+
+(index=bcbsaz_weblogs host="mp-wss-fw*" OR host="mp-scr-*"status=500)
+| timechart count by host limit=10
+
+(index=wineventlog host="MP-HMS-A0*" sourcetype="WinEventLog:System" Message="The Apache Tomcat 7.0 Tomcat7-vws service entered the stopped state.")
+
+| timechart count(Message) by host
+
+(index=docmgmt sourcetype=imgrtrv BidNum="*")
+| stats list(BidNum) AS Bid_Numbers by _time, host
+
+index=* "SSIS Document Tracking" JobName:
+
+(index=bcbsaz_weblogs host="mp-was-fw01n0*" sourcetype="ms:iis:auto" uri_path="*")
+
+| timechart span=1h count(uri_path) by host
+
+(index=firewall sourcetype=sophos:utm:firewall src_ip=178.255.40.219)
+| iplocation src_ip | search Country!="United States"
+| stats count by _time, src_ip, dest_ip, Country
+| sort -count
+
+index=firewall sourcetype=sophos:utm:firewall dstip="172.17.0.101" srcip="178.255.40.219"
+| timechart  count by srcip limit=3 useother=false
+ 
+index=bcbsaz_weblogs (host=mp-was-fw* OR host=mp-bts-*) sourcetype="ms:iis:auto" cs_uri_stem="*COREII*" status=*
+| eval XCookie=substr(AZBFRXSS,1,25)
+| eval XAuth=substr(ASPXAUTH,1,25)
+| eval tier = case(host=="MP-WAS-FW01N01","Web",host=="MP-WAS-FW01N01","Web",host=="MP-WAS-FW01N03","Web",host=="MP-WAS-FW01N04","Web",
+host=="MP-WAS-FW01N05","Web",host=="MP-WAS-FW01N06","Web",host=="MP-BTS-SA01","BizTalk",host=="MP-BTS-SA02","BizTalk",host=="MP-BTS-SA03","BizTalk")
+| eval duration=(duration/1000)
+| timechart  max(sc_status) by sc_status
+
+(index=5010 host="mp-bts-*" sourcetype=BizTalkSusp)
+
+(index=docmgmt sourcetype=imgrtrv BidNum="*")
+| rex T\w{3}\s(?P<ETime>\[\d\.\d{6}\s\(sec\)\])
+| stats list(BidNum) AS Bid_Numbers by _time, Host, ETime
+
+(index=docmgmt sourcetype=imgrtrv)
+
+| transaction BidNum
+
+| search duration > .005
+
+| timechart count(duration) by BidNum
+
+(index=bcbsaz_weblogs host="mp-*-FW01N0*" sourcetype="ms:iis:auto" uri_path="*" status="500")
+| stats  values(status) as "Status" values(uri_path) as "Path" by host
+
+(index=perfmon host="dss-sql*" sourcetype="Perfmon:SQLServer:Databases" counter="Active Transactions")
+
+| timechart count(instance) by host
+
+(index=perfmon host="dss-sql*" sourcetype="Perfmon:SQLServer:Databases" counter="Active Transactions")
+
+| stats sparkline(count(counter)) as Trend count("active Transactions") as Active by host
+
+(index=perfmon host="dss-sql*" sourcetype="Perfmon:SQLServer:Databases" counter="Active Transactions" instance="*")
+
+| stats list(instance) AS Instance by _time, host
+
+(index=perfmon host="dss-sql*" sourcetype="Perfmon:SQLServer:*" collection="SQLServer:Databases" counter="Active Transactions")
+
+| chart count(counter) over instance by host
+
+(index=perfmon host="dss-sql*" sourcetype="Perfmon:SQLServer:*" collection="SQLServer:Databases" counter="Transactions/sec")
+
+| timechart count(Value) by host limit=10
+
+(index=sqldm HostName="dss-sql*" BlockingSessionID="*" DatabaseName="*")
+
+| rename HostName as Server
+
+| stats list(DatabaseName) by _time, Server, BlockingSessionID, BlockTimeSeconds
+
+(index=wineventlog host=mp-pin-* sourcetype="WinEventLog:Application" SourceName="Pinn*" Message="Object reference not set to an instance of an object*")
+
+| timechart count by Message limit=10
+
+(index=wineventlog host="mp-pin-s*" sourcetype="WinEventLog:Application" "Work Object ID = *")
+| timechart count by Message limit=0
+
+(index=5010 host=mp-frs-a0* sourcetype=glassfish_instream_workflow STATUS="Down")
+
+| timechart count by host
+
+(index=perfmon host="dss-sql*" source="Perfmon:Process" counter="Private Bytes")
+| stats count by host counter
+| sort - count
+
+(index=perfmon host="dss-sql*" source="Perfmon:Process" "Private Bytes" OR "Working Set Peak")
+
+| eval counter=split(counter, ",")
+
+| stats count by host counter
+
+| sort - count
+
+(index=pinnacle sourcetype=pinnacle_WOBJ CLASS_NAME="clsGroupSales" OR CLASS_NAME="clsCorrespondence" )
+
+| stats dc("LOCKED_BY") by "UNIQUE_VALUE"
+
+(index=pinnacle sourcetype=pinnacle_WOBJ CLASS_NAME=clsGroupSales)
+
+| timechart count by LOCKED_BY limit=10 usenull=false useother=false
+
+(index=pinnacle sourcetype=pinnacle_WOBJ CLASS_NAME=clsCorrespondence)
+
+| timechart count by LOCKED_BY limit=10 usenull=false useother=false
+
+(index=pinnacle sourcetype=pinnacle_WOBJ CLASS_NAME=clsGroupSales)
+
+| stats count by LOCKED_BY, UNIQUE_VALUE
+| sort - count
+
+(index=pinnacle sourcetype=pinnacle_WOBJ CLASS_NAME=clsCorrespondence)
+
+| stats count by LOCKED_BY, UNIQUE_VALUE
+
+| sort - count
+
+(index=wineventlog host="mp-pin-s*" sourcetype="WinEventLog:Application" "tag::eventtype"=error SourceName="* auto process")
+
+| timechart span=1h count by ProcessStep usenull=false
+
+(index=perfmon host="mp-si0-a0*" counter="% Processor Time")
+| stats sparkline(avg(Value)) as Trend avg(Value) as Average,  max(Value) as Peak, latest(Value) as Current,
+latest(_time) as "Last Updated" by host
+| eval host=lower(host)
+| rename host as Host
+| convert ctime("Last Updated")
+| sort-Current 
+| eval Average=round(Average, 2)
+| eval Peak=round(Peak, 2)
+| eval Current=round(Current, 2)
+
+(index=perfmon  host="mp-si0-a0*" counter="Available MBytes")
+| eval GB_Free=Value/1024
+| stats sparkline(avg(GB_Free)) as Trend avg(GB_Free) as Average,  max(GB_Free) as Peak, latest(GB_Free) as Current, latest(_time) as "Last Updated" by host
+| eval host=lower(host)
+| rename host as Host
+| convert ctime("Last Updated")
+| sort-Current
+| eval Average=round(Average, 2)
+| eval Peak=round(Peak, 2) 
+| eval Current=round(Current, 2)
+
+(index=perfmon host="mp-si0-a0*" source=Perfmon:LogicalDisk counter="Free Megabytes" NOT "_Total" NOT "Hard*")
+|eval host=lower(host)
+|  eval ReportKey = instance." ".counter
+| chart latest(Value) over host by ReportKey
+| rename host as "Host"
+
+index=perfmon host="mp-si0-a0*" sourcetype="Perfmon:System" counter="Processor Queue Length"
+| timechart avg(Value) by host
+
+(index=sqldm HostName="mp-si0-a0*" BlockingSessionID="*" DatabaseName="*")
+| rename HostName as Server
+| stats list(DatabaseName) by _time, Server, BlockingSessionID, BlockTimeSeconds
+
+(index=* host="VPCW7SPANPRD*" sourcetype="WMI:Services" Name="OpenSpan.DriverService64")
+
+| timechart span=5m count(Name) by host
+
+index=* host=mp-sql-sd08 host="MP-SQL-SD08" object="MSSQL$SS06P:Databases"
+instance=TICustomRealTime sourcetype="Perfmon:SQLServer:Databases" index=perfmon
+
+| timechart span=1m count by instance
+
+(index=5010 OR index=5010_archive sourcetype=WebServices_Glassfish_FRS  host="mp-frs-a*")
+
+| transaction MessID startswith="End Realtime 270" endswith="initializing realtime 271"
+| eval METIME=(ETIME/1000000000)
+
+| eval MINSTR=(INSTR/1000000000) 
+
+| chart avg(duration) as "Duration" stdev(duration) as "StdDev"  by CTYPE
+| search NOT CTYPE="270"
+
+(index=5010 OR index=5010_archive sourcetype=WebServices_Glassfish_FRS  host="mp-frs-a*")
+
+| transaction MessID startswith="End Realtime 276" endswith="initializing realtime 277"
+| eval METIME=(ETIME/1000000000)
+
+| eval MINSTR=(INSTR/1000000000) 
+
+| chart avg(duration) as "Duration" stdev(duration) as "StdDev"  by CTYPE
+| search NOT CTYPE="276"
+
+(index=bcbsaz_weblogs host="mp-W*S-FW01N0*" OR host="mp-scr-*" sourcetype="ms:iis:auto" sc_status="40*")
+| timechart span=15m count(sc_status) by host useother=false
+
+(index=bcbsaz_weblogs host="mp-W*S-FW01N0*" OR host="mp-scr-*" sourcetype="ms:iis:auto" sc_status="50*")
+| timechart span=15m count(sc_status) by host useother=false
+
+index=windows host="VPCW7SPANPRD*" sourcetype="WMI:LocalProcesses"
+| timechart span=5m count(PercentProcessorTime) by host
+
+(index=windows host="VPCW7SPANPRD215" sourcetype="WMI:LocalProcesses" Name="OpenSpan.Runtime" PercentProcessorTime="0")
+| timechart span=5m count(PercentProcessorTime) by host
+
+(index=openspan host="VPCW7SPANPRD*" sourcetype=openspanlog OSModule="'engineEventProcessor'")
+
+| timechart span=1h count(OSModule) by host
+
+(index=perfmon host="VPCW7SPANPRD*" sourcetype="Perfmon:Process" counter="Thread Count")
+
+| timechart span=5m count(counter) by host
+
+index=perfmon host="mp-spt-a0*" counter="% Processor Time"
+
+| stats sparkline(avg(Value)) as Trend avg(Value) as Average,  max(Value) as Peak, latest(Value) as Current,
+
+  latest(_time) as "Last Updated" by host
+| eval host=lower(host)
+
+| rename host as Host
+| convert ctime("Last Updated")
+
+| sort-Current
+| eval Average=round(Average, 2)
+
+| eval Peak=round(Peak, 2)
+
+| eval Current=round(Current, 2)
+
+(index=perfmon  host="mp-spt-a0*" counter="Available MBytes")
+| eval GB_Free=Value/1024
+| stats sparkline(avg(GB_Free)) as Trend avg(GB_Free) as Average,  max(GB_Free) as Peak, latest(GB_Free) as Current,
+  latest(_time) as "Last Updated" by host
+| eval host=lower(host)
+| rename host as Host
+| convert ctime("Last Updated")
+| sort-Current
+| eval Average=round(Average, 2)
+| eval Peak=round(Peak, 2) 
+| eval Current=round(Current, 2)
+
+(index=wineventlog host="D1PA" SourceName="e2 Vault" Message="*render*" socket=6003)
+
+| timechart  count by Message limit=0 useother=false
+
+(index=5010 sourcetype=WebServices_Glassfish_FRS OR sourcetype=webservices_glassfish_frs "Elapsed" host="mp-frs-a*")
+| eval ETIME=(ETIME/1000000000)
+| eval WEBSV=(WEBSV/1000000000)
+| timechart span=5m  count by host limit=10
+
+index=5010 host="MP*" sourcetype=webservices_glassfish_frs TPTYPE="MV" OR TPTYPE="BX"
+
+(index=bcbsaz_weblogs host="MP-BTS-SA*" sourcetype="ms:iis:auto" sc_status="40*" OR sc_status="50*")
+| timechart span=1h count(sc_status) by host
+
+(index=bcbsaz_weblogs host="MP-BTS-SA*" sourcetype="ms:iis:auto" sc_status="40*" OR sc_status="50*")
+| timechart span=1h count(sc_status) by host
+
+index=5010 sourcetype=webservices_glassfish_frs CTYPE=270 OR CTYPE=276
+ top CTYPE
+
+index=perfmon host="DSS-web*" OR host="DSS-APPprd*" counter="% Processor Time"
+| stats sparkline(avg(Value)) as Trend avg(Value) as Average,  max(Value) as Peak, latest(Value) as Current,
+latest(_time) as "Last Updated" by host
+| eval host=lower(host)
+| rename host as Host
+| convert ctime("Last Updated")
+| sort-Current
+| eval Average=round(Average, 2)
+| eval Peak=round(Peak, 2)
+| eval Current=round(Current, 2)
+
+
+index=perfmon  host="DSS-Web*" OR host="DSS-APPPrd*" counter="Available MBytes"
+| eval GB_Free=Value/1024
+| stats sparkline(avg(GB_Free)) as Trend avg(GB_Free) as Average,  max(GB_Free) as Peak, latest(GB_Free) as Current, latest(_time) as "Last Updated" by host
+| eval host=lower(host)
+| rename host as Host
+| convert ctime("Last Updated")
+| sort-Current
+| eval Average=round(Average, 2)
+| eval Peak=round(Peak, 2) 
+| eval Current=round(Current, 2)
+
+
+index=perfmon source=Perfmon:LogicalDisk counter="Free Megabytes" NOT "_Total" NOT "Hard*" host="DSS-Web*" OR host="DSS-APPPrd*"
+|eval host=lower(host)
+|  eval ReportKey = instance." ".counter
+| chart latest(Value) over host by ReportKey
+| rename host as "Host"
+
+index="bcbsaz_weblogs" host="MP-DYN-*" sourcetype="ms:iis:auto" "*CRM*" action=blocked
+| timechart count(action) by host
+
+(index=Windows host="dss-web*" OR host="dss-appprd03" sourcetype="WMI:LocalProcesses" Name="logon.scr")
+| timechart span=5m count(Name) by host
+
+(index=5010 host="MP-FRS-A08" sourcetype=glassfish_instream_workflow WorkflowName=837In_TP OR WorkflowName="837PRC_IN" FileCount!=0)
+| top WorkflowName
+
+index=wineventlog host="mp-pin-s*" sourcetype="WinEventLog:Application" SourceName="Group*"
+| timechart span=5m count by Message
+
+index=5010 host="mp-frs-a0*" sourcetype=webservices_glassfish_frs
+
+index=5010 host="mp-frs-a0*" sourcetype=glassfish_instream_workflow
+
+index=pinnacle host="mp-sql-d01" sourcetype=pinnacle_WOBJ
+
+index="wineventlog" host="mp-pin-s*" sourcetype="WinEventLog:Application" EventCode=0 EventType=2
+| timechart count by SourceName
+
+(index=perfmon host="VPCW7SPANPRD*" sourcetype="Perfmon:System" counter="Processor Queue Length")
+
+| timechart span=10m count(counter) by host
+
+(index=perfmon host="VPCW7SPANPRD*" sourcetype="Perfmon:Process" counter="Thread Count")
+| timechart count(counter) by host
+
+index=openspan host="VPCW7SPANPRD211" sourcetype=openspanlog
+| transaction startswith=LoopStart endswith=LoopEnd
+
+index=openspan host="VPCW7SPANPRD*" sourcetype=openspanlog
+
+index=pinnacle host="MP-SQL-D01" sourcetype=pinnacle_WOBJ UNIQUE_VALUE="*" LOCKED_BY="*" CLASS_NAME="*"
+| top LOCKED_BY
+
+(index=wineventlog host="mp-pin-s*" sourcetype="WinEventLog:Application" "tag::eventtype"=error SourceName="* auto process")
+
+| timechart span=1h count by ProcessStep usenull=false
+
+(index=wineventlog host="mp-pin-s*" sourcetype="WinEventLog:Application" "tag::eventtype"=error SourceName="GroupRenewal Auto Process")
+
+| timechart  span=1h count by Message useother=false
+
+(index=wineventlog host="mp-pin-s*" sourcetype="WinEventLog:Application" "tag::eventtype"=error SourceName="VAT Auto Process")
+| timechart span=1h count by Message useother=false
+
+index=wineventlog host="mp-pin-s*" sourcetype="WinEventLog:Application" "*deadlocked*"
+
+index=bcbsaz_weblogs sourcetype=ms:iis:auto  host="mp-wss*" OR host="mp-was*"  cs_uri_stem="/api/MemberClaims/GetClaimInquiry"
+| eval response_time=response_time/1000
+
+| timechart span="1mon" avg(response_time) by cs_uri_stem useother=f
+
+index=* host=mp-pin-* index=wineventlog sourcetype="WinEventLog:Application" SourceName="*" SourceName="*Auto*" 
+OR SourceName="*PIN*" OR SourceName="*group*" OR SourceName="*corr*" OR SourceName="*app*" OR SourceName="*asp*" Type!=Information
+| eval SummMess=substr(Message,1,30)
+| stats count by SummMess SourceName
+| sort -count
+
+index=windows host="VPCW7SPANPRD213" sourcetype="WMI:LocalProcesses" IDProcess=* IDProcess=0 Name=Idle PercentProcessorTime=0
+| timechart count(Name) by host
+
+
+(index=windows host="VPCW7SPANPRD*" sourcetype="WMI:LocalProcesses" Name=idle)
+| timechart count(Name) by host
+
+(index=windows host="VPCW7SPANPRD*" sourcetype="WMI:LocalProcesses" Name="*list*" )
+| timechart count(Name) by host
+
+
+(index=5010 sourcetype=WebServices_Glassfish_FRS OR sourcetype=webservices_glassfish_frs "Elapsed" CTYPE!="270" AND CTYPE!="271")
+
+| eval ETIME=ETIME/1000000
+
+| eval DBASE=DBASE/1000000
+
+| eval DSKIO=DSKIO/1000000
+
+| eval WEBSV=WEBSV/1000000
+
+| timechart span=5m count as Count avg(ETIME) as AVG_ETIME avg(DBASE) as AVG_DBASE avg(DSKIO) as AVG_DSKIO avg(WEBSV) as AVG_BTS by CTYPE
+
+(index=5010 sourcetype=MQQ OR sourcetype=mqq host="mp-mqs-*")
+
+| search Qname ="FS.RT.TO.BES.270" OR  Qname="BES.RT.TO.FS.271"
+
+| eval epochtime=strptime(LastGet, "%H.%M.%S")
+
+| eval LastGet=strftime(epochtime, "%H:%M:%S")
+
+| eval epochtime=strptime(LastPut, "%H.%M.%S")
+
+| eval LastPut=strftime(epochtime, "%H:%M:%S")
+
+| transaction startswith="FS.RT.TO.BES.270" endswith="BES.RT.TO.FS.271" maxevents=2
+
+| timechart span=5m dc(Qdepth) as "Qdepth" avg(duration) as "Duration" by Qname
+
+(index=5010 sourcetype="web_portal" MSGTYPE="P_ET" BLUEPLANS="BCBS of Arizona")
+
+| timechart span=5m count(MSGTYPE) as "Transactions" avg(TotalProcessTime) as "Processing Time"
+
+
+(index=bcbsaz_weblogs host="*scr*" sourcetype="ms:iis:auto")
+
+| eval response_time=response_time/1000
+
+| timechart avg(response_time) by cs_uri_stem
+
+
+index=windows host="VPCW7SPANPRD*" "tmlisten" OR "ntrtscan"
+| timechart avg(PercentProcessorTime)  as avg_time, max(PercentProcessorTime) as max_time, stdev(PercentProcessorTime) as stdev_time by host
+
+index=perfmon host="m*-ods-d0*" OR host="mp-ods-sd01" sourcetype="Perfmon:SQLServer:AccessMethods" counter=* counter="Page Splits/sec"
+| timechart count(counter) by host
+
+index=perfmon host="m*-ods-d0*" OR host="mp-ods-sd01" sourcetype="Perfmon:SQLServer:AccessMethods" counter=*
+
+index=perfmon host="m*-ods-d0*" OR host="mp-ods-sd01" sourcetype="Perfmon:SQLServer:Locks" counter="Number of Deadlocks/sec"
+| timechart count(counter) by host
+
+index=perfmon host="m*-ods-d0*" OR host="mp-ods-sd01" sourcetype="Perfmon:SQLServer:Locks" counter="Average Wait Time (ms)"
+| timechart count(counter) by host
+
+index=perfmon host="m*-ods-d0*" OR host="mp-ods-sd01" sourcetype="Perfmon:SQLServer:Locks"
+(counter="Number of Deadlocks/sec" OR counter="Average Wait Time (ms)")
+| top counter by host
+
+(index=perfmon host="m*-ods-d0*" sourcetype="Perfmon:SQLServer:Locks" counter="*")
+| timechart max(Value) as MaxVal stdev(Value) as stVal by host
+
+index=perfmon host="m*-ods-d0*" sourcetype="Perfmon:SQLServer:Locks" counter="Average Wait Time (ms)"
+| stats avg(Value) as AvgVal max(Value) as MaxVal by host
+
+index=perfmon host="dss-sql*" sourcetype="Perfmon:SQLServer:Locks" counter="Number of Deadlocks/sec" Value="*"
+| table _time, host, object, Value | sort - Value
+
+(index=wineventlog host=vpcw7spanprd* sourcetype="WinEventLog:Operations Manager" Message="*" Type=Error)
+| eval Time=strftime(_time,"%m-%d*%H:%M")
+| stats count(Type) AS Error by Time, host, Message
+
+index=pinnacle host="mp-sql-d01" sourcetype=pinnacle_WOBJ CLASS_NAME=clsGroupSales UNIQUE_VALUE="1014865326"
+| timechart count by LOCKED_BY
+
+
+index=wineventlog host=mp-pin-sa01 sourcetype="WinEventLog:Application" "1014865326"
+| timechart count by Message
+
+
+(index=perfmon host="M*-ODS-D0*" OR host="MP-ODS-SD0*" sourcetype="Perfmon:SQLServer:Buffer_Manager" counter="Page life expectancy")
+
+| timechart span=15m count(counter) by host
+
+
+(index=perfmon host="M*-ODS-D0*" OR host="MP-ODS-SD0*" sourcetype="Perfmon:SQLServer:Databases" counter="*" counter="Transactions/sec")
+| timechart count(counter) by host
+
+(index=perfmon host="M*-ODS-D0*" OR host="MP-ODS-SD0*" sourcetype="Perfmon:SQLServer:Databases" counter="Data File(s) Size (KB)")
+| timechart count(counter) by host
+
+(index=docmgmt sourcetype=imgrtrv BidNum="*")
+| timechart count by BidNum useother=false
+
+index="wineventlog" sourcetype="WinEventLog:Application" host="*pin*" SourceName="FileNET Auto Process" RecordNumber Type=Error
+
+| rex "fUpdateBidNum:\s+(?<ErrorMsg>.*)"
+
+| rex "occurred\s+while\s+processing\s+(?<BidNum>.*)\d+"
+
+| table _time, host, RecordNumber, BidNum, ErrorMsg
+
+(index=wineventlog host="mp-pin-s*" sourcetype="WinEventLog:Application" ProcessStep="*")
+| timechart count by ProcessStep
+
+(index=windows host="VPCW7SPANPRD2*" sourcetype="WMI:LocalProcesses" Name="OpenSpan.Runtime" PercentProcessorTime="0")
+
+| dedup host
+ 
+| eval lastseen=now() - _time
+
+| timechart span=5m count(PercentProcessorTime) by host
+
+
+(index=windows host="VPCW7SPANPRD2*" "OpenSpan*" sourcetype="WMI:LocalProcesses" Name="OpenSpan.Runtime")
+| dedup host 
+| chart count(Name) by _time, host
+
+index=5010 sourcetype=glassfish_instream_workflow host=mu-frs-a01 OR host=mu-frs-a02
+source="D:\\Foresight\\utilities\\log_fsservice\\track_fsservice.log"
+| eval Foresight=host." -- ".FSChildProcessName
+| timechart span=1h count by Foresight
+
+(index=wineventlog host="mp-frs-a0*" sourcetype="WinEventLog:Application" SourceName="Application Error" "ForesightAutomator.exe" NOT 
+Faulting_application_path="D:\\Program Files\\SplunkUniversalForwarder\\bin\\splunk-winevtlog.exe" NOT
+Faulting_application_path="D:\Program Files\SplunkUniversalForwarder\bin\splunk-netmon.exe")
+| timechart span=1m count by host limit=10
+
+index=windows host="mp-frs-a*" sourcetype=WinHostMon Name="ForesightAutomator.exe"
+| timechart count(Name) by host
+
+index=bcbsaz_weblogs host="mp-scr-*" sourcetype="ms:iis:auto" action=blocked sc_status=500
+| timechart count by url useother=false
+
+index=wineventlog sourcetype=WinEventLog:System host=baz-mp360-1 OR host=baz-mp360-2 OR host=baz-mp360-3
+Message="The Global 360 Process Agent - BCBSPA* service entered the stopped state."
+| timechart span=1d count by Message limit=10
+
+index=windows host="m*-pub-d*" Status=Degraded
+| timechart count(Status) by host
+
+(index=wineventlog host="mp-pin-s*" sourcetype="WinEventLog:System" Shutdown_Type=restart)
+| timechart  count(Shutdown_Type) by host
+
+index=5010 host=mu-mqs-a01  sourcetype=mqc | lookup NonProdMQ.csv ChannelName as ChannelName OUTPUT Region Role Partner
+| stats last(MQCStatus) values(LastActivity) by ChannelName Role Region Partner
+| sort Region Partner
+
+(index=windows host="MP-BPO-SA0*" OR host="baz-mpinsx1" sourcetype=winhostmon Name="BUF Execution Engine #*" StartMode=Disabled)
+| timechart count(StartMode) by Name
+
+index=wineventlog host="mp-sql-sd*" OR host="mp-sql-d*" sourcetype="WinEventLog:System" "SSL connection"
+| timechart  count(Message) by host
+
+index=docmgmt sourcetype=imgrtrv strReturnValue="Exception:" 
+| timechart count by host
+
+Nessus Scann:
+index=docmgmt sourcetype=imgrtrv strReturnValue="Exception:" FuserName="*"
+| timechart count(host) by FuserName useother=false
+
+(index=network sourcetype="tenable:sc:vuln")
+
+index=wineventlog sourcetype="WinEventLog:Application" "SQL" Message="*" Type=Error Message="The login packet used to open the connection is structurally invalid; the connection has been closed. Please contact the vendor of the client library. [CLIENT: 10.1.93.58]"
+| timechart count by host limit=10
+
+Member Claim Status:
+index=bcbsaz_weblogs sourcetype=ms:iis:auto  host="mp-wss*" OR host="mp-was*"  cs_uri_stem="/api/MemberClaims/GetClaimInquiry"
+| eval response_time=response_time/1000 
+| timechart span="1mon" avg(response_time) by cs_uri_stem useother=f
+
+Maestro:
+(index=Windows host="mp-mdm-sa01" "*Profisee.MasterDataMaestro.*") sourcetype=WinHostMon |dedup CommandLine,Name
+|table Name,CommandLine,ProcessId
+
+(index=perfmon host=mp-mdm-sa01 collection=* counter="% User Time" OR "Processor Time" OR
+"Elapsed Time" OR "Virtual Bytes peak" OR "% Committed Bytes In Use")
+| timechart avg(Value) by counter
+
+
+
+Imageretriever: Insurix
+index=bcbsaz_weblogs sourcetype=ms:iis:auto host=baz-mpir0*v source="D:\\Log\\W3SVC1\\ex190206.log" status=401
+| timechart span=1h count by host limit=10
+
+
+index=bcbsaz_weblogs host="baz-mpir0*v" sourcetype="ms:iis:auto" status=401
+| timechart count(status) by host
+
+index=bcbsaz_weblogs host="baz-mpir0*v" sourcetype="ms:iis:auto" status=500
+| timechart count(status) by host
+
+
+Group Bill Online:
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" "*https://group.azblue.com*" sc_status=404
+| timechart span=1h count by host
+
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" "*https://group.azblue.com*" sc_status=404
+| timechart span=1h count by AZBFRXSS_Username usenull=false useother=false
+
+(index=windows host="VPCW7SPANPRD*" sourcetype=WinHostMon State="Start Pending")
+| timechart  count(State) by host
+
+index=openspan host="VPCW7SPANPRD215" sourcetype=openspanlog
+
+(index=windows host="VPCW7SPANPRD*" sourcetype="WMI:Services" Name="OpenSpan.*" State=Stopped)
+| timechart  count(State) by host
+
+index=openspan host=* sourcetype=openspanlog "Activity failed*" FailedActivity="*"
+| timechart count by FailedActivity limit=2 useother=false
+
+(index=openspan sourcetype=openspanlog FailedActivity="*")
+| timechart count(FailedActivity) by host
+
+BTS_FRS_Dir_Checks:
+(index=5010 sourcetype=bts_frs_dir)
+| stats count by _time, CreationTime, DirectoryName, FileName, Age
+| rename Age AS Age(min)
+| eval Age(min)=round('Age(min)',2)
+| sort -DirectoryName
+
+(index=5010 sourcetype=bts_frs_dir)
+| stats count(FileName) by date_hour, DirectoryName
+| dedup date_hour
+
+
+index=5010 host="*" "276" OR "277" WEBSV="*"| stats count by websv
+
+
+index=5010 host="mp-frs-*" sourcetype=webservices_glassfish_frs WEBSV="*" CTYPE=276 OR CTYPE=277
+
+
+index=5010 host="mp-frs-*" sourcetype=webservices_glassfish_frs CTYPE=276 OR CTYPE=277 field33="WEBSV:" | regex (WEBSV\:\s\d*\sns)(?P<WebTime>(.*?))
+
+
+index=5010 host="mp-frs-*" sourcetype=webservices_glassfish_frs WEBSV!="0" CTYPE=276 OR CTYPE=277| timechart count by WEBSV useother=false
+
+index=5010 host="MP-BTS-sd*"| timechart count by SpoolCount limit=20 useother=false
+
+index=wineventlog host=mp-bts-s* SourceName="IVR*"
+| rex "(?:Message=)(?P<MessageType>(.*?)(?=\:))"
+| rex "(?:SubID:\s+)(?P<SubID>(.*?)(?=\,))"
+| timechart count by MessageType
+
+index=5010 BLUEPLANS="BCBS of Arizona" AlphaPrefix="*" MSGTYPE=P_ET
+| timechart  count by UserId useother=false
+
+
+index=5010 BLUEPLANS="BCBS of Arizona" AlphaPrefix="*" MSGTYPE=P_ClaimSum
+| timechart  count by UserId useother=false
+
+index=5010 host="mp-bts-sa*" sourcetype=biztalk_susp HOSTNAME=BizTalkServer_Orchestration SERVICSNAME=ClaimStatusService
+| timechart count by MSGBOXDBNAME
+
+index=ops sourcetype=infoburst:ibserver
+| transaction startswith="OnStart" endswith="End"
+| timechart count by Schedule useother=false
+
+
+Elig In Area
+
+index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="999" OR MSGSTRING="42"BLUEPLANS="BCBS of Arizona"
+| stats count by _time, UserId, AlphaPrefix
+| sort - count
+
+Elig OOA
+
+index=5010 sourcetype="web_portal" MSGTYPE="P_ET" MSGSTRING="999" OR MSGSTRING="42"BLUEPLANS!="BCBS of Arizona"
+| stats count by _time, UserId, AlphaPrefix
+| sort - count
+
+
+Claims In Area
+index=5010 sourcetype="web_portal" MSGTYPE="P_ClaimSum" MSGSTRING="999" OR MSGSTRING="42" BLUEPLANS="BCBS of Arizona"
+| stats count by _time, UserId, AlphaPrefix
+| sort - count
+
+
+Claims OOA
+index=5010 sourcetype="web_portal" MSGTYPE="P_ClaimSum" MSGSTRING="999" OR MSGSTRING="42" BLUEPLANS!="BCBS of Arizona"
+| stats count by _time, UserId, AlphaPrefix
+| sort - count
+
+Abat:
+index="activebatch" sourcetype=activebatch
+| rex "(?:JobName: )(?P<JobName>(.*?)(?=,))"
+| rex "(?:ExecStartTime: )(?P<JobStartTime>(.*?)(?=,))"
+| rex "(?:ActualCPUTime: )(?P<JobCPUTime>(.*?)(?=,))"
+| rex "(?:Status:)(?P<JobStatus>(.*?)(?=:))" 
+| eval Epoch_Time=strptime(JobStartTime,"%m/%d/%Y %H:%M:%S")
+| eval DELTA=(_time - Epoch_Time)
+| eval Minutes=(DELTA/60)
+| eval Hours=(DELTA/360)
+| stats max(Hours) avg(Hours) values(JobStatus) by JobName
+
+index="activebatch" sourcetype=activebatch
+| rex "(?:JobName: )(?P<JobName>(.*?)(?=,))" 
+| rex "(?:ExecStartTime: )(?P<JobStartTime>(.*?)(?=,))"
+| rex "(?:ActualCPUTime: )(?P<JobCPUTime>(.*?)(?=,))"  
+| rex "(?:Status:)(?P<JobStatus>(.*?)(?=:))" 
+| rex "(?:JobOwner:)(?P<JobOwner>(.*?)(?=,))"
+| timechart span=1h count(JobName) by JobStatus
+| sort - _time
+
+index="activebatch" sourcetype=activebatch
+| rex "(?:JobName: )(?P<JobName>(.*?)(?=,))"
+| rex "(?:ExecStartTime: )(?P<JobStartTime>(.*?)(?=,))"
+| rex "(?:ActualCPUTime: )(?P<JobCPUTime>(.*?)(?=,))"
+| rex "(?:Status:)(?P<JobStatus>(.*?)(?=:))"
+| search JobStatus=" failed "
+| timechart span=1h count by JobName useother=false
+
+index=5010 sourcetype=webservices_glassfish_frs TPTYPE=BX OR TPTYPE=MV
+| timechart span=5m  count by TPTYPE
+
+(index=5010 sourcetype=WebServices_Glassfish_FRS OR sourcetype=webservices_glassfish_frs host="mp-frs-*") 
+| transaction MessID startswith="End Realtime 270" endswith="initializing realtime 271" 
+| eval duration=round(duration,2) 
+| eval MINSTR=(INSTR/1000000000) 
+| timechart avg(duration) as "Duration" mode(duration) as "Mode" perc90(duration) as "90th %"  by TPTYPE
+
+index=perfmon OR index="perfmon_archive" host="mp-frs-a*" sourcetype="Perfmon:CPU" counter="% Processor Time"
+| timechart span=1hr avg(Value) as xavg max(Value) as xMax by host
+
+index=bcbsaz_weblogs host="MP-BTS-SA0*" sourcetype="ms:iis:auto" site=W3SVC1 status!=200 action=blocked
+
+InfoBurst:
+index=ops sourcetype="infoburst:ibserver" Burst="*" Status="Completed"
+| rex "(?P<IBActivity>(\[.*?\]))"
+| table _time, ID, Burst, Status
+
+CiscoAMP
+index=* "OfficeScan"  sourcetype="WMI:Services"
+[search "cisco AMP"  sourcetype="WMI:Services"  index=windows
+| dedup host
+| table host]
+| stats  count by host
+
+(index=5010 host="mp-mqs-a01" sourcetype=MQQ Qname="FS.RT.TO.BES.270")
+| timechart count by Qdepth
+
+(index=5010 host="mp-mqs-a01" sourcetype=MQQ Qname="FS.RT.TO.BES.271")
+| timechart count by Qdepth
+
+Biztalk Dir's Rec's
+| inputlookup BTS_Receive_Locations.csv
+| search transportURL="*bts*" OR TransportURL="*file*"
+| stats values(RecvLocation) by TransportURL
+
+Biztalk Dir's Send
+| inputlookup BTS_Send_Ports.csv
+| search PortAddress="*bts*"
+| stats values(Name) by PortAddress
+
+Incident Tickets
+source="incident (5).csv" host="lp-spl-a10" sourcetype="csv-juneIncidents"  priority="P2 - Urgent: 6-hour target resolution"
+| eval comments_and_work_notes = if(isnull(comments_and_work_notes) OR comments_and_work_notes="", "NotFilledIn", comments_and_work_notes)
+| stats  values(short_description) values(comments_and_work_notes) by u_category caused_by number
+
+Foresight timing(GF)
+(index=5010 sourcetype=WebServices_Glassfish_FRS OR sourcetype=webservices_glassfish_frs "Elapsed" host="mp-frs-a*")
+
+| eval ETIME=(ETIME/1000000000)
+
+| eval WEBSV=(WEBSV/1000000000)
+
+| timechart span=5m avg(WEBSV) as "Avg BizTalk Resp Time" by host
+
+foresight Count (GF)
+(index=5010 sourcetype=WebServices_Glassfish_FRS OR sourcetype=webservices_glassfish_frs "Elapsed" host="mp-frs-a*")
+
+| eval ETIME=(ETIME/1000000000)
+
+| eval WEBSV=(WEBSV/1000000000)
+
+| timechart span=5m count(WEBSV) by host
+
+BizTalk Suspended:
+(index=5010 host="mp-bts-*"  sourcetype=BizTalkSusp OR sourcetype=biztalk_susp)
+| eval DescLength=len(ErrDesc)
+
+| timechart values(ErrDesc) as "Description" values(SERVICESTATUS) as "Service Status" values(ExceptionSource) as
+ "Source" values(ShapeException) as "Shape Exception" values(ShapeName) as "Shape Name" count by SERVICSNAME
+
+Imaging Retriever (mp-sql-sd12: FC02)
+index=* host="Baz-mpir2*v" "*doc1*"
+index=docmgmt host="Baz-mpir2*v" "*doc1*"
+
+5010_MQDepth
+(index=5010 sourcetype=mqq OR sourcetype=MQQ host=mp-mqs-a01 Qdepth>5)
+| lookup MQQueues.csv Qname as Qname OUTPUT Alert Analysis Context
+| search Qdepth > 1 (Alert=High OR Alert=Medium)
+| table _time Qname Analysis Context Qdepth LastGet LastPut
+
+Cisco AMP Cehck 
+index=windows sourcetype=WMI:Services host=mp-frs-a0* Name="Cisco*" State=R*
+| timechart count by host 
+
+index=perfmon host="md-prf-d01" sourcetype="Perfmon:SQLServer:Databases"
+instance="PIMs" OR instance="Cred2k_Prod" OR instance="blueFacs" counter="Active Transactions"
+| timechart count by counter
+
+index=sqlserver host="md-prf-d01" sourcetype="ms:sql:sqlagent"
+
+index=sterling source="SI5-All" "datacap"
+
+999 In
+(index=5010 sourcetype=bts_frs_dir
+DirectoryName="\\\\Mp-frs-a01\\Foresight\\Systems\\AZBlue\\Workflows\\1.0\\835Out_MVBX\\InStream_For999\\In")
+| timechart count by DirectoryName
+
+Biztalk Orchestration:
+(index=windows host="MP-BTS-SA01" OR host="MP-BTS-SA02" OR host="MP-BTS-SA03"
+
+sourcetype="WMI:Services" Name="BTSSvc$BizTalkServer_Orchestration" State=Stopped)
+
+| timechart count(State) by host
+
+Core2
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" "https://core2.services.azblue.com/Soap/CoreIISoapService.svc" status="404"
+| timechart count(status) by host
+
+
+
+When using the reset.bat for Foresight:
+index=windows sourcetype=WinHostMon host=mp-frs-a08 "*.bat" "D:\\Foresight\\Systems\\Scripts"
+| rex "(?:D:)(?P<ScriptPath>(.*?)(?=\"))"
+| eval PRUNEJOB=host.":".ScriptPath
+| timechart span=1m count by PRUNEJOB
+
+
+Port Listening on SS02:
+index=windows host="mp-bts-ss02" sourcetype="Script:ListeningPorts" tag=listening
+
+active Batch Jobs:
+index="activebatch" host="mp-abs-a01"sourcetype=activebatch
+| rex "(?:JobName: )(?P<JobName>(.*?)(?=,))"
+| search JobName="*"
+| rex "(?:ExecStartTime: )(?P<JobStartTime>(.*?)(?=,))"
+| rex "(?:ExpectedRunTime: )(?P<JobExpectedTime>(.*?)(?=,))"
+| rex "(?:QueueNAme: )(?P<JobQueue>(.*?)(?=,))" 
+| rex "(?:ActualCPUTime: )(?P<JobCPUTime>(.*?)(?=,))"
+| rex "(?:Status:)(?P<JobStatus>(.*?)(?=:))"
+| rex "(?:JobOwner:)(?P<JobOwner>(.*?)(?=:))"
+| eval Epoch_Time=strptime(JobStartTime,"%m/%d/%Y %H:%M:%S") | eval DELTA=(_time - Epoch_Time)
+| eval Minutes=(DELTA/60)
+| eval Hours=(DELTA/360)
+| stats max(Hours) as "Max" avg(Hours) as "Avg" latest(JobStatus) as "Status" values(JobExpectedTime)
+  latest(JobCPUTime) as "CPU Consumed" by JobName JobQueue JobOwner | search Avg>24 Max>24
+| sort- Max
+
+activeBatch (Start Formula)
+index="activebatch" host="mp-abs-a01"sourcetype=activebatch
+
+| rex "(?:JobName: )(?P<JobName>(.*?)(?=,))"
+
+| search JobName="*TPS*"
+
+| rex "(?:ExecStartTime: )(?P<JobStartTime>(.*?)(?=,))"
+
+| rex "(?:ExpectedRunTime: )(?P<JobExpectedTime>(.*?)(?=,))"
+
+| rex "(?:QueueNAme: )(?P<JobQueue>(.*?)(?=,))"
+
+| rex "(?:ActualCPUTime: )(?P<JobCPUTime>(.*?)(?=,))"
+
+| rex "(?:Status:)(?P<JobStatus>(.*?)(?=:))"
+
+| rex "(?:JobOwner:)(?P<JobOwner>(.*?)(?=:))"
+
+(index="activebatch" sourcetype=activebatch)
+| rex "(?:JobName: )(?P<JobName>(.*?)(?=,))"
+| rex "(?:Status:)(?P<JobStatus>(.*?)(?=:))"
+| search JobName="eSales_BrokerLoad_SSIS "
+| timechart count by JobStatus
+
+(index="activebatch" sourcetype=activebatch)
+| rex "(?:JobName: )(?P<JobName>(.*?)(?=,))"
+| rex "(?:Status:)(?P<JobStatus>(.*?)(?=:))"
+| search JobName="JobTpsTransactions "
+| timechart count by JobStatus
+
+(index="activebatch" sourcetype=activebatch)
+| rex "(?:JobName: )(?P<JobName>(.*?)(?=,))"
+| rex "(?:Status:)(?P<JobStatus>(.*?)(?=:))"
+| search JobName="Job_AutoSubmitPEAP "
+| timechart count by JobStatus
+
+Faxcom Dirs:
+index=5010 sourcetype=faxcom:dirlist
+
+(index=5010 sourcetype=faxcom:dirlist)
+| rex "(?:FolderName)(?P<FolderName>(.*?)(?=,))"
+| rex "(?:FolderLastUpdated)(?P<FolderLastUpdated>(.*?)(?=))"
+| search FolderName="*Prod*"
+| timechart count(FolderLastUpdated) by FolderName useother=false
+
+(index=5010 sourcetype=faxcom:dirlist)
+| rex "(?:FolderName)(?P<FolderName>(.*?)(?=,))"
+| rex "(?:FolderLastUpdated)(?P<FolderLastUpdated>(.*?)(?=))"
+| search FolderName="*test*"
+| timechart count(FolderLastUpdated) by FolderName useother=false
+
+index=perfmon host=mp-frs-a03 sourcetype=Perfmon:LogicalDisk instance="D:"
+| timechart span=30m count by Value useother=false
+
+Uri_Path by host (404)
+(index=bcbsaz_weblogs sourcetype=ms:iis:auto host="mp-dyn-*" OR host="mp-was-*" OR host="mp-wss-*" sc_status=404 uri_path="*")
+
+| stats values(sc_status) as HTTP values(uri_path) as Path by host
+
+Uri_Path by host (500)
+(index=bcbsaz_weblogs sourcetype=ms:iis:auto host="mp-dyn-*" OR host="mp-was-*" OR host="mp-wss-*" sc_status=500 uri_path="*")
+
+| stats values(sc_status) as HTTP values(uri_path) as Path by host
+
+index=bcbsaz_weblogs sourcetype="ms:iis:auto"
+|search cs_uri_stem="*.svc" host="mp-*"
+| stats count by status,uri_path
+| eventstats sum(count) as uri_total by uri_path
+| eval percent=count/uri_total*100
+| lookup httpCodes.csv Status as status OUTPUT StatusMeaning
+| search status>=399
+
+eSales Dashboard
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-*-*"
+| eval WebError=if((sc_status>499 OR sc_status=404),1,0)
+| eval Err_URI_Stem=if(WebError=1,cs_uri_stem,Err_URI_Stem)
+| stats  count as Total sum(WebError) as Errors by cs_host
+| eval  error_percentage=100*round(Errors/Total,4)
+| table  error_percentage cs_host Total
+| sort  -error_percentage
+
+(index=bcbsaz_weblogs host="mp-was-fw01n0*" sourcetype="ms:iis:auto" "*INDTUO_*" sc_status > 299)
+| stats count(status) AS Count by uri_path, status
+
+(index=bcbsaz_weblogs host="mp-wss-fw01n0*" sourcetype="ms:iis:auto" "*INDTUO_*" sc_status > 299)
+| stats count(status) AS Count by uri_path, status
+
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-*-*" [search index=bcbsaz_weblogs sourcetype="ms:iis:auto" host="mp-*-*"
+| eval WebError=if((sc_status>499 OR sc_status=404),1,0)
+| eval Err_URI_Stem=if(WebError=1,cs_uri_stem,Err_URI_Stem)
+| stats  count as Total sum(WebError) as Errors by cs_host 
+| eval  error_percentage=100*round(Errors/Total,4)
+| table  error_percentage cs_host
+| search error_percentage>2 | table cs_host]
+| search sc_status>499 OR sc_status=404
+| lookup httpCodes.csv Status as sc_status OUTPUT StatusMeaning
+| eval Site-Error=cs_uri_stem."---".StatusMeaning
+| stats values(Site-Error) count by cs_host
+| sort - count
+
+(index=5010 host="mp-bts-*"  sourcetype=BizTalkSusp OR sourcetype=biztalk_susp SERVICSNAME="*834*" OR SERVICSNAME="*ehealth*" OR SERVICSNAME="*sproducts*")
+| eval DescLength=len(ErrDesc)
+| stats values(ErrDesc) as "Description" values(SERVICESTATUS) as "Service Status" values(ExceptionSource) as "Source"
+        values(ShapeException) as "Shape Exception" values(ShapeName) as "Shape Name" count by SERVICSNAME
+
+(index=* host="mp-sas-*" sourcetype="Perfmon:Process" counter="Working Set Peak")
+
+| stats  values(instance) AS Instance values(Value) AS Value by host
+
+| eval  Instance = mvindex(Instance, 0, 10)
+
+| eval  Value = mvindex(Value, 0, 10)
+
+| sort  -Value
+
+(index=* host="mp-sas-*" sourcetype="Perfmon:process" counter="Private Bytes")
+
+| stats  values(instance) AS Instance values(Value) AS Value by host
+
+| eval  Instance = mvindex(Instance, 1, 10)
+
+| eval  Value = mvindex(Value, 1, 10)
+
+| sort  -Value
+
+Pinnacle null attachedDocs:
+
+index=wineventlog host="mp-pin-sa01" sourcetype="WinEventLog:Application"
+| rex "(?<WorkObj>(?:\d{10}))\s+\\("
+| search WorkObj="*"
+| timechart count by Message
+
+index=firewall "206.201.104.6" name="Packet dropped" action="drop" ttl="*"
+| timechart count by ttl
+
+index=sterling sourcetype="SI5:Jobs" filename="Datacap_*"
+
+| stats count by _time, filename
+
+index=sterling sourcetype="SI5:Jobs" filename="*Doc1*"
+| timechart count by filename
+
+(index=sterling sourcetype="SI5:Jobs" remote_filename="*EDM*" state="*")
+
+| stats values(state) as State by _time, remote_filename
+
+(index=sterling sourcetype="SI5:Jobs" remote_filename="*EDM*.zip" state="*")
+
+| stats values(state) as State by _time, remote_filename
+
+(index=sterling sourcetype="SI5:Jobs" file_name="Data*")
+
+| rex "(createts=\"\d{4}\-\d{2}\-\d{2}\s(?<createts>.*?)\")"
+
+| rex "(modifyts=\"\d{4}\-\d{2}\-\d{2}\s(?<modifyts>.*?)\")"
+
+| eval STime=strptime(createts,"%H:%M:%S")
+
+| eval ETime=strptime(modifyts,"%H:%M:%S")
+
+| eval Duration=ETime-STime
+
+| eval Duration=round(Duration, 3)
+
+| eval Size=file_size/1024
+
+| eval Size=round(Size, 2)
+
+| stats values(file_name) AS FileName by _time, Duration, state, delivery_state, user_id, Size
+
+| table _time, user_id, FileName, Size, Duration, state, delivery_state
+
+| sort - _time
+
+(index=sterling sourcetype="SI5:Jobs" doc_name="*EDM*.zip")
+
+| rex "(start_time=\"\d{4}\-\d{2}\-\d{2}\s(?<start_time>.*?)\")"
+
+| rex "(end_time=\"\d{4}\-\d{2}\-\d{2}\s(?<end_time>.*?)\")"
+
+| eval STime=strptime(start_time,"%H:%M:%S")
+
+| eval ETime=strptime(end_time,"%H:%M:%S")
+
+| eval Duration=ETime-STime
+| eval Duration=round(Duration, 3)
+
+| eval Size=fileSizeBytes/(1024*1024*1024)
+
+| eval Size=round(Size, 2)
+
+| stats values(doc_name) as File by _time, principal, state, Size, Duration
+
+| table _time, principal, File, state, Duration, Size
+
+|sort - _time
+
+(index=sterling sourcetype="SI5:Jobs" doc_name="*EDM_PROD*.zip")
+
+| rex "(start_time=\"\d{4}\-\d{2}\-\d{2}\s(?<start_time>.*?)\")"
+
+| rex "(end_time=\"\d{4}\-\d{2}\-\d{2}\s(?<end_time>.*?)\")"
+
+| eval STime=strptime(start_time,"%H:%M:%S")
+| eval ETime=strptime(end_time,"%H:%M:%S")
+
+| eval Duration=ETime-STime
+| eval Duration=round(Duration, 3)
+
+| eval Size=round((fileSizeBytes/1000000),2)
+
+| rename doc_name AS File
+
+| stats earliest(STime) as Start, latest(ETime) as End by _time, principal, File, state, Size, Duration
+
+| eval Duration = End-Start
+
+| table _time, principal, File, state, Duration, Size
+
+|sort - _time
+
+EviCore Files:
+index=sterling sourcetype="SI5:Jobs" file_name="evi*"
+| stats values(file_name) AS File by _time, state
+| dedup File
+| table _time, File, state
+
+EviCore Files:
+index=sterling sourcetype="SI5:Jobs" file_name="*00009244*"
+
+| stats values(file_name) AS File by _time, state, file_size, prog_org_name
+
+| eval Size=round((file_size/1000),2)
+
+| table _time, prog_org_name, File, state, Size
+
+| sort - _time
+
+index=sterling sourcetype="SI5:Jobs" file_name="*00009244*" state!=Routed
+
+| stats values(file_name) AS File by _time, state, file_size, prog_org_name
+
+| eval Size=round((file_size/1000),2)
+
+| table _time, prog_org_name, File, state, Size
+
+| sort - _time
+
+index=sterling sourcetype="SI5:Jobs" file_name="BAZ*" OR file_name="BAZtoEVI*" prog_org_name="*9244*"
+| rex "((?P<file_name>(BAZ\-[a-zA-Z]{3}\_[a-zA-Z]\_[a-zA-Z]\_\d+\.[a-zA-z]{3})))"
+| rex "((?P<file_name2>(BAZ[\-|\_][a-zA-Z]{3}\_\w\_\w\_\d+.[a-zA-Z]{3})))"
+| stats values(file_name) AS File by _time, state, file_size, prog_org_name
+| eval Size=round((file_size/1000),2)
+| table _time, prog_org_name, File, state, Size
+| sort - _time
+
+index=sterling sourcetype="SI5:Jobs" file_name="BAZ*" OR file_name="BAZtoEVI*" prog_org_name="*9244*"
+| rex "((?P<file_name>([BAZ]{3}[\_|\-|a-zA-Z]{5}[\_|\-|\w][\_|\w]{2}[\-|\_][a-zA-z]{3}\_\d+\_[0-9]{3}\w\_[0-9]{3}.[a-zA-Z0-9]{3})))"
+| rex "((?P<file_name>([BAZ]{3}[\-|\_][A-Z]{3}\_\w\_\w\_\d+\.[a-zA-z0-9]{3})))"
+| stats values(file_name) AS File by _time, state, file_size, prog_org_name
+| eval Size=round((file_size/1000),2)
+| table _time, prog_org_name, File, state, Size
+| sort - _time
+
+index=sterling sourcetype="*" state="failed" OR state="routing"
+| stats values(prog_org_name) AS Consumer by state, _time, file_name
+| table _time, file_name, Consumer, state
+
+(index=sterling sourcetype="SI5:Jobs" doc_name="BAZ_*")
+| stats values(doc_name) AS File by _time, principal, state, fileSizeBytes
+| eval Size=round((fileSizeBytes/1000),2)
+|table _time, principal, File, state, Size
+| sort - _time
+
+(index=bcbsaz_weblogs sourcetype="ms:iis:auto" sc_status=404 OR sc_status=500)
+| rex "((?P<INDTUO>http://indtuo\d.services.azblue.com:8190/IndTuo_Portal/Quoting/Individual/EnterQuoteCriteria.aspx))"
+| stats count(sc_status) AS Hits by _time, host, INDTUO, sc_status
+| table _time, host, INDTUO, sc_status, Hits
+
+(index=bcbsaz_weblogs host=mp-wss-* sourcetype="ms:iis:auto" status=500 action=blocked cs_uri_stem="/APOService.svc")
+| timechart count(cs_uri_stem) by host
+
+(index=sterling host="mp-si0-d01`" sourcetype="SI5:Jobs" state=Routing)
+
+| stats values(state) As State by _time, file_name, prog_org_name
+
+| Rename file_name AS File
+| rename prog_org_name AS Producer
+
+| sort - _time
+
+(index=sterling host="mp-si0-d01`" sourcetype="SI5:Jobs" state=Routing)
+
+| stats count by state, _time, file_name, prog_org_name
+
+| Rename file_name AS File
+| rename prog_org_name AS Producer
+
+| sort - _time
+
+index=sterling sourcetype="SI5*" source="SI5-All" doc_name="*" $token_docname$
+| eval FileSize(KB)=round(fileSizeBytes/1024,2)
+| table connection_start_time principal doc_name FileSize(KB) state
+| sort - connection_start-time
+
+(index=sterling host="mp-si0-d01`" sourcetype="SI5:Jobs" file_name="PX*")
+| rex "(createts=\"\d{4}\-\d{2}\-\d{2}\s(?<createts>.*?)\")"
+| rex "(modifyts=\"\d{4}\-\d{2}\-\d{2}\s(?<modifyts>.*?)\")"
+| eval STime=strptime(createts,"%H:%M:%S")
+| eval ETime=strptime(modifyts,"%H:%M:%S")
+| eval Duration=ETime-STime
+| eval Duration=round(Duration, 3)
+| eval Size=file_size/1024
+| eval Size=round(Size, 2)
+| stats values(file_name) AS FileName by _time, Duration, state, delivery_state, user_id, Size
+| table _time, user_id, FileName, Size, Duration, state, delivery_state
+| sort - _time
+
+(index=sterling host="ms-si0-d01" sourcetype="SI5:Jobs" file_name="PX*")
+
+| rex "(createts=\"\d{4}\-\d{2}\-\d{2}\s(?<createts>.*?)\")"
+
+| rex "(modifyts=\"\d{4}\-\d{2}\-\d{2}\s(?<modifyts>.*?)\")"
+
+| eval STime=strptime(createts,"%H:%M:%S")
+| eval ETime=strptime(modifyts,"%H:%M:%S")
+
+| eval Duration=ETime-STime
+| eval Duration=round(Duration, 3)
+
+| eval Size=file_size/1024
+| eval Size=round(Size, 2)
+
+| stats values(file_name) AS FileName by _time, Duration, state, delivery_state, user_id, Size
+
+| table _time, user_id, FileName, Size, Duration, state, delivery_state
+
+| sort - _time
+
+(index=sterling host="mp-si0-d01`" sourcetype="SI5:Jobs" state=Failed)
+
+| stats  values(state) As State by _time, file_name, prog_org_name
+
+| Rename file_name AS File
+
+| rename prog_org_name AS Producer
+
+| sort  - _time
+
+index=windows host=dss-sqlprd* OR host=dss-pde* sourcetype="WMI:Services" State!=running Caption=Network
+| timechart count(State) by host
+
+index=windows host=* sourcetype="WMI:Services" Caption=Network
+| lookup vm-meta-data.csv VMname as host OUTPUT Running_OS 
+| search State=Stopped Running_OS="Microsoft Windows Server 2003 (64-bit)"
+| timechart count by host
+
+index=windows host=mp-sql-sd11 OR host=dss-sqlprd04 OR host=dss-pdeprd01 sourcetype="WMI:Services" Caption=Network
+| lookup vm-meta-data.csv VMname as host OUTPUT Running_OS 
+| search State=Stopped
+| timechart count by host
+
+(index=bcbsaz_weblogs host=mp-wss* sourcetype="ms:iis:auto" "*ivr*") 
+| eval duration=(duration/1000) 
+| timechart avg(duration) as "Avg" perc95(duration) as "95%" by cs_uri_stem useother=false
+
+(index=bcbsaz_weblogs host=mp-wss* sourcetype="ms:iis:auto" uri_path="*ivr*")
+| eval duration=(duration/1000)
+| timechart  avg(duration) as "Avg" by cs_uri_stem useother=false
+
+index=windows host=* sourcetype="WMI:Services" Caption=Network
+| lookup vm-meta-data.csv VMname as host OUTPUT Running_OS 
+| search State=Stopped Running_OS="Microsoft Windows Server 2003 (64-bit)"
+| timechart count by host
+
+index=ivr sourcetype="wss-exception_wip"| timechart count by Message useother=false
+
+index=* host=mp-mqs-a01  Name="edi*" | timechart span=15m count by Name useother=false
+
+index=bcbsaz_weblogs host="baz-mpir2*" sourcetype="ms:iis:auto"
+
+
+BTS Server Suspended Message:
+index=wineventlog host=MP-BTS-SA* sourcetype="WinEventLog:Application" EventCode=5753 | timechart count(Message) by host
+
+index=wineventlog host=MP-BTS-SA* sourcetype="WinEventLog:Application" EventCode=5754 | timechart count(Message) by host
+
+index=wineventlog host=MP-BTS-SA* sourcetype="WinEventLog:Application" EventCode=10008 | timechart count(Message) by host
+
+
+FaxComm:
+(index=5010 sourcetype=faxcom:dirlist)
+| search FolderName="*Prod*"
+
+| rex "(?:FolderLastUpdated)(?P<FolderLastUpdated>(.*?)(\s\=\s\d{2}\/\d{2}\/\d{4}\s\d{2}\:\d{2}\:\d{2}\.\d{3}))"
+
+| rex "\b(?:Age)(?P<AgeDegraded>(.*?)(\s\=\s\d*\.\d*))"
+
+| eval MinutesWaiting = round(Age/1,2)
+| rangemap field=MinutesWaiting Normal=0-10.00 Note=10.01-12.49 Review=12.50-100000000000
+| eval OpsStatus=range
+
+| stats count(FolderLastUpdated) as Count by FolderName FolderLastUpdated MinutesWaiting _time, FileName OpsStatus
+
+
+(index=5010 sourcetype=faxcom:dirlist)
+| search FolderName="*Prod*"
+
+| rex "(?:FolderLastUpdated)(?P<FolderLastUpdated>(.*?)(\s\=\s\d{2}\/\d{2}\/\d{4}\s\d{2}\:\d{2}\:\d{2}\.\d{3}))"
+| rex "\b(?:Age)(?P<AgeDegraded>(.*?)(\s\=\s\d*\.\d*))"
+
+| eval MinutesWaiting = round(Age/1,2)
+
+| rangemap field=MinutesWaiting Normal=0-10.00 Note=10.01-12.49 Review=12.50-100000000000 | eval OpsStatus=range
+
+| stats count(FolderLastUpdated) as Count by FolderName FolderLastUpdated MinutesWaiting _time, FileName OpsStatus
+
+index=5010 sourcetype=faxcom:dirlist FolderLastUpdated=*
+ timechart span=15m count by FolderName useother=false
+
+
+index=sterling host="mp-si0-d01`" sourcetype="SI5:Jobs"  "*MPFax*""*.PDF"
+| stats values(doc_name) as DocName by _time mbox_path
+
+
+
+RegEx :
+(?:mbox_path=\"\/)(?P<SENDERIDX>(.*?)(?=\/|\"))
+eval Epoch_StartTime=strptime(connection_start_time,"%Y-%m-%d %H:%M:%S.%2N")
+eval Epoch_EndTime=strptime(connection_end_time,"%Y-%m-%d %H:%M:%S.%2N")  
+?P<XSENDERID>(0000[0-9]+))
+
+
+BxCloseOut Batch:
+index=5010 sourcetype="web_portal" MSGTYPE="P_ClaimSum" MSGSTRING="999" OR MSGSTRING="42" BLUEPLANS!="BCBS of Arizona"
+| dedup MSGNUMBER 
+| eval hour = tonumber(strftime(_time,"%H")) 
+| where hour>=6 AND hour<=18 
+| timechart span=1h count(MSGTYPE)
+
+
+
+Look at azure to PCS (Vendor)
+
+index=5010 host=mp-mqs-a01 sourcetype=velocity_connect_mq_v1 |
+rex "(?:ERROR\|)(?P<ErrorMsg>(.*?)(?=\:))" |
+rex "(?:https:\/\/)(?P<EndPoint>(.*?)(?=\'))" |
+rex "(?:MemberId(.*?)\')(?P<MemberIdEx>(.*?)(?=\'))" |
+rex "(?:\*MI\*)(?P<MemberIdEdi>(.*?)(?=\~))" |
+eval MemberId=coalesce(MemberIdEx,MemberIdEdi) |
+rex "(?P<MessageID>[a-z0-9]{48})" |
+rex "(?:Submitting request to PCS:\s+)(?P<SubmitRequestToPCS>(.*?)(?=\|))" |
+rex "(?:Received response from PCS:\s+)(?P<RecvResponseFromPCS>(.*?)(?=\|))" |
+rex "(\|\w+\|)(?P<Action>\w+)" |
+fillnull value="NA" MemberId |
+rex field=MemberId "(?P<PlanID>[A-Za-z0-9]{3})" |
+eval RoutingDest=if(PlanID=="M2K"OR PlanID=="M2V" OR PlanID=="M3V" OR PlanID=="M3P","PCS","LegacyEDI") |
+rex "(?:https://)(?P<URL>(.*?)(?=\"))" |
+rex "(?:queue:\s+\')(?P<Queue>(.*?)(?='))" |
+rex "(?:JMSMessageID\s+\'ID\:)(?P<JMSMessageId>(.*?)(?=\'))" |
+eval temp=split(source,"\\") |
+eval TransactionType=mvindex(temp,2) |
+search TransactionType="*270RT*" |
+rex "(?:\.[0-9]{3}\|)(?P<EventType>\w+)" |
+search EventType=ERROR |
+eval Error=ErrorMsg."---".Endpoint| timechart span=15m count by EndPoint| append 
+[ search index=5010 host=mp-mqs-* sourcetype=mqq Qname="AZ.RT.270.Q.5010" |
+timechart span=15m max(Qdepth) as QDepth] |
+append [ search index=azure sourcetype="mscs:storage:blob:saloggingp001" |
+search remoteDependency{}.url="*" context.device.roleName="*edi270*" |
+eval DeviceroleName='context.device.roleName' |
+eval RemoteDependencyDuration='remoteDependency{}.durationMetric.value' |
+eval StatusCode='remoteDependency{}.resultCode' |
+search StatusCode=Canceled |
+eval test=tonumber(RemoteDependencyDuration) |
+eval RemoteDependencyURL='remoteDependency{}.url' |
+search RemoteDependencyURL="https://azblue.payorconnectivity.com/Interfaces/Eligibility/intfProcessEligibility-service.serviceagent/intfwsProcessEligibilityEndpoint1" | eval DeviceDependecyURL=DeviceroleName."---".RemoteDependencyURL | timechart span=15m count(RemoteDependencyURL) as "PCS Timeouts from Azure"]
+
+
+Imaging Retriever
+host=mp-ftw-* OR host=baz-mpir* index=docmgmt "kquinn"
+
+
+index=perfmon host="mp-scr-fw01n0*" Name="BCBSAZ.Provider.WebUI" OR counter="Private Bytes"
+| timechart span=15m perc95(Value) as AlertValue by host
+
+
+(index=windows host="VPCW10PNDA37*" sourcetype=WinHostMon DisplayName="Cisco*")
+| timechart count(DisplayName) by host
+
+
+
+BTS - DB Blocking
+index=mssql sourcetype="sqldm:dbx:sql_dm_repository:prd" "MP-BTS*" |
+eval Database=DatabaseName.":".InstanceName."---".HostName |
+stats values(ApplicationName) as "Client_App" values(SQLStatement) as "SQL_Statement"
+avg(BlockTimeSeconds) as "Avg_Blocktime" perc95(BlockTimeSeconds) as "95%_Blocktime"
+sum(BlockTimeSeconds) as "Total_Block_Time" latest(BlockStartLocalTime) as "Last Blocking Event"
+count by Database | 
+sort -Total_Block_Time
+
+
