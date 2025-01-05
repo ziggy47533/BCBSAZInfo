@@ -1,0 +1,8 @@
+
+Failure 455
+
+For the reference, if a file has error FG_0455 “Arrived File is now failed while Routing with error message:
+Could not extract consumer name using parameter ConsumerName from wfid…” (see screenshot below),
+we can safely assume that SI does not have route setup and picked up extra file from partner SFTP or 
+partner has dropped a file that we are not expecting. In these cases,
+you can go ahead and check the review and disregard the failure.

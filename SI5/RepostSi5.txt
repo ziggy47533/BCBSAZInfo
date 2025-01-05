@@ -1,0 +1,13 @@
+
+File the files that were reposted
+
+Orginal:
+
+index=sterling sourcetype="SI5*" source="SI5-All" doc_name="*"
+
+| eval FileSize(KB)=round(fileSizeBytes/1024,2)
+
+| table connection_start_time principal doc_name FileSize(KB) state
+
+| sort - connection_start-time
+

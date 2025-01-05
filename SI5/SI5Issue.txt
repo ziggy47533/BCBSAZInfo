@@ -1,0 +1,136 @@
+
+[‎8/‎14/‎2020 7:38 AM]  Browning, Andrea:  
+Hi there Chris
+fun morning..... :(
+anyway, Linda let me know about Sterling and I'm thinking it may be that there was a problem w/ one of the SQL servers that it connects to, such as ClaimsDB.
+ 
+[‎8/‎14/‎2020 7:40 AM]  Browning, Andrea:  
+When this happens, SI services need to be stopped / started, so I can do that and I'll do it gracefully, shifting the burden over to node2 while I take node1 and then I'll return 1 and take 2
+ 
+[‎8/‎14/‎2020 7:40 AM]  Mitchell, Chris:  
+GM Andrea
+we have a team meeting going on 
+ 
+[‎8/‎14/‎2020 7:40 AM]  Browning, Andrea:  
+I'm thinking that should help / resolve it
+ 
+[‎8/‎14/‎2020 7:41 AM]  Mitchell, Chris:  
+ok
+that on what server?
+ 
+[‎8/‎14/‎2020 7:41 AM]  Browning, Andrea:  
+you know what....
+I will hold off on that
+I cannot connect to:  baz-mp-sql21 
+can you? 
+ 
+[‎8/‎14/‎2020 7:43 AM]  Browning, Andrea:  
+I may be stupid...
+hang on
+ 
+[‎8/‎14/‎2020 7:43 AM]  Mitchell, Chris:  
+you not stupid
+ 
+[‎8/‎14/‎2020 7:43 AM]  Browning, Andrea:  
+okay even with baz-mpsql21 it's not connecting
+mistyping server names.... hate when I do that
+but either way, it seems that is a, if not The problem child
+ 
+[‎8/‎14/‎2020 7:45 AM]  Mitchell, Chris:  
+the alias is mp-sql-sd11
+ 
+[‎8/‎14/‎2020 7:45 AM]  Browning, Andrea:  
+Yes!  that is indeed the one
+are you able to connect to it?
+ 
+[‎8/‎14/‎2020 7:48 AM]  Mitchell, Chris:  
+i trying to log in it all yellow background
+do you want to reboot the server?
+i'm log in now... into mp-sql-sd11
+ 
+[‎8/‎14/‎2020 7:49 AM]  Mitchell, Chris:  
+ok let me reboot the server then
+ 
+[‎8/‎14/‎2020 7:54 AM]  Browning, Andrea:  
+okay, presumably it needs to be
+sorry.... I ran upstairs to get another coffee...
+ 
+[‎8/‎14/‎2020 7:55 AM]  Mitchell, Chris:  
+no worries
+it rebooting still
+ 
+[‎8/‎14/‎2020 7:56 AM]  Browning, Andrea:  
+wow - it should come back.... or else we have bigger problems
+ 
+[‎8/‎14/‎2020 7:56 AM]  Mitchell, Chris:  
+the server is up and running now
+ 
+[‎8/‎14/‎2020 7:56 AM]  Browning, Andrea:  
+most excellent
+ 
+[‎8/‎14/‎2020 7:56 AM]  Mitchell, Chris:  
+:)
+like me to do a share screen>
+ 
+[‎8/‎14/‎2020 7:58 AM]  Browning, Andrea:  
+you can
+ 
+[‎8/‎14/‎2020 7:58 AM]  Mitchell, Chris:  
+look like all the sql service are up
+ 
+[‎8/‎14/‎2020 7:58 AM]  Browning, Andrea:  
+oh awesome
+ 
+[‎8/‎14/‎2020 7:59 AM]  Mitchell, Chris:  
+it been awhile since deal with sql-sd11...
+ 
+[‎8/‎14/‎2020 7:59 AM]  Browning, Andrea:  
+yep
+ 
+[‎8/‎14/‎2020 7:59 AM]  Mitchell, Chris:  
+need to check the node now?
+adapter
+ 
+[‎8/‎14/‎2020 7:59 AM]  Browning, Andrea:  
+it misbehaves every now and again 
+ 
+[‎8/‎14/‎2020 7:59 AM]  Mitchell, Chris:  
+yes
+ 
+[‎8/‎14/‎2020 7:59 AM]  Browning, Andrea:  
+I'm able to connect now to the DB
+ 
+[‎8/‎14/‎2020 8:00 AM]  Mitchell, Chris:  
+nice
+ 
+[‎8/‎14/‎2020 8:00 AM]  Browning, Andrea:  
+so that yellow screen was not a good sign, right? 
+ 
+[‎8/‎14/‎2020 8:00 AM]  Mitchell, Chris:  
+what db server is that?
+ 
+[‎8/‎14/‎2020 8:00 AM]  Browning, Andrea:  
+I presume not.... and that it was hung up in some form 
+that one is ClaimNumbers
+and Sterling writes to it
+and that is why Sterling has a bunch of failed inbound files
+so I will take one node at a time w/ SI as outbound I believe is fine as with non-edi files
+ 
+[‎8/‎14/‎2020 8:01 AM]  Browning, Andrea:  
+I cannot kill the whole env. at once
+ 
+[‎8/‎14/‎2020 8:01 AM]  Mitchell, Chris:  
+ok... thanks
+ 
+[‎8/‎14/‎2020 8:06 AM]  Mitchell, Chris:  
+Thank you for the help
+ 
+Browning, Andrea:  
+np
+you'll see node1 down momentarily
+
+
+
+mp-sql-sd12 is replicate to mp-sql-d07
+
+

@@ -1,0 +1,16 @@
+
+SHOV Issue
+
+if you can remove the file and put it back in the folder to see if it will pick up. If that does not work you can open it in a text editor copy it into a new file and save it with the same file name and load it. I know makes no sense but it works.
+
+pulling out those files and letting them sit outside of that drop folder until after the next run of the job
+failed until pulled the files out and let the job run on its own without them, redropped them after that, and they took next time
+
+
+if you see a space just remove the space and redripped them again.
+
+
+File Path :
+\\baz-filer01\share\Sourcecorp_Prod\Inbound\Balancing_File\DocumentTracking_20200609183852.txt
+
+

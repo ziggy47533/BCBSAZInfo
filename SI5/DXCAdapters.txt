@@ -1,0 +1,28 @@
+
+SI5 issue with some adapters
+
+I see the five sessions, they are related to these:
+
+NPI-AUTO_REPORT.CSV
+BCBSAZEX-Clms-Inv_HP2AZ.txt
+Prod-Claim-Inv-Ext-Comp_HP2AZ.cmp
+PROD-CFR-DOC1CLM_EOB.txt
+Local-COB-Daily_Report.CSV
+
+I'm going to disable the adapter and see if that will for the sessions to close
+- I don't see a way to just end them
+
+these four, I do not see in file gateway:
+
+NPI-AUTO_REPORT.CSV
+BCBSAZEX-Clms-Inv_HP2AZ.txt
+Prod-Claim-Inv-Ext-Comp_HP2AZ.cmp
+Local-COB-Daily_Report.CSV
+
+
+it's down to these three:
+
+BCBSAZEX-Clms-Inv_HP2AZ.txt
+Prod-Claim-Inv-Ext-Comp_HP2AZ.cmp
+Local-COB-Daily_Report.CSV
+

@@ -1,0 +1,15 @@
+2-13-20
+
+Overview of Files Failed:
+index=sterling host="mp-si0-d01`" sourcetype="SI5:Jobs" modifyuserid!=fg_sysadmin AND modifyuserid!=abrownin state=Failed
+| stats  values(prog_org_name) as Producer values(file_name) as File by _time modifyuserid
+
+
+Files Replayed by Users:
+index=sterling sourcetype="SI5:Jobs" host="mp-si0-d01`" modifyuserid!=fg_sysadmin AND modifyuserid!=abrownin
+| timechart count(file_name) by modifyuserid
+
+
+
+
+

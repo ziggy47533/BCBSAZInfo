@@ -1,0 +1,15 @@
+
+guiding Care File in SI5-ALL
+Check if file routed or not......
+
+index=sterling  source="SI5-ALL" earliest=-0h@d| regex doc_name="BAZ-AH-Letter_P_\d+_\d+.zip"
+| rex field=doc_name "(?:\_P\_\d+\_)(?P<FileHour>\d{2})"
+| eval NormalizedFile=coalesce(RFileName,doc_name,remote_filename,file_name)
+| eval NFL=len(NormalizedFile) | fillnull value="NA" remote_filename
+| search NFL>4
+| rex "(?:mbox_path=\"\/)(?P<SENDERIDX>(.*?)(?=\/|\"))"
+| eval GuidingCareLetterFile=SENDERIDX.":".FileHour
+| dedup doc_name | stats  latest(connection_end_time) as "Most Recent" count by doc_name
+| tail  8
+| sort  -"Most Recent"
+| stats count as count

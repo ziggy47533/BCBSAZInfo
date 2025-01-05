@@ -1,0 +1,20 @@
+
+
+SI adapter issue
+
+
+servers :
+MP-SI0-A06 (TDC)
+MP-SI0-A07 (RDC)
+
+first try to run the adapter script on a06
+
+if not working then 
+run the stop script and reboot the server 06 restart si script
+do the same for a07 once a06 is done
+
+
+check SI gateway see if files are moving again
+
+Producer ; HPNMD_OUT
+

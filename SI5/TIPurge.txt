@@ -1,0 +1,26 @@
+
+MP-FRS-A01
+
+copy the ID from this Transmission ID to Purge = "24666952"
+
+
+to this folder : D:\Foresight\TransactionInsight\TIPurge at the end of the notepad
+
+copy the whole line into the command-prompt
+
+night and good luck - done with process....
+
+
+MD-FRS-A03
+
+open the SQL Adm Console
+
+copy this SQL Query :
+DELETE FROM [TIPROD].[dbo].[Identify]
+WHERE TransmissionID = '24666952'
+No spacee at the end.....
+
+copy the deleted count to the ticket..
+
+The whole process is done....
+

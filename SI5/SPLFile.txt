@@ -1,0 +1,15 @@
+
+
+
+What Happened:
+1. The file, 8917MA20230506R01E000D11.TXT has failed in routing
+
+Possible Resolution:
+1. If the file has failed to route in SI:
+---a. Log into http://mp-si0-a06.corp.net.bcbsaz.com:11600/filegateway/home.do#route
+---b. Research the reason for the failed routing.
+---c. Replay the failed file.
+---d. If the above steps do not remediate the issue, contact ITEMFTSupport@azblue.com. 
+
+
+

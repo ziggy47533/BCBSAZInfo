@@ -1,0 +1,28 @@
+
+
+
+Datacap Report:
+\\bas-sql01\share\IMAGING\Datacap\hccs\Export\FepRetExtract\FTPFiles
+
+Foresight Report:
+\\mp-bts-ss02\HIPAAProd\SSIS\PACH\FEPReject\ARCHIVE
+
+
+From email:
+
+   DATACAP FILE RECEIVED.
+
+ FORESIGHT FILE RECEIVED.
+
+ Reference Info:
+
+    DataCap:
+      Source File: DataCap_CCYYMMDD.txt
+      Mainframe File: PAZFC.THCAT.PROD.FEF23EX0(+1)
+
+    Foresight:
+      Source File: FEPReturnedClaimsReport_CCYYMMDD.txt
+      Mainframe File: PAZFC.THCAT.PROD.FEF23EX3(+1)
+
+    The DXC job which processes these RFI files is AZFCPF23.
+

@@ -1,0 +1,17 @@
+
+
+Old Si0 Environ.....
+http://mp-si0-a01.corp.net.bcbsaz.com:11600/filegateway/home.do#route
+
+http://mp-si0-a02.corp.net.bcbsaz.com:11600/filegateway/home.do#route
+
+
+New Environ......
+http://mp-si0-a06.corp.net.bcbsaz.com:11600/filegateway/home.do#login
+
+http://mp-si0-a06.corp.net.bcbsaz.com:11600/dashboard/
+
+http://mp-si0-a07.corp.net.bcbsaz.com:11600/filegateway/home.do#route
+
+http://mp-si0-a07.corp.net.bcbsaz.com:11600/dashboard/
+

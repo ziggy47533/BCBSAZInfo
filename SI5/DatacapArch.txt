@@ -1,0 +1,5 @@
+
+
+in case the Datacap is missing from main area....
+
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\TXT_IN 
