@@ -1,0 +1,24 @@
+
+Patching from OneNote
+
+Development Patch Validation (sharepoint.com)
+
+https://azblue365.sharepoint.com/:o:/r/sites/PatchingOperations/_layouts/15/Doc.aspx?sourcedoc=%7B63552d4e-7902-4326-90d9-5acb45d948b6%7D&action=edit&wd=target(Development%20Server%20Validation.one%7C%2F14-Sep-2023%20(September%20Cycle%5C)%7C5da933b2-30a0-425a-b1fd-cb4c93bb34fc%2F)&wdorigin=NavigationUrl&clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiIyNy8yMzA3MDMwNzM0NiIsIkhhc0ZlZGVyYXRlZFVzZXIiOmZhbHNlfQ%3D%3D
+
+MO-Test Patch Validation (sharepoint.com)
+
+https://azblue365.sharepoint.com/sites/PatchingOperations/_layouts/15/Doc.aspx?sourcedoc={396f4265-d872-4391-833f-eabcf9526ac0}&action=edit&wd=target%28MO-Test%20Server%20Validation.one%7C%2F18-Sep-2023%20%28September%20Cycle%5C%29%7Cb36b7102-d76b-4f2d-a82f-b632864d189c%2F%29&wdorigin=NavigationUrl
+
+Stage Patch Validation (sharepoint.com)
+
+https://azblue365.sharepoint.com/sites/PatchingOperations/_layouts/15/Doc.aspx?sourcedoc={ec28beb0-028d-43a9-a494-9adb4cf78ef1}&action=edit&wd=target%28Stage%20Server%20Validation.one%7C%2F19-Sep-2023%20%28September%20Cycle%5C%29%7C7e0baa5e-186e-4a9a-b5a5-4568c78f4045%2F%29&wdorigin=NavigationUrl
+
+Production Patch Validation (sharepoint.com)
+
+https://azblue365.sharepoint.com/sites/PatchingOperations/_layouts/15/Doc.aspx?sourcedoc={130bec61-e7a7-4724-9278-be151a760c80}&action=edit&wd=target%28Production%20Round%201.one%7Cd45d79f8-8053-4fff-9c50-01615c398e4c%2F01-Oct-2023%20%28September%20Cycle%20Round%201%5C%29%7C3f7a04b4-f8f7-4f95-b9b4-aeea9414a173%2F%29&wdorigin=NavigationUrl
+
+Splunk - Patching
+
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/operations_patching_environment?form.deploy_token=*&form.site_token=*
+
+
