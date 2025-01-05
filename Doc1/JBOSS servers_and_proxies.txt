@@ -1,0 +1,42 @@
+Servers and Proxies
+
+Online Bill
+
+d1dev2 - baz-mdweb2v is 204.153.155.104-development
+d1mod2 - baz-mpa06		204.153.155.119-model office
+modoff.billing.azblue.com	204.153.155.120-model office
+d1pp - eaz-msvc1		204.153.155.106-production
+d1pp2 - eaz-msvc1		204.153.155.66-production
+d1pp2 - eaz-msvc1		204.153.155.89-production
+
+
+EOB Remit
+
+d1dap2v - baz-mdweb2v		204.153.155.104-development
+d1map2v - baz-mqweb5v		204.153.155.65-model office
+d1pap2v - baz-mpweb3v		204.153.155.90-production
+
+
+development
+
+204.153.155.104 (baz-mdweb2v) to d1dev.doc1.bcbsaz.com 172.18.0.26:8009,8912
+*204.153.155.104 (baz-mdweb2v) to d1dev2.doc1.bcbsaz.com 172.18.0.26:8009,8912
+204.153.155.104 (baz-mdweb2v) to d1dap1.doc1.bcbsaz.com 172.18.0.50:8009,8181
+*204.153.155.104 (baz-mdweb2v) to d1dap2v.doc1.bcbsaz.com 172.18.0.51:8009,8181
+
+
+model office
+
+204.153.155.120 (baz-mpa06) to d1mod.doc1.bcbsaz.com 172.18.0.30:8009,8912
+*204.153.155.120 (baz-mpa06) to d1mod2.doc1.bcbsaz.com 172.18.0.31:8009,8912
+204.153.155.65 (baz-mqweb5v) to d1map1.doc1.bcbsaz.com 172.18.0.45:8009,8282
+*204.153.155.65 (baz-mqweb5v) to d1map2v.doc1.bcbsaz.com 172.18.0.46:8009,8282
+
+Production
+
+204.153.155.89 (eaz-msvc1) to d1pp.doc1.bcbsaz.com 172.18.0.15:8009,8912
+*204.153.155.89 (eaz-msvc1) to d1pp2.doc1.bcbsaz.com 172.18.0.17:8009,8912
+204.153.155.90 (baz-mpweb3v) to d1pap1.doc1.bcbsaz.com 172.18.0.40:8009,8383
+*204.153.155.90 (baz-mpweb3v) to d1pap2v.doc1.bcbsaz.com 172.18.0.41:8009,8383
+
+* = Original configuration

@@ -1,0 +1,7 @@
+
+
+D1PP
+
+index=windows host=d1pp sourcetype="WinHostMon" "JBOSS"
+| timechart count(StartTime) by Name
+

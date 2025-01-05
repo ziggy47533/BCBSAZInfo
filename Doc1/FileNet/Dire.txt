@@ -1,0 +1,12 @@
+
+
+The alert condition for 'DIRE Service Application Monitor' was triggered.
+If service is Disabled and needs to be Restarted
+a. Login to mp-bpo-sa01 with bpo account. Open Shortcut for Document Serivce Manager.
+b. Open DSM
+c. Click Edit for the affected row
+d. Change the value of the checkbox in the “Enabled” colum to ‘Checked’
+e. Click Save
+
+Documentation path:
+G:\OPS\Documentation\1_Operations Monitoring\Internal Apps\SHOV Recon Operations Documentation for Production Support

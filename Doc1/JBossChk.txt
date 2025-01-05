@@ -1,0 +1,11 @@
+
+
+
+index=* host="d1pp" OR host="d1pp2" "JBOSS"
+
+
+
+
+index=* host="d1pp" OR host="d1pp2" "JBOSS" Name="java.exe"| timechart count(Type) as Process by host
+
+

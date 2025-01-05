@@ -1,0 +1,19 @@
+
+
+DOcq info
+
+
+Member Pyament 
+
+Abat 851_Payment 
+
+folder - corp\dfs\abp-prd\851_payment\processor\out\archive
+
+then check SI
+
+use -DXC_ in the search
+
+
+for ACH/RMT
+use D30G   (Checks these around 3 or 5 PM)
+

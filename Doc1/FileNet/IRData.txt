@@ -1,0 +1,8 @@
+
+
+index=bcbsaz_weblogs host=baz-mpir5* OR host=baz-mpir6*
+| eval DurationInSeconds=(duration/1000)
+| eval DurationInSecondsByGroup=case(DurationInSeconds>0 AND DurationInSeconds<11,"LessThan10", DurationInSeconds>10 AND DurationInSeconds<21,"10to20",
+       DurationInSeconds>20 AND DurationInSeconds<31,"20to30", DurationInSeconds>30 AND DurationInSeconds<41,"30to40", DurationInSeconds>40 AND DurationInSeconds<51,"40to50",
+	   DurationInSeconds>50 AND DurationInSeconds<61,"50to60", DurationInSeconds>60,"60+")
+| timechart count by DurationInSecondsByGroup usenull=false

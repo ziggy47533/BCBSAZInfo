@@ -1,0 +1,41 @@
+
+
+Check there error
+check the application on the pinnacle servers
+if AutoProcess is not refreshing 
+restart the services.
+
+Check to see if work object is stuck and might need to reset pinnacle services or contact ETS to help.
+
+Check the errors and if AutoProcess is stuck and then restart the pinnacle services or contact ETS to help.
+
+
+Check the errors and if AutoProcess is stuck 
+then restart the pinnacle services
+if not able to resolve contact Team Best for help.
+
+
+This SqlTransaction has completed; it is no longer usable. System.InvalidOperationException:
+This SqlTransaction has completed; it is no longer usable. at System.Data.SqlClient.SqlTransaction.Rollback()
+at KnowledgeLake.Pinnacle.workflowDB.RollbackTransaction()
+in C:\Projects\0533_Workflow\Pinnacle03\PinnacleDB\workflowDB.vb:line 1987 at
+KnowledgeLake.Pinnacle.pnCustom.PN_Process() in C:\Projects\WorkFlow\Pinnacle03\PnCustom\pnCustom.vb:line 187 
+at KnowledgeLake.Pinnacle.AutoProcess.OnTimedEvent(Object source, ElapsedEventArgs e)
+in C:\Projects\WorkFlow\Pinnacle03\PinnacleAPLibrary\AutoProcess.vb:line 253
+
+
+operationinbox@azblue.com;
+itproductionsupport@azblue.com
+
+team Best:
+
+Mayte.Delgado@azblue.com;
+John.Marin@azblue.com;
+Pauline.Meharry@azblue.com;
+Bhagyashri.Mudhalwadkar@azblue.com;
+Sean.Newman@azblue.com;
+Shelley.Price@azblue.com;
+Dave.Sawyer@azblue.com;
+Srinivasan.Vaidyanathan@azblue.com;
+mario.vazquez@azblue.com;
+Tom.Wood@azblue.com

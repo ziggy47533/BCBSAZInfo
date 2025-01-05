@@ -1,0 +1,16 @@
+
+FileNet :
+
+Pinnacle (Team BEST)
+Image Retriever (Team Matrix) - this includes the service layer (FileNet and Document web services)
+ECM Service (Team Matrix)
+Clipboard (Team Matrix)
+Flow Manager (Velocity Care)
+DIRE (Team BEST)
+Pega (Member Maintenance) (Team BEST)
+Blue2 Message Service (Velocity Care)
+DocGen (Velocity Care)
+PremiumPayments – Payment Finder (Team Matrix)
+Insurix (Team BEST)
+BEETL (Team BEST)
+Subscriber EOB Loader (Team Matrix)

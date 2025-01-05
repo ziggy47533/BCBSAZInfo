@@ -1,0 +1,24 @@
+
+
+The description for Event ID 0 from source Pinnacle Auto Process Service cannot be found. Either the component that raises this event is not installed on your local computer or the installation is corrupted. You can install or repair the component on the local computer.
+
+If the event originated on another computer, the display information had to be saved with the event.
+
+The following information was included with the event: 
+
+Service cannot be started. The service process could not connect to the service controller
+
+the message resource is present but the message is not found in the string/message table
+
+
+D:\KnowledgeLake\Pinnacle\VATAP
+
+File location: VAT Auto Process_debug1780.txt
+
+
+
+script :
+
+This is the path:  \\baz-filer01\share\Prod Support\SQL Scripts\Pinnacle Monitoring
+it's the 2a query 
+

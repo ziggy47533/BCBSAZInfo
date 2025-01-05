@@ -1,0 +1,7 @@
+
+
+file location for Payment :
+
+\\corp\DFS\abq-bsd\851_Payment_Processor\Output\Archive
+
+

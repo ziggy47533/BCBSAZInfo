@@ -1,0 +1,9 @@
+
+
+If I am right it is likely the Reporting Queue error that is causing JBOSS to struggle can we build an alert to trigger if the count is 5 or more within an hour. Also, as an added measure can you trigger if files are stalled in these two directories for more than 2 hours (\\d1pp\bcbsaz_data\hostLoad\processing and \\d1pp\bcbsaz_data\statement\processing) the hostload folder will have and XML file and the Statement folder will have DIJ and XML files. 
+
+
+
+
+index=wineventlog host=d1pp  SourceName="Application Error"   
+|timechart span=1h count by host

@@ -1,0 +1,28 @@
+
+Launch Active Batch V10 application.
+
+-Go to Active Batch - Connect
+
+-Three areas to connect to: UAT (test), Development and Production
+
+ *MD-ABS-A01 = Dev  (in use now)
+ *MU-ABS-A01 = UAT (in use now)
+ *MP-ABS-A01 = Prod  
+
+-Connect with your ADM credentials
+
+Note: Operations is responsible for Active Batch.
+
+If issue with launching AB applicaton notify desktop support
+
+Notes for Active Batch in directory: G:\OPS\Documentation\Active Batch
+
+
+12:00pm check. log into SI5 - Stage:
+*replaces model office ACH/RMT that use to comie in at 9am and 11:30am
+
+*in AB-V10, files comes in around at 11:15am
+  -search for "group remitance"
+
+*In SI5 Stage: http://ms-si0-sa01.corp.net.bcbsaz.com:12600/filegateway/home.do#login
+  -Filename: GroupRemittance_2DXC_YYMMDDHHMMSS.txt

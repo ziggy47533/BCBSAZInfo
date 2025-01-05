@@ -1,0 +1,11 @@
+
+
+index=bcbsaz_weblogs host=baz-mpir* OR host-mp-ftw-*
+
+log data
+
+
+New filenet server :
+mp-fnt-a04
+
+mp-fnt-D2

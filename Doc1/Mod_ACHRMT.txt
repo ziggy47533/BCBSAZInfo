@@ -1,0 +1,13 @@
+
+
+
+
+\\corp\DFS\abp-doc1\D1MODACH\Arch\D3OGACH1_02052308*.txt
+
+http://d1mod.doc1.bcbsaz.com:8912/clientweb
+
+Was not found during the required period.  Check:
+
+1.   Check if the files loaded here:
+     \\D1Mod.doc1.bcbsaz.com\bcbsaz_data\payment
+	 \\D1Mod.doc1.bcbsaz.com\bcbsaz_data\payment\Archive

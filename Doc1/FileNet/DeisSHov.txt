@@ -1,0 +1,13 @@
+
+
+Recon Deis
+index=wineventlog sourcetype=WinEventLog:Application SourceName=ReconDEIS host=mm-ops-a01
+| rex "(?<FileCount>[F]\w+l)"
+| rex "(?<Hour>ho\w+)"
+| stats count(FileCount)
+
+SourceHOV
+index="wineventlog" host="mm-ops-a01" sourcetype="WinEventLog:Application" SourceName="AnotherSHOV" EventCode="74"
+| rex "(?<FileCount>[F]\w+l)"
+| rex "(?<Hour>ho\w+)"
+| stats count(FileCountOverall)

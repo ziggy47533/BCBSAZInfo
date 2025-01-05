@@ -1,0 +1,18 @@
+
+
+
+Call Core Matrix On-call
+
+
+
+IIS
+index=bcbsaz_weblogs sourcetype="ms:iis:auto" host=baz-mpir2*
+|eval duration=(duration/1000) 
+| where duration>100
+| stats count(host) as count
+
+DocSrv
+index=docmgmt host=baz-mpir2* | rex"(?P<Method>(\|(Get|Set|Insert)(.*?)(?=\|)))" | rex"(?:Elapsed Time)(?:\s+)(?:\[)(?P<ElapsedTime>\d+\.\d+)" | search Method="|InsertFileNetDocumentTIFFByPDF" | where ElapsedTime>12 | stats count(host) as count
+
+AppPool
+index=docmgmt host=baz-mpir2*  Method="|InsertFileNetDocumentTIFFByPDF" | where ElapsedTime>12 | stats count(host) as count

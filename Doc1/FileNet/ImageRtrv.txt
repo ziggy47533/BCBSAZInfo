@@ -1,0 +1,54 @@
+Image retriever
+
+New
+mp-ftw-w01
+mp-ftw-w02
+mp-ftw-w03
+mp-ftw-w04
+mp-ftw-w05
+mp-ftw-w06
+
+Replace the old ones (baz-mpir20v - 29v)
+
+
+
+
+To restart the stack used this 
+
+G:\OPS\Documentation\2_OperationsShiftTasks\2_SecondShift\Powershell
+
+
+2003 - First
+
+2008 - Second
+
+2016 - Third
+
+
+
+(index=docmgmt sourcetype=imgrtrv host="baz-mpir*" "Error") 
+| stats list(Error) as Error count by host
+
+
+
+
+index=* host="baz-mpir*" "361352173"| timechart count by FuserName
+
+
+serverz are from 50 - 68
+
+
+
+
+If the network is not working try to ping....
+ping bcbsaz2-filenet-nch-server
+
+DNS - 
+10.1.91.230
+
+append thse DNS suffixes
+doc1.bcbsaz.com
+corp.net.bcbsaz.com
+net.bcbsaz.com
+bcbsaz.com
+

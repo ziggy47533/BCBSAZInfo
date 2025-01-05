@@ -1,0 +1,27 @@
+﻿
+
+
+[‎7/‎8/‎2020 1:05 PM]  Shorty, Rodney:  
+check d1pp at 1pm. make sure jboss is running. and make sure available agents are started
+that's probably the main one
+ 
+[‎7/‎8/‎2020 1:05 PM]  Mitchell, Chris:  
+look like there a abat job that keep failing PDM job
+ok
+ 
+[‎7/‎8/‎2020 1:06 PM]  Shorty, Rodney:  
+PDM, i just replay back with error msg to CT3 team.
+  
+mp-si0-a01 and mp-si0-a02 
+just log in at 1pm, hit the stop on both servers.. log in again at 3 and hit the start.. everything else is automated..
+  
+then at 6pm.. Reboot Document Web Service servers.
+those are the two biggest tasks for 2nd shift on sundays
+
+
+G:\OPS\Documentation\2_OperationsShiftTasks\2_SecondShift\Powershell\RebootMPIR.ps1 
+
+
+
+
+ 
