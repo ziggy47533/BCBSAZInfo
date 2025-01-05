@@ -1,0 +1,25 @@
+
+Splunk:
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_ivr/IVR_Spikes - not working
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_ivr/ivr_load_and_response
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_ivr/ivr_daily_services_response_time
+
+
+SQLM DB check or others:
+MP-WAS-D01
+MP-DYN-D01
+MP-DYN-D02
+
+
+database - mp-hms-md01n01
+
+
+
+
+
+
+
+

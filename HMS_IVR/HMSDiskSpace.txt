@@ -1,0 +1,12 @@
+
+disk Sapce:
+
+(index=perfmon host=mp-hms-a0* source=Perfmon:LogicalDisk counter="Free Megabytes" NOT "_Total" NOT "Hard*")
+| eval host=lower(host)
+| eval ReportKey = instance." ".counter
+| chart latest(Value) over host by ReportKey useother=false 
+| rename host as "Host"
+
+
+
+

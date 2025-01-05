@@ -1,0 +1,9 @@
+
+
+vital Servers check in splunk
+
+(index=hms sourcetype="hms_vitalcore" VitalStatus=ERROR host=mp-hms-a01 OR host=mp-hms-a02 OR host=mp-hms-a03 OR host=mp-hms-a04)
+| chart count by date_hour,FaultyModule useother=false
+| sort num(date_hour)
+
+http://vitalplatform.prod.azblue.com:8080/VITALPlatform

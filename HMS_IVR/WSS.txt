@@ -1,0 +1,5 @@
+
+
+MP-WSS-FW01N01, 2, 3 n 4 = Member portal
+
+mp-wss-fw01n05 amd 6 - IVR

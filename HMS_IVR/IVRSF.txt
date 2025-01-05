@@ -1,0 +1,10 @@
+
+
+LP-IVR-W02
+
+might need to restart splunk forwarder
+
+when we try to search for calls we are not getting them back in Splunk 
+
+Run Query:
+(index=* host=lp-ivr-* sourcetype=ivr_nar_v2)

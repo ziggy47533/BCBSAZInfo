@@ -1,0 +1,20 @@
+
+
+Check on IIS Status
+
+
+06/24/2020 05:31:10 Status for World Wide Web Publishing Service ( W3SVC ) : Running
+
+
+use w3svc and running as regex
+
+
+index=windows sourcetype="Windows:IISStatus"
+| rex "(?:\s\(\s)(?P<IISService>(.*?)(?=\)))"
+| rex "(?:\s:\s)(?P<IISStatus>\w+)"
+| eval ServiceState=IISService." : ".IISStatus
+| search IISStatus!=Running
+| stats values(ServiceState) as "Service : State" by host
+
+
+

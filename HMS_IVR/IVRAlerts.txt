@@ -1,0 +1,16 @@
+
+ 
+that one mp-was-d01 and also mp-dyn-d0* servers
+the spikes seem to be coming from mp-wss-fw01n05, 06,  NOT n06
+ 
+
+WSS IVR Times
+(index=bcbsaz_weblogs host=mp-wss* sourcetype="ms:iis:auto" "*ivr*") 
+| eval duration=(duration/1000) 
+| timechart avg(duration) as "Avg" perc95(duration) as "95%" by cs_uri_stem useother=false
+
+
+(index=bcbsaz_weblogs host=mp-wss* sourcetype="ms:iis:auto" "*ivr*")
+| eval duration=(duration/1000)
+| timechart count by host
+

@@ -1,0 +1,137 @@
+
+Dev
+md-wss-fw01n01
+md-wss-fw01n02
+
+MO-Test
+mt-wss-fw01n01 - 10.1.79.149
+mt-wss-fw01n02 - 10.1.79.148
+
+MO-UAT
+mt-wss-fw02n01 - 10.1.79.147
+mt-wss-fw02n02 - 10.1.79.146 
+
+IVR Servers:
+Dev: 10.1.77.218  >  ld-ivr-w01.bcbsaz.com
+QA: 10.1.77.222  >  lq-ivr-w01.bcbsaz.com
+UAT IP: 10.1.77.226 >  lu-ivr-w01.bcbsaz.com
+Stage IP: 10.1.77.230 > ls-ivr-w01.bcbsaz.com
+
+Production:  
+TDC  
+10.1.77.235 >  lp-ivr-w01.bcbsaz.com
+RDC  
+10.1.77.236 >  lp-ivr-w02.bcbsaz.com
+
+Component	Location	Hostname	IP
+Avaya EPM/MPP	TDC	LQ-EPM-A01	10.1.77.220
+NSS	TDC	LQ-IVR-A01	10.1.77.219
+Tomcat	TDC	LQ-IVR-W01	10.1.77.222
+
+index=ivr sourcetype=ivr_nar_v2  host="lp-ivr*" 
+| eval temp=split(source,"-") 
+| eval CallID=mvindex(temp,3) 
+| eval RCNAME=Reason." ::: ".NAME  
+| eval NarEvent=EVNT."--".Event_Type 
+| eval ReturnCode=returnCode."--".Reason
+| transaction NAME startswith="EVNT=SWIdbtx" endswith="EVNT=SWIdbrx" 
+| timechart count as "TotalRequests" span=1h avg(duration) as "Avg" max(duration) as "Max" perc95(duration) as "95%" by host 
+ 
+
+Please see below server details used by these IVR services:
+                
+IVR Service                            GetANIMatch                                        
+IVR Member Service           GetMemberInfo                                                  
+IVR Shared Service              GetMemberEligibilityAndPayment 
+IVR Shared Service              GetEligbilityBenefits 
+IVR Member Service           UpdateMemberProfile 
+                IVR Provider Service           AuthenticateProvider 
+                IVR Provider Service           GetPatientInfo 
+                IVR Shared Service              GetClaimDetail      
+                IVR Shared Service              GetClaimSummary
+                IVR Service                            Cancel Policy
+IVR Service                            GetDNISConfig
+IVR Service                            GetOutboundVDNRouting
+IVR Service                            SubmitCTIKeyValuePair
+IVR Member Service           SaveMemberBillingDetails
+IVR Member Service           SubmitMemberACHPayment
+IVR Member Service           SubmitMemberSurePay
+IVR Member Service           UpdateMemberCOB
+IVR Provider Service           FaxBenefits
+IVR Provider Service           GetFeeSchedule
+IVR Shared Service              OrderSupplies
+
+                    
+AIF Servers used by IVR services
+PerfTest:             Ms-wss-fw02n01 – 10.1.79.140, Ms-wss-fw02n02 – 10.1.79.141
+
+DB Server:
+Performance:    ms-was-sd03\SS01S       ETSPerfWebData.aif.bcbsaz.com, 49430
+                
+                Foresight Server:
+                                Stage:                   ms-frs-sa-01, ms-frs-sa-02, ms-frs-sa-03, ms-frs-sa-04, ms-frs-sa-05
+
+                Biztalk servers:
+                                Stage:                   ms-bts-sa01, ms-bts-sa02, ms-bts-sa03, ms-bts-ca01n01, ms-bts-ca01n02
+
+
+
+
+Dev box
+
+md-hms-a01
+md-hms-a03
+
+
+md-wss-fw01n01
+md-wss-fw01n02
+
+
+https://ivrshared.dev.services.azblue.com:8593/IVRShared.svc/IVRShared
+
+https://ivrshared.dev.services.azblue.com:8593
+
+
+
+
+Check these first....
+
+Application Review ****
+
+Daily Services Response Time    ******
+
+
+Check on these on need case
+
+Service REsponse Time
+
+Call Confidence
+
+Load Response
+
+Performance Breakdown
+
+
+
+
+MO_Test
+
+LU-IVR-A01
+LU-IVR-W01
+
+MT-HMS-SA01
+MT-HMS-SA03
+
+
+MT-WSS-FW02N01
+MT-WSS-FW02N01
+
+MS-WSS-FW02N01
+MS-WSS-FW02N02
+
+
+
+
+
+
+

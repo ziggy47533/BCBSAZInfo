@@ -1,0 +1,18 @@
+
+
+Here are the web servers
+Dev
+md-wss-fw01n01
+md-wss-fw01n02
+
+MO-Test
+mt-wss-fw01n01 - 10.1.79.149
+mt-wss-fw01n02 - 10.1.79.148
+
+MO-UAT
+mt-wss-fw02n01 - 10.1.79.147
+mt-wss-fw02n02 - 10.1.79.146
+
+Stage
+ms-wss-fw01n01 - 10.1.79.142
+ms-wss-fw01n02 - 10.1.79.143

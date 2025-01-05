@@ -1,0 +1,29 @@
+
+D:\Cincom\EngineServer\bin
+Stopall
+startall
+
+tomcat three and cinccom 
+
+
+ActiveMQ - communication to URL
+
+
+
+http://mp-hms-sa01.corp.net.bcbsaz.com:8161/admin/queues.jsp;jsessionid=13zxh2c5qf63o1o9mp3t67znjo
+
+
+on server mp-hms-sa01
+D:\Cincom\apache-activemq5.4.3\data\activemq.txt
+
+
+that stops the cincom services. once you stop them with the stop script.
+then you manually go to services and stop the active mq,
+then do the start bat script to start cincom services, then go to sevices and start Active MQ
+
+
+(index="perfmon" host="mp-hms-sa01" sourcetype="Perfmon:Memory" sourcetype="Perfmon:Memory"  counter="% Committed Bytes In Use")
+          | eval host=lower(host)
+          | eval DEMO=host." : ".counter
+          | timechart span=5m  avg(Value) by DEMO useother=0
+          | sort host

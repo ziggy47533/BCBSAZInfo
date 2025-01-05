@@ -1,0 +1,18 @@
+
+The alert condition for 'HMS: Vital DB Block CDSEXT' was triggered. 
+
+Perform the following actions to resolve the issue:
+
+1) Login to mp-hms-a05 and run cmd in powershell gps cdsext | kill. 
+
+2) Validate that all web pages will display. Links to vital web pages:
+a) http://mp-hms-a01.corp.net.bcbsaz.com:8080/VITALPlatform
+b) http://mp-hms-a02.corp.net.bcbsaz.com:8080/VITALPlatform
+c) http://mp-hms-a03.corp.net.bcbsaz.com:8080/VITALPlatform
+d) http://mp-hms-a04.corp.net.bcbsaz.com:8080/VITALPlatform
+
+3) If the Vital Web pages do not display then login to the web server (mp-hms-a01, mp-hms-a02, mp-hms-a03, mp-hms-a04) and restart the the following services.
+a) Apache Tomcat 7.0 Tomcat7-vws
+b) Apache Tomcat 7.0 VITALPlatformServer
+c) CERME
+d) McKesson IRS Proxy Service v1.1.0

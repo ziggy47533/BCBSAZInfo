@@ -1,0 +1,14 @@
+
+
+
+https://www.azblue.com/precertification
+
+
+(index=bcbsaz_weblogs host="mp-scr-fw01n0*" sourcetype="ms:iis:auto")
+ cs_uri_stem="/precertification/Home/GetPrecertificationInformation"
+| timechart perc95(response_time) by host
+
+
+
+use : 5010 - sitecore Concerns
+
