@@ -1,0 +1,9 @@
+
+MP-ALR-SA01
+
+Transformer services restart/stop
+
+D:\pcmh\tools\EasyNetQ\eqpurge.bat
+
+D:\pcmh\tools\EasyNetQ\eqpurge1.bat - latest 2019 might use this first
+

@@ -1,0 +1,47 @@
+
+As Kim begins to focus on helping to build that future, there are several staffing shifts that will take place to ensure we maintain our Technology and Application operations:
+•	Kevin Bellomo continues to lead the Enterprise Architecture team which was his original role.  Last year Kevin expanded his role adding Data Governance, Trading Partners, and Database Operations.  I am happy to announce that this time he will be adding the Salesforce platform team and will be promoted to Staff VP, Enterprise Architecture and Data Operations.  The following individuals will report to Kevin in this expanded role:
+o	Saima Adil, Data Operations
+o	Mark Emery, Enterprise Architecture
+o	Sal Gomez, Salesforce
+o	Jim Keevins, Data Governance
+o	Anna Koval, API and Integrations
+o	Maria Ruiz Tagle, Product Manager
+o	Mike Timm, Trading Partners and Data Analysis
+•	Richie Livingston continues to lead the Infrastructure and Call Center environments.  In addition, Richie will be leading our Digital Applications team giving us a single accountable leader focused on our external facing consumer environments and will be promoted to Staff VP, Infrastructure and Digital Applications.  The following individuals will report to Richie in this expanded role:
+o	Bryon Darner, Modern Workspace Services
+o	Rob Hall, Data Center Operations
+o	Arun Kamath, Infrastructure Architect
+o	David Sipos, End User Support Services
+o	Rick Swanson, Solution Architect
+o	Ashwini Wagh, Digital Applications & Portals (Domain Manager)
+o	*Open Role, Cloud Services
+o	*Open Role, Infrastructure Operations Excellence
+o	*Open Role, Network and Telecom
+•	Christina Schiavone has been promoted to the Staff VP of Core Applications.  This role will focus on end-to-end ownership of our core application portfolio. The following individuals will report to Christina in this role:
+o	Cynthia Garibay, Document and Print Services (Domain Manager)
+o	Patti Jones, Care Services (Domain Manager)
+o	Tara Maya, Provider Services, Internal Apps, and Finance (Domain Manager)
+o	Margaret Oxenden, Production Support
+o	Mark Quincey, Medicaid Development
+o	Liza Schrier, Enrollment and Billing Services (Domain Manager)
+o	Melissa Small, Medicaid Operations
+o	Tom Wood, Claims Services (Domain Manager)
+o	Donna Zimmerman, Rapid Response Team
+•	Bret Wingert will pick up the IT Service Desk and IT Service Management.  The following people will be reporting to Bret:
+o	Liz Baldwin, Service Desk
+o	Andrea Browning, Site Reliability Engineer
+o	Robyn Henry-McCree, Technical Analyst
+o	Wanda Kenny, IT Procurement & Invoicing
+o	Amy Lee, IT Vendor Management
+o	Kenny Lessard, IT Finance
+o	Rhonda McDonald, Sr. Manager, Testing Center of Excellence and Robotics Process Automation
+o	Sheri Palmer, Director, Project Management Office
+o	Julia Sommers, Lead IT Communications and Technical Writer
+o	*Open Role, IT Service Management
+
+There are no changes to the following roles:
+•	Jody Mentz, Advancement Office
+•	Erik Ryer, Information Security
+
+The changes will be reflected in Workday on May 9th. We anticipate future refinement of these teams and possibly others in the upcoming months, so please stay tuned as we continue to improve the alignment within the IT organization.   

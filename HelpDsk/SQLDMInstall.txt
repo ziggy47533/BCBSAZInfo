@@ -1,0 +1,8 @@
+
+SQLDM :
+
+Copy the .exe file to your local computer and install from there.
+Install the console only, select this option: console Only
+
+When asked about the SQLdm database it is called  SQLdmRepository and is on server MP-DBA-D04
+You may need to uninstall old version of SQLdm before installing the new one.

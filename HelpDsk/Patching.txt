@@ -1,0 +1,31 @@
+
+
+http://lm-wik-a01.corp.net.bcbsaz.com:8080/bin/view/Documentation/Patching/
+
+
+
+http://lm-wik-a01.corp.net.bcbsaz.com:8080/bin/view/Documentation/Patching/CAB%20Process/
+
+
+watch list (Serving Blue)
+
+john Richardson, Roderice Lytes, Brandon Green
+
+
+https://azblue365.sharepoint.com/sites/tech/infrastructure/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2Ftech%2Finfrastructure%2FShared%20Documents%2FSecurity%20Patching&xsdata=MDV8MDF8fGZmODA4OTYyYjNiMzRlOGRmMDZlMDhkYjUxOWIxZDc2fDE0YzQ3YjE4ZmM1NTRkYTU5OGYwMWYxN2UyMDZjYWRjfDB8MHw2MzgxOTM0OTg4NTkxNzE5NTB8VW5rbm93bnxWR1ZoYlhOVFpXTjFjbWwwZVZObGNuWnBZMlY4ZXlKV0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYybHVNeklpTENKQlRpSTZJazkwYUdWeUlpd2lWMVFpT2pFeGZRPT18MXxNVFk0TXpjMU16QTROVEkwTVRzeE5qZ3pOelV6TURnMU1qUXhPekU1T20xbFpYUnBibWRmV1hwck1Wa3lUVEJhYWtGMFdWUldiVTVwTURCT01rMHpURlJzYWs1RVVYUk9lbFY0VFRKV2FVOUhUbXhPYlU1cVFIUm9jbVZoWkM1Mk1nPT18MzBiMjUwYjgzYTAxNGU0MmYwNmUwOGRiNTE5YjFkNzZ8NWUxZDkwOWNjMTlhNGZlZWE1Nzc4NDdiYzQ2ODZjMDE%3D&sdata=YzFqZUR2R1Zlb21aZG9XZU41bm1EUkZmYVFBa2FjZjdsL2JaYUhnUC90cz0%3D&ovuser=14c47b18%2Dfc55%2D4da5%2D98f0%2D1f17e206cadc%2Cchris%2Emitchell%40azblue%2Ecom&OR=Teams%2DHL&CT=1683753104444&clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiIyNy8yMzA0MDIwMjcwNSIsIkhhc0ZlZGVyYXRlZFVzZXIiOmZhbHNlfQ%3D%3D
+
+
+
+PHX SCCM - mp-scm-a01
+
+HCA SCCM - phxsccm01
+
+PROSANO - mp-scm-a00.prosano.local
+
+
+
+G:\Ferrera\Mastek
+
+SCCM console - MM-RDS-A02
+
+

@@ -1,0 +1,11 @@
+
+
+
+
+if not able to log in to the RSA token
+
+goto network sign-in
+
+log in to citrix 
+
+and then back to the RSA again...

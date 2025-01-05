@@ -1,0 +1,10 @@
+
+
+
+Import-Module OperationsManager
+$AlertDurationDays = 5
+$CurrentDate = Get-Date
+$alerts = Get-SCOMAlert -resolutionstate 0 | Where-Object {($_.IsMonitorAlert -like "False") -and (($CurrentDate - $_.TimeRaised).TotalDays -ge $AlertDurationDays)}
+$alerts | Resolve-SCOMAlert
+
+

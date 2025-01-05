@@ -1,0 +1,13 @@
+Shutdown or reboot
+
+Event Id
+
+41, 1074, 1076, 6005, 6006, 6008, 6009, 6013
+
+Powershell :
+
+Get-CimInstance -ClassName Win32_OperatingSystem | select csname, lastbootuptime
+
+Get-EventLog System -Newest 10 | ` Where EventId -in 41,1074,1076,6005,6006,6008,6009,6013 | ` Format-Table TimeGenerated,EventId,UserName,Message -AutoSize -wrap
+
+Get-WinEvent -FilterHashtable @{logname = 'System'; id = 1074} | Format-Table -wrap (1074 events Filter )

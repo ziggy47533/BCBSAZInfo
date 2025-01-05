@@ -1,0 +1,11 @@
+
+
+[Solution] Excel File not Loaded Completely
+
+
+(Might need to do more text file if need...)
+
+Copy the file *.csv to *.txt (make two copies if you like)
+Open the file > cut out (remove) half the lines > save under a new name.
+Open a version of the complete file > cut out the "other half" of the lines > save under a new name.
+Rename each the two "halved" (smaller) filename.txt to somename1.csv and somename2.csv.

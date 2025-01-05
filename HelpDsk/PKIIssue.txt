@@ -1,0 +1,21 @@
+
+Servers 
+
+mp-pki-a02 and a03 
+
+goto the services and restart
+
+Only Active Directory Certificate Services needs to be restarted to resolve the issue.
+
+
+tip:
+
+
+It takes a bit to restart. And sometimes fails and you have to wait for it to stop to then start it. 
+
+
+Otherwise a graceful restart also works if that saves time.  
+ like 1
+
+In any case, I appreciate you guys taking action on those issues. 
+

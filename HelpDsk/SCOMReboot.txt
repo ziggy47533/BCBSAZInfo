@@ -1,0 +1,9 @@
+
+SCOM :
+
+clear out all the less then 100 days of alerts in SCOM
+
+mm-mso-d01/d02/d03, mm-mso-w01, mm-mso-a01/a02/a03 - reboot all of them 
+start with DB servers db first....
+
+

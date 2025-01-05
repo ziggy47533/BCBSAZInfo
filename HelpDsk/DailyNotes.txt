@@ -1,0 +1,113 @@
+
+run Books:
+
+https://azblue365.sharepoint.com/sites/agile/agile-teams/Shared%20Documents/Forms/
+AllItems.aspx?RootFolder=/sites/agile/agile-teams/Shared%20Documents/
+Run%20Book%20-%20Production%20Support&FolderCTID=0x012000393F84766693A4458783719D44A006AD&View=%7bC2E719C3-9AE2-4AF0-AB6C-CAC64038A579%7d
+
+click on the Oncology MGMT Run book
+
+OpenSpan Contacts:
+Jeff Johndrow 602-478-7375
+Grigory - 1-860-707-2141
+
+Esales - ABAT /eBT/eSales
+
+Reset network drives:
+mountvol /r
+
+\\mp-frs-a01\d$
+
+\\mp-frs-a01\d$\Foresight\Systems\AZBlue\workflows\1.0\835Out_MVBX\InStream_For999\In
+
+SI5 dashboard:
+https://tech.azblue.com/infrastructure/csg/spt/EMFT/_layouts/15/WopiFrame.aspx?sourcedoc={EBB81876-9ACD-4153-BF9B-1DB711DAE71E}&
+file=Catalog-of-files_Sterling_Integrator_WIP.xlsx&action=default
+
+SI5 - Encypto server
+mp-enc-a01 - might need a reboot if files are failing
+
+SI server from database to clearstone to BCBSAZ to WIPRO
+
+SI5 SharePoint Doc:
+https://tech.azblue.com/infrastructure/csg/spt/EMFT/Shared%20Documents/Forms/
+AllItems.aspx?FollowDocument=1&ItemID=42&ListID=%7B0A05644B%2D7759%2D42D9%2DABE5%2D0FB4C20F9DFD%7D&
+DocName=Catalog%2Dof%2Dfiles%5FSterling%5FIntegrator%5FWIP%2Exlsx
+
+Baz-mpssrs1:
+http://rsprod.bcbsaz.com/Reports/Pages/Report.aspx?ItemPath=%2feBT%2fReports%2f_Public%2fProviderTransactionLogs
+
+recon:
+srcp-svc-prod
+BP))uts)rc1ng
+
+Get-Command -Module * -CommandType cmdlet | ft
+
+Get-Command -Module * -CommandType cmdlet | measure
+
+http://releases.ubuntu.com/18.04.2/
+
+Example how to add a instanza to Splunk
+D:\Program Files\SplunkUniversalForwarder\etc\system\local
+[monitor://D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Log\SQLAGENT.OUT]
+disabled = 0
+sourcetype = ms:sql:sqlagent
+index = sqlserver
+
+InfoBurst:
+http://md-bii-a02:8551/infoburst 
+cmitchel
+Bluesky101
+
+Here is the list of tools/folders location that you need to have access to run/fix the Infoburst.
+
+1.	New Infoburst Output File Location:
+\\baz-filer02\DSS_APPFS01\Infoburst\Output
+ 
+2.	Med 382:
+\\baz-filer01\SHARE\MED370B\Correspondence Reporting
+ 
+3.	Old Infoburst Output File Location:
+\\dss.net.bcbsaz.com\dfs\InfoBurst\Output
+ 
+4.	Access Database Folder: ( for email distribution list)
+\\dss.net.bcbsaz.com\dfs\InfoBurst\Admin
+
+5.	DSS_Prod_Rpt database
+Need read/write access to this database 
+ 
+ 
+6.	FTP Folder:
+\\dss.net.bcbsaz.com\dfs\ftproot
+ 
+7.	Publish Flags:
+\\bcbsaznt14\Publish_Flags
+ 
+8.	Report search Tool :
+http://mp-ssr-fa01.corp.net.bcbsaz.com/Reports_SS01P/Pages/Report.aspx?ItemPath=%2fReports%2fDSAS%2fReport+Search%2fReportSearch
+ 
+ 
+9.	SSRS Prod Report Sever 2012:
+http://mp-ssr-fa01.corp.net.bcbsaz.com/Reports_SS01P/Pages/Folder.aspx?ViewMode=List
+ 
+10.	SSRS Dev Report Server 2012
+ 
+http://md-sql-fr04n01.corp.net.bcbsaz.com/Reports_RSDEV/Pages/Folder.aspx
+
+md-sql-d02:
+essodevsvc
+d3v3ss0svc 
+
+
+EviCore URL:
+https://cpm.azblue.com/CPM/Projects/1701900/_layouts/15/start.aspx#/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2FCPM%2FProjects%2F1701900%2FShared%20Documents%2FImplementation%2FRunbook&FolderCTID=0x0120001DFA47983948B048969D2EE2A5EA3F0E&View=%7BF1434E16%2D322E%2D4271%2DB189%2DEF61F361F49A%7D#InplviewHashf1434e16-322e-4271-b189-ef61f361f49a=FolderCTID%3D0x0120001DFA47983948B048969D2EE2A5EA3F0E-SortField%3DCheckinu-SortDir%3DDesc-RootFolder%3D%252FCPM%252FProjects%252F1701900%252FShared%2520Documents%252FImplementation%252FRunbook
+
+Solarwind Default:
+http://10.1.76.199/Orion/SummaryView.aspx?ViewID=19
+
+
+Chrome Location:
+C:\Users\cmitchel\AppData\Local\Microsoft\AppV\Client\Integration\5C80B158-E3FE-43DC-98F6-B9A97B597DF3\
+Root\VFS\ProgramFilesX86\Google\Chrome\Application
+
+
