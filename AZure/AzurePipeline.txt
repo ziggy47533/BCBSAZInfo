@@ -1,0 +1,13 @@
+
+
+
+
+https://adf.azure.com/en/management/triggers?factory=%2Fsubscriptions%2F1d834cda-73f2-4065-b96d-187dacbc2dd9%2FresourceGroups%2FrgFepAdfclaimsodsP001%2Fproviders%2FMicrosoft.DataFactory%2Ffactories%2FadfFepAdfclaimsodsP001
+
+
+
+https://adf.azure.com/en/monitoring/pipelineruns?factory=%2Fsubscriptions%2F1d834cda-73f2-4065-b96d-187dacbc2dd9%2FresourceGroups%2FrgFepAdfclaimsodsP001%2Fproviders%2FMicrosoft.DataFactory%2Ffactories%2FadfFepAdfclaimsodsP001
+
+
+https://learn.microsoft.com/en-us/rest/api/datafactory/pipelines/create-run?tryIt=true&source=docs&tabs=HTTP#code-try-0
+

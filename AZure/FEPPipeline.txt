@@ -1,0 +1,27 @@
+
+FEP Piprline
+
+CFBClaimsToFepOdsDailyUploadTrigger:     5:00 AM
+CareFirstClaimsStatusDailyUploadtrigger: 7:00 AM
+MetaVanceStatusUploadTrigger:            8:00 AM
+ClaimsMeridianDataWeeklyUploadTrigger:  10:00 AM
+
+Main Ticket : INC0455576
+
+Ticeket : ITSK0002556
+
+runtime  1 hour :20 min
+1- Click on the CFBClaimsToFepOdsDailyUploadtrigger via ADF manage screen, triggers
+2- Edit start day and time and click "Ok"
+3- Publish changes
+4- Trigger ADF pipeline CFBClaimsToFepOdsDailyUpload trigger via ADF monitor screen, Pipeline runs
+
+
+runtime 30 min
+5- Trigger ADF pipeline CareFirstClaimsStatusDailyUpload trigger via ADF monitor screen, Pipeline runs after CFBClaimsToFepOdsDailyUpload success
+
+6- Trigger ADF pipeline MetaVanceStatusUpload trigger via ADF monitor screen after CareFirstClaimsStatusDailyUpload success
+
+7- After all pipelines ran, disable the CFBClaimsToFepOdsDailyUploadtrigger via ADF manage screen, triggers by changing the trigger to "Stopped" and clicking ok
+8- Publish changes
+

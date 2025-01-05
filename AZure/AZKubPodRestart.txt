@@ -1,0 +1,18 @@
+
+az login
+
+set --subscription 1d834cda-73f2-4065-b96d-187dacbc2dd9
+
+az aks get-credentials --resource-group rgAppP003 --name aksAppP003 --overwrite-existing
+
+kubelogin convert-kubeconfig -l azurecli
+
+
+a list of pods and their status.
+kubectl get pods -n edi-prod
+
+
+api interface :
+
+kubectl rollout restart deployment -n edi-prod edi-api-interface
+

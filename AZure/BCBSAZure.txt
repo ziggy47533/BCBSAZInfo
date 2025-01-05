@@ -1,0 +1,95 @@
+
+Last name : Garfiled had knowledge of this job (Owner)
+
+
+
+
+(index=5010 sourcetype=bts_frs_dir)
+| stats count by _time, CreationTime, DirectoryName, FileName, Age
+| rename CreationTime AS DateCreated
+| rename Age AS MinutesWaiting
+| eval MinutesWaiting=round('MinutesWaiting',2)
+| sort -DirectoryName
+
+
+In mm-ops-a01
+D:\BCBS_Azure_Dirs
+
+
+EgressDirs.ps1
+IngressDirs.ps1
+
+Egress_List.log
+Ingress_List.log
+
+
+(index=5010 sourcetype=btsfrs:azure:dirlist)
+| stats count by _time, CreationTime, DirectoryName, FileName, FileSize, Age
+| rename CreationTime AS DateCreated
+| rename Age AS MinutesWaiting
+| eval MinutesWaiting=round('MinutesWaiting',2)
+| sort -DirectoryName
+
+
+(index=5010 sourcetype=btsfrs:azure:dirlist Direction=Egress)
+| stats  count by _time, CreationTime, DirectoryName, FileName, FileSize, Age
+| rename  CreationTime AS DateCreated
+| rename  Age AS MinutesWaiting
+| eval  MinutesWaiting=round('MinutesWaiting',2)
+| sort  -DirectoryName
+
+
+
+(index=5010 sourcetype=btsfrs:azure:dirlist Direction=Egress)
+| stats  count by _time, CreationTime, DirectoryName, FileName, FileSize, Age
+| rename  CreationTime AS DateCreated
+| rename  Age AS MinutesWaiting
+| eval  MinutesWaiting=round('MinutesWaiting',2)
+| sort  -DateCreated
+
+
+(index=5010 sourcetype=btsfrs:azure:dirlist Direction=Ingress)
+| stats  count by _time, CreationTime, DirectoryName, FileName, FileSize, Age
+| rename  CreationTime AS DateCreated
+| rename  Age AS MinutesWaiting
+| eval  MinutesWaiting=round('MinutesWaiting',2)
+| sort  -DirectoryName
+
+
+(index=5010 sourcetype=btsfrs:azure:dirlist Direction=Inress)
+| stats  count by _time, CreationTime, DirectoryName, FileName, FileSize, Age
+| rename  CreationTime AS DateCreated
+| rename  Age AS MinutesWaiting
+| eval  MinutesWaiting=round('MinutesWaiting',2)
+| sort  -DateCreated
+
+
+
+(index=5010 sourcetype=btsfrs:azure:dirlist DirectoryName=* FileName=*)
+| stats count(FileName) as Counts by date_hour, DirectoryName
+| dedup date_hour
+| sort date_hour
+
+
+(index=5010 sourcetype=btsfrs:azure:dirlist Direction=Egress DirectoryName=* FileName=*)
+| stats count(FileName) as Counts by date_hour, DirectoryName
+| dedup date_hour
+| sort date_hour
+
+
+(index=5010 sourcetype=btsfrs:azure:dirlist Direction=Ingress DirectoryName=* FileName=*)
+| stats count(FileName) as Counts by date_hour, DirectoryName
+| dedup date_hour
+| sort date_hour
+
+
+(index=5010 sourcetype=btsfrs:azure:dirlist Direction=Egress DirectoryName="*" FileName=*)
+| stats count(FileName) as Counts by date_hour, DirectoryName
+| sort date_hour
+
+
+(index=5010 sourcetype=btsfrs:azure:dirlist Direction=Ingress DirectoryName="*" FileName=*)
+| stats count(FileName) as Counts by date_hour, DirectoryName
+| sort date_hour
+
+

@@ -1,0 +1,6 @@
+
+
+Azure ; Splunk
+
+https://github.com/serilog/serilog-sinks-splunk
+

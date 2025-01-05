@@ -1,0 +1,5 @@
+
+
+Splunk servers:
+
+the new server names in Azure are lp-spl-a20-a24
