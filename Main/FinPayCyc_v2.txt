@@ -1,0 +1,240 @@
+HRP Replicate:
+
+Server: MP-HRP-D03
+  
+http://lp-spl-a09.corp.net.bcbsaz.com:8000/en-US/account/login?return_to=%2Fen-US%2F
+
+Use this:
+http://lp-spl-a02.corp.net.bcbsaz.com:8000/en-US/app/splunk_app_db_connect/data_lab#/inputs?_k=vrmi2i
+
+
+Make sure to disable script scheduler.... then enable it again...
+
+index=main OR index=sterling sourcetype=eop*  linecount=1 | stats  count(totalAmount)
+
+Rename the file path :
+
+D:\EOP Or C:\
+
+Search for missing file in SI5...
+index=sterling sourcetype=eop*  linecount=1 | stats  count(totalAmount)
+
+index=sterling sourcetype=eop*  linecount=1 | stats  count(totalAmount)
+
+
+Active Directory - app_splunk_can-delete
+
+
+HRP Panel.....
+
+index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT* Payment_Date="2023-02-09 00:00:00" } delete
+
+index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT* Payment_Date="2022-08-04 00:00:00" | delete - old
+
+index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT* Payment_Date="xxx" | delete - old
+
+
+SI5 Panel (from a01-Old now on a02) - stop the schedule before ....
+index=main OR index=sterling sourcetype=eop*   FileName  =  All_EOP_GetPaymentIDs_130772_20201118030040360 | delete
+
+SI Panel to Delete  ---- New
+(index=main OR index=sterling sourcetype="eop:hrp:prod") paymentDate="2022-9-22" | delete
+
+
+for the whole date for RedCard....
+(index=sterling sourcetype="eop:redcard" host=mm-ops-a02) paymentThroughDate="2022-7-7" | delete
+
+If need to delete something in splunk use this account 
+splunk_eop_delete
+WekhQ$*7F+GNL?S(
+
+
+look for the host to see what to disable from the scheduler... once done can re-enable the sheduler....
+EOP_Read (Tue, Thur)
+
+rename the file path to path= D:\EOP
+
+
+HRP - DB issue using the script:
+in the where clause
+
+Should be in DB connect menu....
+http://lp-spl-a02.corp.net.bcbsaz.com:8000/en-US/app/splunk_app_db_connect/data_lab#/inputs?_k=c2t9uy
+admin 
+Sp1Unk1tyo!
+
+Should be in DB connect menu  --- NEW
+https://lm-spl-a08.corp.net.bcbsaz.com:8000/en-US/account/login?return_to=%2Fen-US%2F
+admin 
+Sp1Unk1tyo!
+DB Job - mp-hrp-d03_hrp_extract
+
+
+add this code:
+change the date to (DAY, -2) ... if need too?? Could be more then 2 days....
+AND payment_dt.Date_Value LIKE '2021-xx-xx%'
+AND pf.Payment_Cycle_Key LIKE 'Parent Commerical Payment Cycle'
+
+If not "parent"
+AND pf.Payment_Cycle_Key NOT LIKE 'Parent Commerical Payment Cycle'
+
+Might need this just in case for non "parent data"
+AND pf.Payment_Cycle_Key NOT LIKE '%Commercia%'
+AND payment_dt.Date_Value LIKE '2021-02-10%'
+
+00 03 * * 1,3 - change the min and hour if need.....
+
+00 12 * * 2,4,5 - change the min and hour if need.....
+
+
+Outbound:
+\\baz-filer01\share\EMFT_FTP\Outbound\Redcard\EOP\Prod --- later time
+in SI5 used 3a4d11 to find the zip files - are completed....
+
+From SI5
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\ZIP_IN
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\_IN
+Then copy these EOP to the other three folders
+
+
+where zip file is saved first (no more then 200,000 files)
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\zip_IN
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\_IN
+
+Used: mm-ops-a02 :
+
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod\Zip_In - (New)
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod\Archive
+\\baz-filer01\share\EMFT_FTP\Outbound\PCS\EOP\Prod
+\\baz-filer01\share\FinanceOperations\Inbound\HRP\EOP_IND\PROD
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\All_EOP_Decompressed
+
+
+three locations we dont want duplicates to go outbound are: Check these folders
+\\baz-filer01\share\EMFT_FTP\Outbound\RedCard\EOP\Prod - AZ
+\\baz-filer01\share\EMFT_FTP\Outbound\RedCard\Production-Letters-SENT-TO-REDCARD - HR
+\\baz-filer01\share\EMFT_FTP\Outbound\PCS\EOP\Prod
+
+these are 5 locations where si5 copies the inbound zip files from hrp
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod = velocity pickup location gets picked up real-time
+
+\\baz-filer01\share\EMFT_FTP\Outbound\PCS\EOP\Prod = gets picked up by si5 at 3pm to send outbound to PCS
+
+\\baz-filer01\share\FinanceOperations\Inbound\HRP\EOP_IND\PROD = for finance archive
+
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\All_EOP_Decompressed = Splunk SI5 Inbound from HRP panel gets updated.
+      This were mm-ops-a01 has a scheduled task eop-read that runs at 3am every 15mins and checks that folder
+      and updates the panel.  The logs that splunk ingests are on mm-ops-a01\D$\sampledate\eop
+
+
+these are 5 locations where si5 copies the inbound zip files from hrp
+
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod = velocity pickup location gets picked up real-time
+
+\\baz-filer01\share\EMFT_FTP\Outbound\PCS\EOP\Prod = gets picked up by si5 at 3pm to send outbound to PCS
+
+\\baz-filer01\share\FinanceOperations\Inbound\HRP\EOP_IND\PROD = for finance archive
+
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\All_EOP_Decompressed = Splunk SI5 Inbound from HRP panel gets updated.
+ This were mm-ops-a01 has a scheduled task eop-read that runs at 3am every 15mins and checks that folder and updates the panel.
+ The logs that splunk ingests are on mm-ops-a01\D$\sampledate\eop
+
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod\Archive = si5 archive location
+
+**** when velocity processes eops it creates redcard zip files in ***
+path \\baz-filer01\share\EMFT_FTP\Outbound\RedCard\EOP\Prod
+
+three locations we dont want duplicates to go outbound are:
+\\baz-filer01\share\EMFT_FTP\Outbound\RedCard\EOP\Prod - AZ
+\\baz-filer01\share\EMFT_FTP\Outbound\RedCard\Production-Letters-SENT-TO-REDCARD - HR
+\\baz-filer01\share\EMFT_FTP\Outbound\PCS\EOP\Prod
+
+Server that trigger the file to SI5:
+that IP is the bcaz-wl-pr08 server and claimserver10 does run there
+
+Launch Code :
+1520 outbound to Zelis - Redcard_producer_out
+1531 Outbound to PCS  (FNScndUndrscr)
+1878 Outbound to Zelis also Its for SoAZ
+
+These should run at 9AM and 330PM.. if not need to run these code manually..
+1540 - HRP
+1878 - SofAZ
+
+look in SI5 using 3A4D11 then click on find with today date....
+
+1540 pull files to the 5 different folders from SI5....
+
+PCS file locations...
+\\baz-filer01\share\EMFT_FTP\Outbound\PCS\EOP\Prod (Launch code 1531)
+
+
+splunk Azure :
+index=sterling sourcetype="*azure*" Directory="*finance*"
+Directory="finance-aggregates Prem_Dir = finance-aggregates" FileName="*eop*" | dup filename
+
+Azure
+https://portal.azure.com/#blade/Microsoft_Azure_Storage/StorageExplorerBlade
+goto Velocity connection-prod
+safisp001
+blob containers
+fin-agg
+
+
+Abat Job :
+
+\\corp\DFS\abp-bsd\VelocityConnect\FIS
+active batch job PGR to HRP (FIS)
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod --- early time
+\\corp\DFS\abp-bsd\VelocityConnect - execute  file is located
+
+
+In the future you can use this splunk query to see if there are more than one paymentid for pcsoutbound folder
+index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02 source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_egress_*.log" DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\PCS\\EOP\\Prod"
+| rex "(?:All_EOP_GetPaymentIDs_)(?P<paymentId>(.*?)(?=_))"
+| table FileName paymentId
+
+Note: make sure to refresh the scheduler or close it then enable the run for the script (Redcard).
+
+All – below are 5 locations where SI drops the EOP payment files to.
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod - ***** check SI5
+\\baz-filer01\share\EMFT_FTP\Outbound\PCS\EOP\Prod
+\\baz-filer01\share\FinanceOperations\Inbound\HRP\EOP_IND\PROD
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\All_EOP_Decompressed - ***** Check SI5
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod\Archive
+
+count of what in the zip (D:\Scripts...)
+RedcardZipCounts - Run the scripts - can open it in notepad...
+
+DB Connect- 
+HRP_EOP-totalCount Or HRP_EOP_TotalAmount - this is disable ... Might need to change DAY to HOURS if needed..
+
+
+3 am the HRP Moveit job runs
+
+
+here is the link to sterling dir count
+http://splunkops.azblue.com/en-US/app/bcbsaz_ta_app_5010/s
+
+100.112.28.120 HRP DB
+
+
+Finace - Dashboard
+
+http://splunk.azblue.com/en-US/app/bcbsaz_data_tracking/
+eop_files_processed_inbound_from_hrp_to_si5__to_redcard_v2?form.time_dropdown.earliest=%40d&form.
+time_dropdown.latest=now
+
+
+
+D:\Scripts :
+
+
+HRP Panel 
+EOP_Prod : Source -  \\baz-filer02\STArchive\SIProd\Archives\Inbound\All_EOP_Decompressed
+
+
+Zeils Panel
+RedCard : Source - \\baz-filer02\STArchive\SIProd\Archives\Inbound\zip_IN
+
