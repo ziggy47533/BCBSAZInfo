@@ -1,0 +1,13 @@
+
+
+Use server mm-ops-a02 or a03
+
+
+need to use IE to use the Job ID Launcher
+
+user - nodoc
+pw - password
+
+
+the script is on D drive to run the PS script..
+

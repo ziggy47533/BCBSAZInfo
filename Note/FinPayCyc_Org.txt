@@ -1,0 +1,332 @@
+HRP Replicate:
+
+Server: MP-HRP-D03
+  
+http://lp-spl-a09.corp.net.bcbsaz.com:8000/en-US/account/login?return_to=%2Fen-US%2F
+
+Use this:
+http://lp-spl-a02.corp.net.bcbsaz.com:8000/en-US/app/splunk_app_db_connect/data_lab#/inputs?_k=vrmi2i 
+
+SI5 - http://splunkops.azblue.com/en-US/app/bcbsaz_data_tracking/search?earliest=%40d&latest
+      =now&q=search%20index%3Dmain%20OR%20index%3Dsterling%20sourcetype%3Deop*%20%20linecount
+      !%3D1%20%7C%20stats%20%20count(totalAmount)&display.page.search.mode=verbose&dispatch.
+      sample_ratio=1&display.general.type=statistics&workload_pool=&display.page.search.tab
+      =statistics&sid=1605711731.4006625 
+
+Make sure to disable script scheduler.... then enable it again...
+
+
+index=main OR index=sterling sourcetype=eop*  linecount=1 | stats  count(totalAmount)
+
+Check on the missing dollar amount....
+index=main OR index=sterling sourcetype=eop*  linecount=1
+
+resolve issue
+yep delete in splunk - need Gilbert, John or Rob help
+then change the path in the file i moved to the desktop update the filer path
+to D:\EOP\All_EOP_GetPaymentIDs_xxxxx-xxx
+if you login to mm-ops-a01 i left a copy on the desktop and you can see the updated path
+once you updat the file on the desktop, then you can copy back to the sampledata folder on mm-ops-a01,
+then enable the schedule
+
+Notes: Look for the problem file....
+All_EOP_GetPaymentIDs_130772_20201118030040360  $93.35
+
+
+HRP_Extract - if the count is more then 1,000
+
+Once you click the exec you get a preview
+
+****check the SQLTrans log for MP-HRP-D03**** in CMV...
+** Cron date might need to change date of the actual day you run....
+
+in the where clause
+
+Should be in DB connect menu....
+http://lp-spl-a02.corp.net.bcbsaz.com:8000/en-US/app/splunk_app_db_connect/data_lab#/inputs?_k=c2t9uy
+admin 
+Sp1Unk1tyo!
+
+add this code
+
+change the date to -2 ... if need too??
+
+AND payment_dt.Date_Value LIKE '2021-xx-xx%'
+AND pf.Payment_Cycle_Key LIKE 'Parent Commerical Payment Cycle'
+
+If not "parent"
+AND pf.Payment_Cycle_Key NOT LIKE 'Parent Commerical Payment Cycle'
+
+Might need this just in case for non "parent data"
+AND pf.Payment_Cycle_Key NOT LIKE '%Commercia%'
+AND payment_dt.Date_Value LIKE '2021-02-10%'
+
+00 03 * * 1,3 - change the min and hour if need.....
+
+00 12 * * 2,4,5 - change the min and hour if need.....
+
+SI5 - EOP zip files (001HRPayor)
+
+Check the sheduler in mm-ops-a01......
+
+Decompress folder should have the zip files....
+might reach out to SI5 team......
+
+8917HR...3A4D11.zip ----
+
+RedCard - runs on mm-ops-a02.....
+
+
+Not able to do this task
+index=main OR index=sterling sourcetype=eop*  FileName  =  All_EOP_GetPaymentIDs_(204106_20210217030003342) | delete
+
+Make sure to disable the job in the task scheduler....
+
+Rename the file path :
+
+D:\EOP Or C:\
+
+Search for missing file in SI5...
+index=sterling sourcetype=eop*  linecount=1 | stats  count(totalAmount)
+
+index=sterling sourcetype=eop*  linecount=1 | stats  count(totalAmount)
+
+index=main OR index=sterling sourcetype=eop*   FileName  =  All_EOP_GetPaymentIDs_130772_20201118030040360
+| delete 
+
+
+look for the host to see what to disable from the scheduler... once done can re-enable the sheduler....
+EOP_Read (Tue, Thur)
+
+rename the file path to path= D:\EOP
+
+Abat Job :
+
+\\corp\DFS\abp-bsd\VelocityConnect\FIS
+active batch job PGR to HRP (FIS)
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod --- early time
+\\corp\DFS\abp-bsd\VelocityConnect - execute  file is located
+
+Outbound:
+\\baz-filer01\share\EMFT_FTP\Outbound\Redcard\EOP\Prod --- later time
+in SI5 used 3a4d11 to find the zip files - are completed....
+
+From SI5
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\ZIP_IN
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\_IN
+Then copy these EOP to the other three folders
+
+Thees should run at 9AM and 330PM.. if not need to run these code manually..
+1520 - HRP
+1878 - SofAZ
+
+More research:
+
+find the extra count in HRP:
+index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT* Payment_Status="Needs Review"
+| stats  count(Payment_Amount) as "HRP Extract Count"
+
+missing paymenid on hrpdb panel vs si5 in hrp panel :
+index=sterling sourcetype=hrpdb:extract:eop source="HRP_EXTRACT*"
+| eval temp2=split(FileName,".")
+| eval FileName1=mvindex(temp2,0)
+| stats values(paymentId) as HRPDBPaymentId
+| appendcols [search index=sterling sourcetype="eop-wip"
+| stats values(paymentId) as SI5PaymentId]
+| makemv HRPDBPaymentId
+| mvexpand HRPDBPaymentId
+| where not match(SI5PaymentId, HRPDBPaymentId)
+| table HRPDBPaymentId
+
+index=sterling sourcetype="eop-wip"
+| eval temp2=split(FileName,".")
+| eval FileName1=mvindex(temp2,0)
+| stats values(paymentId) as SI5PaymentId
+| appendcols [search index=sterling sourcetype=hrpdb:extract:eop source="HRP_EXTRACT*"
+| stats values(paymentId) as HRPDBPaymentId]
+| makemv SI5PaymentId
+| mvexpand SI5PaymentId
+| where not match(HRPDBPaymentId, SI5PaymentId)
+| table SI5PaymentId
+
+find out if redcard has less count than si5 count
+index=sterling sourcetype="eop-wip"
+| eval temp2=split(FileName,".")
+| eval FileName1=mvindex(temp2,0)
+| stats values(paymentId) as SI5PaymentId
+| appendcols [search index=sterling sourcetype="eop:redcard"
+|  stats values(paymentId) as RedcardPaymentId]
+| makemv SI5PaymentId
+| mvexpand SI5PaymentId
+| where not match( RedcardPaymentId, SI5PaymentId)
+| table SI5PaymentId
+
+
+When the dollare amount is diff......
+HRP TotalAmount off VS BCDEFG_TotalAmount
+
+(index=main OR index=sterling sourcetype="eop-wip" "*EOP*")
+| rex "(paymentCycle\s+=\s+)(?<paymentCycle_1>\w+\s+\w+\s\w+)"
+| rex "(?<=paymentStatus)(?:\s+\W+)(?P<paymentStatus_1>(.*)).*?(?=)"
+| stats  sum(totalAmount) as totalAmount_A sum(totalClaimPayableAmount) as totalClaimPayableAmount_B
+         sum(totalInterestPayableAmount) as totalInterestPayableAmount_C
+		 sum(totalAllocatedReceivedPaymentsAmount) as totalAllocatedReceivedPaymentsAmount_D
+		 sum(totalOutstandingAmount) as totalOutstandingAmount_E
+		 sum(totalRecoupedAmount) as totalRecoupedAmount_F
+		 sum(totalWithHoldAmount) as totalWithHoldAmount_G 
+		 sum(totalNumberOfClaims) as totalNumberOfClaims count by paymentId 
+| eval BCDEFG_TotalAmount=(totalClaimPayableAmount_B+totalInterestPayableAmount_C
+       +totalAllocatedReceivedPaymentsAmount_D+totalOutstandingAmount_E-totalRecoupedAmount_F
+	   +totalWithHoldAmount_G)
+| eval BCDEFG_TotalAmount_Minus_totalAmount_A=(totalAmount_A-BCDEFG_TotalAmount)
+| eval totalAmount_A_Minus_totalClaimPayableAmount_B=(totalAmount_A-totalClaimPayableAmount_B)
+| where BCDEFG_TotalAmount_Minus_totalAmount_A>"0.00"
+
+
+Find the total amount - 
+(index=main OR index=sterling sourcetype="eop-wip" "*EOP*") totalAmount="xxxxx.xx"
+| rex "(paymentCycle\s+=\s+)(?<paymentCycle_1>\w+\s+\w+\s\w+)" 
+| rex "(?<=paymentStatus)(?:\s+\W+)(?P<paymentStatus_1>(.*)).*?(?=)"
+
+Find the Payment number...
+(index=main OR index=sterling sourcetype="eop-wip" "*EOP*") paymentNumber="xxxxxxx"
+| rex "(paymentCycle\s+=\s+)(?<paymentCycle_1>\w+\s+\w+\s\w+)"
+| rex "(?<=paymentStatus)(?:\s+\W+)(?P<paymentStatus_1>(.*)).*?(?=)"
+
+
+PCS vs SI5 HRP Inbound count diff (PCS Outbound panel)
+DB Connect PCS Manual (Off by default)
+
+index=sterling sourcetype="eop:hrp:prod" | rex field=source "(EOP\W)(?<file_name>\w+)"
+| eval temp2=split(FileName,".")
+| eval FileName1=mvindex(temp2,0)
+| stats values(file_name) as InboundHRP_FileName
+| appendcols [search index=sterling sourcetype="SI5:Jobs" host="mp-si0-d01`" file_name="*EOP*" NOT file_name="*.zip"
+| stats values(file_name) as PCSOutbound_FileName]
+| makemv InboundHRP_FileName
+| mvexpand InboundHRP_FileName
+| where not match(PCSOutbound_FileName, InboundHRP_FileName)
+| table InboundHRP_FileName
+
+Only do this if Finance had to special manual this job....
+In SI5 384d11 for redcard
+
+then on mm-ops-a02 run the Redcard script from the scheduler..
+
+HRP Lag time
+index=ops sourcetype="hrp:db_lag"| timechart span=1m max(HRP_Lag_Minutes)
+
+File locations:
+
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod
+\\baz-filer01\share\EMFT_FTP\Outbound\PCS\EOP\Prod
+\\baz-filer01\share\FinanceOperations\Inbound\HRP\EOP_IND\PROD
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\All_EOP_Decompressed
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod\Archive
+
+EOP zip files first get saved in zip format here
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\zip_IN
+
+0001HRPayor to find if zip files are routed or not....
+delete the timestamp at the end of the file...
+
+CSV file D:\scripts\redcard\eop\working\sampledata
+Look for the "source" in splunk.... item
+
+splunk Azure :
+index=sterling sourcetype="*azure*" Directory="*finance*"
+Directory="finance-aggregates Prem_Dir = finance-aggregates" FileName="*eop*" | dup filename
+
+Azure
+https://portal.azure.com/#blade/Microsoft_Azure_Storage/StorageExplorerBlade
+goto Velocity connection-prod
+safisp001
+blob containers
+fin-agg
+
+In case file do not process normally.....
+the location where fin grabs the eop files
+from \\baz-filer01\share\FinanceOperations\Inbound\HRP\EOP_IND\PROD
+then copies them by smallest first then large file size last to
+dir \\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod
+10MB or more need to goto the large folder
+
+Info:...
+This is a good query to make sure the total amount on the si5 finance panel count matches the filename count
+
+index=main OR index=sterling sourcetype=eop-wip  linecount!=1 | stats  count(totalAmount)
+
+Krystal said in si5 gui if it hasn't updated in 30mins from the last one then we need to ping her
+
+Two Bad files on 5-14: there only one line count in the file....
+
+Path=\\baz-filer02\STArchive\SIProd\Archives\Inbound\txt_IN\All_EOP_GetPaymentIDs_230_20200514113022048.20200514120302}
+
+Path=\\baz-filer02\STArchive\SIProd\Archives\Inbound\txt_IN\All_EOP_GetPaymentIDs_241_20200514113019144.20200514132444}
+
+
+Case:
+goto gateway location is 1520
+
+
+you know how the source has 
+D:\Scripts\EOP_PROD\sampleData\EOP\All_EOP_GetPaymentIDs_227161_20210304113013255.csv
+
+http://splunkops.azblue.com/en-US/app/bcbsaz_data_tracking/eop_files_processed_inbound_from_hrp_to_si5__to_redcard_
+       wip_testing?form.time_dropdown.earliest=%40d&form.time_dropdown.latest=now
+
+index=sterling sourcetype="eop:hrp:prod"
+
+(index=main OR index=sterling sourcetype="eop:hrp:prod") source="*"
+| rex field=source "(EOP\W)(?<file_name>\w+)"
+| table file_name
+
+PCS file locations...
+\\baz-filer01\share\EMFT_FTP\Outbound\PCS\EOP\Prod (Launch code 1531)
+
+
+Payment ID
+All_EOP_GetPaymentIDs_377894_20210608084322847  (377894 is the paymentID)...
+
+to get our dup paymentids splunk query
+(index=main OR index=sterling sourcetype="eop-wip" "*EOP*" paymentId="*")
+| stats values(FileName) as FileName1 values(_time) as EOPTime count by paymentId | where count>1
+| table FileName1 paymentId
+
+save file to csv
+
+create a delimter ,
+
+save it again to csv
+
+Server that trigger the file to SI5:
+that IP is the bcaz-wl-pr08 server and claimserver10 does run there
+
+where zip file is saved first (no more then 200,000 files)
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\zip_IN
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\_IN
+
+5 locations once eop zip are received and need to be copied to
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod
+\\baz-filer01\share\EMFT_FTP\Outbound\PCS\EOP\Prod
+\\baz-filer01\share\FinanceOperations\Inbound\HRP\EOP_IND\PROD
+\\baz-filer02\STArchive\SIProd\Archives\Inbound\All_EOP_Decompressed
+\\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod\Archive
+
+Check if all the paymentid and Filename match the total count for the paymentcycle:
+(index=main OR index=sterling sourcetype="eop-wip" "*EOP*")
+| rex "(?<=paymentCycle)(?:\s+=\s+)(?P<paymentCycle_1>(.*))"
+| stats  values(paymentThroughDate) as paymentThroughDate values(paymentDate) as paymentDate
+  values(paymentBatchNumber) as paymentBatchId values(paymentId) as paymentId
+  values(FileName) as FileName count by paymentCycle_1
+| sort paymentCycle_1
+
+To delete stuff out of splunk : admin Sp1Unk1tyo!
+splunk cmd to delete hrp rep db data. make sure to have your search for that current day you want to delete 
+index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT* Payment_Date="2021-06-11 00:00:00" | delete
+
+Launch Code :
+1520 outbound to Zelis
+1531 Outbound to PCS
+1878 Outbound to Zelis also Its for SoAZ
+

@@ -1,0 +1,11 @@
+
+
+
+HRP - 
+index=sterling sourcetype="hrp:dbx:bazpdwpr_gg:eop:extract:prd" source=hrp_extract  payment_cycle_key!="Child BCBSAZ Individual Supplier Payment Cycle" Payment_Batch_Key=227625 paymentId="3884666"
+ | dedup paymentId
+
+
+Zelis - 
+index=sterling_eop sourcetype=file_processing:eop_redcard_prd:csv paymentBatchNumber=227625 paymentId="*" | 
+table paymentId

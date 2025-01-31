@@ -1,0 +1,7 @@
+
+
+abat job name : /OPS/Jobs/HRP Payment Cycle/HRP Payment Cycle
+
+File trigger to run sctipt.....
+
+file location : \\baz-filer01\SHARE\EMFT_FTP\Inbound\HRP\EOP\PROD\Zip_In\All_EOP_*.zip

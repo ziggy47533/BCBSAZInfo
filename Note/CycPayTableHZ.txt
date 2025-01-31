@@ -1,0 +1,18 @@
+
+
+
+HRP
+
+index=sterling sourcetype="hrp:dbx:bazpdwpr_gg:eop:extract:prd" source=hrp_extract
+  payment_cycle_key!="Child BCBSAZ Individual Supplier Payment Cycle"
+| table _time Payee_ID Payee_Name paymentId Payment_Batch_Key Payment_Bank
+        Payee_Type_Name Payment_Type_Desc Payment_Amount  
+		
+		
+Zelis
+		
+index=sterling_eop sourcetype=file_processing:eop_redcard_prd:csv
+| table _time recipientHccId recipientName paymentId paymentBatchNumber
+  paymentCycle paymentType totalAmount
+  
+  

@@ -1,0 +1,44 @@
+
+Old Cycle payment search panels :
+
+
+FIS Pick Location to Velocity
+
+index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02
+source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_ingress_*.log"
+DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Inbound\\HRP\\EOP\\Prod"
+| stats dc(FileName)
+
+
+FIS Pick Location to Velocity
+
+index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02
+source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_ingress_*.log"
+DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Inbound\\HRP\\EOP\\Prod"
+| rex "(?<=CreationTime)(?:\s\W+)(?P<Inbound_CreationTime>(.*)).*?(?=\sLastWriteTime)" 
+| stats  latest(Inbound_CreationTime)
+
+
+Velocity Connect processing
+
+index=sterling sourcetype="Azure:Directory" Directory="finance-aggregates
+Prem_Dir = finance-aggregates" FileName="*eop*"
+| stats  count(FileName)
+
+
+Veloicty Connect Errors/Failure
+
+index=azure sourcetype=mscs:storage:blob:saloggingp001 source="aifisp001*"
+ message{}.raw="*All_EOP_GetPaymentIDs*" "*fail*"
+| dedup message{}.raw
+| stats  count(source) as "Failed Count"
+
+
+PCS Outbound folder
+
+index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02
+source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_egress_*.log"
+DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\PCS\\EOP\\Prod"
+| stats  dc(FileName)
+
+

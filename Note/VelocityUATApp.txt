@@ -1,0 +1,25 @@
+﻿
+
+velocity
+
+[‎4/‎21/‎2020 8:08 AM]  Soza, Gilbert:  
+so i learned something yesterday with mu-mqs-a02
+did you know that the velocity apps for stage are the only ones that should be running not UAT?
+ 
+[‎4/‎21/‎2020 8:09 AM]  Mitchell, Chris:  
+i did not know..
+kinda interesting..
+ 
+[‎4/‎21/‎2020 8:10 AM]  Soza, Gilbert:  
+so yesterday Jinger was having issues pitching transactions to BX. there were a build up in the 270 and 276 queues
+
+mu-mqs-a02 for some reason was rebooted over the weekend, well the uat velocity apps are now being ran somewhere in azure
+
+so when they rebooted over the weekend it lost connectivity to subsrcibe to mu-mqs-a02. yesterday Chip had to reach out to Jason Galloway to redeploy the app in azure to fix the issue. Well, last night since they patched and the server was rebooted the same issue is happening for Jenny Ratti's test. I see the transactions sitting in the queue
+test.az.rt.270.q.5010 and test.az.rt.276.q.5010
+
+[‎4/‎21/‎2020 8:17 AM]  Soza, Gilbert:  
+yeah i reached out to chip already but Jason isn't in yet
+ 
+ know Chip likes to ping us on the side to make changes
+so he worked with someone from our team but we just need to communicate that to each other what the heck is going on so we aren't blind sided

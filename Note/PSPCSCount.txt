@@ -1,0 +1,5 @@
+
+
+check the status of PCS files 
+
+(get-childitem \\baz-filer01\share\emft_ftp\outbound\pcs\eop\prod\ -file).count

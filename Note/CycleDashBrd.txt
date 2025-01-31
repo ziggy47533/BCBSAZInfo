@@ -1,0 +1,653 @@
+<form theme="dark">
+  <label>EOP Files processed Inbound from HRP to SI5  to Redcard v2</label>
+  <fieldset submitButton="false" autoRun="false">
+    <input type="time" token="time_dropdown">
+      <label>Time</label>
+      <default>
+        <earliest>@d</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row depends="$alwaysHideHTMLStyle$">
+    <panel>
+      <html>
+       <p/>
+      <style>
+        .dashboard-body{
+        background-image: url('https://azblue365.sharepoint.com/sites/tech/infrastructure/opg/Shifts/Documentation/1_Operations%20Monitoring/HRP%20Finance/iStock-1026914886-e1585202656953.jpg');
+        }
+        
+        #cl h2{
+        font-weight: bold !important;
+        background-color:#77D6D8 !important;
+        }
+        #cl .dashboard-panel {
+        background:#003D5E !important;
+        border-style: solid;
+        border-color: #77D6D8;
+        width:27% !important;
+        }
+        
+        #HRP1 h2, #HRP2 h2, #HRP3 h2, #HRP4 h2, #HRP5 h2{
+        font-weight: bold !important;
+        background-color:#4FA484 !important;
+        }
+        #HRP1 .dashboard-panel, #HRP2 .dashboard-panel, #HRP3 .dashboard-panel, #HRP4 .dashboard-panel, #HRP5 .dashboard-panel {
+        background: #003D5E !important;
+        border-style: solid;
+        border-color: #4FA484;
+        }
+        
+         #SI5Inbound1 h2,  #SI5Inbound2 h2,  #SI5Inbound3 h2,  #SI5Inbound4 h2,  #SI5Inbound5 h2{
+        font-weight: bold !important;
+        background-color:#006D9C !important;
+        }
+        #SI5Inbound1 .dashboard-panel,  #SI5Inbound2 .dashboard-panel,  #SI5Inbound3 .dashboard-panel,  #SI5Inbound4 .dashboard-panel,  #SI5Inbound5 .dashboard-panel {
+        background: #003D5E !important;
+        border-style: solid;
+        border-color: #006D9C;
+        }
+         
+         #SI5Onbound1 h2, #SI5Onbound2 h2, #SI5Onbound3 h2, #SI5Onbound4 h2, #SI5Onbound5 h2{
+        font-weight: bold !important;
+        background-color:#5A4575 !important;
+        }
+         #SI5Onbound1 .dashboard-panel, #SI5Onbound2 .dashboard-panel, #SI5Onbound3 .dashboard-panel, #SI5Onbound4 .dashboard-panel, #SI5Onbound5 .dashboard-panel {
+        background: #003D5E !important;
+        border-style: solid;
+        border-color: #5A4575;
+        }
+        
+        #Oth1 h2, #Oth2 h2, #Oth3 h2, #Oth4 h2, #Oth5 h2, #Oth6 h2, #Oth7 h2, #Oth8 h2, #Oth9 h2{
+        font-weight: bold !important;
+        background-color:#006D9C !important;
+        }
+        #Oth1 .dashboard-panel, #Oth2 .dashboard-panel, #Oth3 .dashboard-panel, #Oth4 .dashboard-panel, #Oth5 .dashboard-panel, #Oth6 .dashboard-panel, #Oth7 .dashboard-panel, #Oth8 .dashboard-panel, #Oth9 .dashboard-panel {
+        background: #003D5E !important;
+        border-style: solid;
+        border-color: #006D9C;
+        }
+      </style>
+    </html>
+    </panel>
+  </row>
+  <row>
+    <panel id="cl">
+      <title>Clickable Links</title>
+      <html>
+         <a target="_blank" href="http://splunkops.azblue.com/en-US/app/bcbsaz_data_tracking/eop_hrp_primary_db?form.field1.earliest=-24h%40h&amp;form.field1.latest=now" class="btn btn-large">HRP Primary DB</a>
+         <a target="_blank" href="https://azblue365.sharepoint.com/:f:/s/tech/infrastructure/opg/Emr7w4TiaXpIiExbxm-5rBgB57gdKidQN10m7mSqeTAaEA?e=waJDmU" class="btn btn-large">EOP Documentation</a>
+         <a target="_blank" href="https://monitoring.lower.services.azblue.com/d/YFHzRkn7z/fnfinancepaymenthrp-payment-aggregationp001-failures?" class="btn btn-large">Grafana</a>
+         <a target="_blank" href="http://splunkops.azblue.com/en-US/app/bcbsaz_data_tracking/eop_files_processed_inbound_from_hrp_to_si5_to_redcard_v2_misc?" class="btn btn-large">EOP Misc</a>
+         <style>
+           .btn-large {background-color: #004A71 !important;}
+           .btn-large:hover {background-color: #5A4575 !important;}
+         </style>
+      </html>
+      </panel>
+  </row>
+  <row>
+    <panel id="HRP1">
+      <title>HRP Extract Replicated DB (Source=MP-HRP-D03)</title>
+      <single>
+        <search>
+          <query>index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT*  | stats count(Payment_Amount) as "HRP Extract Count"</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">HRP Extract Count</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_data_tracking/eop_hrp_primary_db</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel id="SI5Inbound1">
+      <title>SI5 Inbound from HRP EOP</title>
+      <single>
+        <search>
+          <query>(index=main OR index=sterling sourcetype="eop:hrp:prod") | rex field=source "(EOP\W)(?&lt;file_name&gt;\w+)" | stats  count(file_name) as "SI5 Total Count"</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">SI5 Total Count</option>
+      </single>
+    </panel>
+    <panel id="SI5Onbound1">
+      <title>SI5 Outbound to REDCARD</title>
+      <single>
+        <search>
+          <query>(index=sterling sourcetype="eop:redcard" host=mm-ops-a02) | stats  count(totalAmount) as "Redcard Total Count"</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Redcard Total Count</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel id="HRP2">
+      <title>HRP Extract Replicated DB (Source=MP-HRP-D03)</title>
+      <single>
+        <search>
+          <query>index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT*  | stats sum(Payment_Amount) as "HRP Extract Total $ Amount"</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">HRP Extract Total $ Amount</option>
+        <option name="unit">$</option>
+        <option name="unitPosition">before</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_data_tracking/eop_hrp_primary_db</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel id="SI5Inbound2">
+      <title>SI5 Inbound from HRP EOP</title>
+      <single>
+        <search>
+          <query>index=main OR index=sterling sourcetype="eop:hrp:prod"  | stats  sum(totalAmount) as "SI5 Total $ Amount"</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">SI5 Total $ Amount</option>
+        <option name="unit">$</option>
+        <option name="unitPosition">before</option>
+        <drilldown>
+          <link target="_blank">/app/bcbsaz_data_tracking/test_eop</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel id="SI5Onbound2">
+      <title>SI5 Outbound to REDCARD</title>
+      <single>
+        <search>
+          <query>(index=sterling sourcetype="eop:redcard" host=mm-ops-a02)
+| eval  "Amount"=tonumber(replace('Amount',"\$|,",""))
+| stats  sum(totalAmount) as "Redcard Total Count"</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0.00</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Redcard Total $ Amount</option>
+        <option name="unit">$</option>
+        <option name="unitPosition">before</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel id="HRP3">
+      <title>HRP Extract Replicated DB (Source=MP-HRP-D03)</title>
+      <table>
+        <title>Payment Cycle broken down by paymentType</title>
+        <search>
+          <query>index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT* | rename Payment_Amount as "totalAmount"  | stats sum(totalAmount) count by  payment_cycle_key Payment_Type_Desc Payee_Type_Name Payment_Status | rename Payee_Type_Name as "payeeType" | rename Payment_Type_Desc as paymentType | rename payment_cycle_key as "paymentCycle"</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="wrap">false</option>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+    <panel id="SI5Inbound3">
+      <title>SI5 Inbound from HRP EOP</title>
+      <table>
+        <title>Payment Cycle broken down by paymentType</title>
+        <search>
+          <query>(index=sterling sourcetype="eop:hrp:prod" ) 
+| stats sum(totalAmount) as totalAmount_A sum(totalClaimPayableAmount) as totalClaimPayableAmount_B sum(totalInterestPayableAmount) as totalInterestPayableAmount_C sum(totalAllocatedReceivedPaymentsAmount) as totalAllocatedReceivedPaymentsAmount_D sum(totalOutstandingAmount) as totalOutstandingAmount_E sum(totalRecoupedAmount) as totalRecoupedAmount_F sum(totalWithHoldAmount) as totalWithHoldAmount_G   sum(totalNumberOfClaims) as totalNumberOfClaims  count as Count by paymentCycle paymentType payeeType paymentStatus  
+| sort paymentCycle | eval BCDEFG_TotalAmount=(totalClaimPayableAmount_B+totalInterestPayableAmount_C+totalAllocatedReceivedPaymentsAmount_D+totalOutstandingAmount_E-totalRecoupedAmount_F+totalWithHoldAmount_G)
+| eval BCDEFG_TotalAmount_Minus_totalAmount_A=(totalAmount_A-BCDEFG_TotalAmount)
+| eval totalAmount_A_Minus_totalClaimPayableAmount_B=(totalAmount_A-totalClaimPayableAmount_B)
+| table paymentCycle, paymentType, payeeType, paymentStatus, BCDEFG_TotalAmount_Minus_totalAmount_A, totalAmount_A, totalClaimPayableAmount_B, totalInterestPayableAmount_C, totalAllocatedReceivedPaymentsAmount_D, totalOutstandingAmount_E, totalRecoupedAmount_F, totalWithHoldAmount_G, Count</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="wrap">false</option>
+        <format type="color" field="BCDEFG_TotalAmount_Minus_totalAmount_A">
+          <colorPalette type="list">[#53A051,#DC4E41]</colorPalette>
+          <scale type="threshold">0.01</scale>
+        </format>
+        <format type="number" field="BCDEFG_TotalAmount_Minus_totalAmount_A"></format>
+        <format type="color" field="BCDEFG_TotalAmount_Minus_totalAmount_A">
+          <colorPalette type="list">[#53A051,#DC4E41]</colorPalette>
+          <scale type="threshold">0.01</scale>
+        </format>
+        <format type="number" field="BCDEFG_TotalAmount_Minus_totalAmount_A"></format>
+        <format type="color" field="BCDEFG_TotalAmount_Minus_totalAmount_A">
+          <colorPalette type="list">[#53A051,#DC4E41]</colorPalette>
+          <scale type="threshold">0.01</scale>
+        </format>
+        <format type="number" field="BCDEFG_TotalAmount_Minus_totalAmount_A"></format>
+        <format type="color" field="BCDEFG_TotalAmount_Minus_totalAmount_A">
+          <colorPalette type="list">[#53A051,#DC4E41]</colorPalette>
+          <scale type="threshold">0.01</scale>
+        </format>
+        <format type="number" field="BCDEFG_TotalAmount_Minus_totalAmount_A"></format>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+    <panel id="SI5Onbound3">
+      <title>SI5 Outbound to REDCARD</title>
+      <table>
+        <title>Payment Cycle broken down by paymentType</title>
+        <search>
+          <query>(index=sterling sourcetype="eop:redcard" host=mm-ops-a02) 
+| stats sum(totalAmount) sum(totalNumberOfClaims)  count by paymentCycle paymentType paymentStatus 
+| sort paymentCycle</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">50</option>
+        <option name="drilldown">none</option>
+        <option name="wrap">false</option>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel id="HRP4">
+      <title>HRP Extract Replicated DB (Source=MP-HRP-D03)</title>
+      <table>
+        <title>Total Amount by paymentCycle name</title>
+        <search>
+          <query>index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT* | rename Payment_Amount as "totalAmount" | stats sum(totalAmount) sum(Claims) count by payment_cycle_key Payee_Type_Name | sort Payment_Bank Payment_Type_Desc| rename Payee_Type_Name as "payeeType" | rename Payment_Type_Desc as paymentType | rename payment_cycle_key as "paymentCycle"</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="wrap">false</option>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+    <panel id="SI5Inbound4">
+      <title>SI5 Inbound from HRP EOP</title>
+      <table>
+        <title>Total Amount by paymentCycle name</title>
+        <search>
+          <query>(index=sterling sourcetype="eop:hrp:prod") | stats sum(totalAmount) sum(totalNumberOfClaims)  count by paymentCycle  | sort paymentCycle</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="wrap">false</option>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+    <panel id="SI5Onbound4">
+      <title>SI5 Outbound to REDCARD</title>
+      <table>
+        <title>Total Amount by paymentCycle name</title>
+        <search>
+          <query>(index=sterling sourcetype="eop:redcard" host=mm-ops-a02) 
+| stats sum(totalAmount) sum(totalNumberOfClaims) count by paymentCycle  
+| sort paymentCycle</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="wrap">false</option>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel id="HRP5">
+      <title>HRP Extract Replicated DB (Source=MP-HRP-D03)</title>
+      <table>
+        <title>HRP Extract Replicated DB (Source=MP-HRP-D03)</title>
+        <search>
+          <query>index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT* | rename Payment_Amount as "totalAmount" | rex "Pay_Through_Date=\S(?&lt;paymentThroughDate&gt;[^ ]+)" | rex "Payment_Date=\S(?&lt;paymentDate&gt;[^ ]+)" | stats  values(paymentThroughDate) as paymentThroughDate values(paymentDate) as paymentDate values(Payment_Batch_Key) as paymentBatchId count by payment_cycle_key  | sort Payment_Bank Payment_Type_Desc| rename Payee_Type_Name as "payeeType" | rename Payment_Type_Desc as paymentType | rename payment_cycle_key as "paymentCycle"</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="wrap">false</option>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentThroughDate">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentThroughDate">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentDate">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+    <panel id="SI5Inbound5">
+      <title>SI5 Inbound from HRP EOP</title>
+      <table>
+        <title>Payment Date count by paymentCycle</title>
+        <search>
+          <query>(index=sterling sourcetype="eop:hrp:prod") | stats  values(paymentThroughDate) as paymentThroughDate values(paymentDate) as paymentDate values(paymentBatchNumber) as paymentBatchId count by paymentCycle  | sort paymentCycle</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="wrap">false</option>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentThroughDate">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentThroughDate">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentDate">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+    <panel id="SI5Onbound5">
+      <title>SI5 Outbound to REDCARD</title>
+      <table>
+        <title>Payment Date count by paymentCycle</title>
+        <search>
+          <query>(index=sterling sourcetype="eop:redcard" host=mm-ops-a02) 
+| stats values(paymentThroughDate) as paymentThroughDate values(paymentDate) as paymentDate values(paymentBatchNumber) as paymentBatchId count by paymentCycle  
+| sort paymentCycle</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="wrap">false</option>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentThroughDate">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentCycle">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentThroughDate">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="paymentDate">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel id="Oth1">
+      <title>FIS Pick location to Velocity</title>
+      <single>
+        <search>
+          <query>index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02 source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_ingress_*.log" DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Inbound\\HRP\\EOP\\Prod" | stats dc(FileName)</query>
+          <earliest>-20m</earliest>
+          <latest>now</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Count will reach 0 when files are picked up</option>
+      </single>
+    </panel>
+    <panel id="Oth2">
+      <title>FIS Pick location to Velocity</title>
+      <single>
+        <search>
+          <query>index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02 source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_ingress_*.log" DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Inbound\\HRP\\EOP\\Prod" | rex "(?&lt;=CreationTime)(?:\s\W+)(?P&lt;Inbound_CreationTime&gt;(.*)).*?(?=\sLastWriteTime)" 
+
+| stats  latest(Inbound_CreationTime)</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Date/Time</option>
+        <option name="useColors">0</option>
+      </single>
+    </panel>
+    <panel id="Oth3">
+      <title>FES SI5 1520 job outbound to Redcard</title>
+      <single>
+        <search>
+          <query>index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02 source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_egress_*.log" DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\RedCard\\EOP\\Prod" | stats  dc(FileName)</query>
+          <earliest>-20m</earliest>
+          <latest>now</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Count will reach 0 when files are picked up</option>
+      </single>
+    </panel>
+    <panel id="Oth4">
+      <title>FES SI5 1520 job outbound to Redcard</title>
+      <single>
+        <search>
+          <query>index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02 source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_egress_*.log" DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\RedCard\\EOP\\Prod" | rex "(?&lt;=CreationTime)(?:\s\W+)(?P&lt;Outbound_CreationTime&gt;(.*)).*?(?=\sLastWriteTime)" 
+
+| stats  latest(Outbound_CreationTime)</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">Date/Time</option>
+      </single>
+    </panel>
+    <panel id="Oth5">
+      <title>Velocity Connect Processing</title>
+      <single>
+        <search>
+          <query>index=sterling sourcetype="Azure:Directory" Directory="finance-aggregates Prem_Dir = finance-aggregates" FileName="*eop*"   | stats  count(FileName)</query>
+          <earliest>-20m@m</earliest>
+          <latest>now</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">VC Processing Count</option>
+      </single>
+    </panel>
+    <panel id="Oth6">
+      <title>Velocity Connect Processed</title>
+      <single>
+        <search>
+          <query>index=azure sourcetype=mscs:storage:blob:saloggingp001 message{}.raw="Completed upload of file: All_EOP_GetPaymentIDs*"  | dedup message{}.raw | stats count(source)</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">VC Processed Count</option>
+        <drilldown>
+          <link target="_blank">https://monitoring.lower.services.azblue.com/d/YFHzRkn7z/fnfinancepaymenthrp-payment-aggregationp001-failures?orgId=1</link>
+        </drilldown>
+      </single>
+    </panel>
+    <panel id="Oth7">
+      <title>Velocity Connect Errors/Failures</title>
+      <single>
+        <search>
+          <query>index=azure sourcetype=mscs:storage:blob:saloggingp001 source="aifisp001*"  message{}.raw="*All_EOP_GetPaymentIDs*" "*fail*" | dedup message{}.raw | stats  count(source) as "Failed Count"</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">VC Error Count</option>
+      </single>
+    </panel>
+    <panel id="Oth8">
+      <title>PCS OutBound Folder Count</title>
+      <single>
+        <search>
+          <query>index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02 source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_egress_*.log" DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\PCS\\EOP\\Prod" | stats  dc(FileName)</query>
+          <earliest>$time_dropdown.earliest$</earliest>
+          <latest>$time_dropdown.latest$</latest>
+          <refresh>30m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">PCS Outbound Count</option>
+      </single>
+    </panel>
+    <panel id="Oth9">
+      <title>PCS Outbound Folder Count Remaining</title>
+      <single>
+        <search>
+          <query>index=5010 sourcetype="btsfrs:azure:dirlist" host=mm-ops-a02 source="D:\\Scripts\\bts_frs_azure_dir\\logs\\bts_frs_azure_egress_*.log" DirectoryName="\\\\baz-filer01\\share\\EMFT_FTP\\Outbound\\PCS\\EOP\\Prod" | stats  dc(FileName)</query>
+          <earliest>-15m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="underLabel">PCS Outbound Count</option>
+      </single>
+    </panel>
+  </row>
+</form>

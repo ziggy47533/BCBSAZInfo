@@ -1,0 +1,46 @@
+
+
+Payment Cycle
+
+
+Prod SI - Zip file decompress into other folders
+
+
+
+
+#input variables
+$zipInputFolder = 'C:\Users\Temp\Desktop\Temp'
+$zipOutPutFolder = 'C:\Users\Temp\Desktop\Temp\Unpack'
+
+#start
+$zipFiles = Get-ChildItem $zipInputFolder -Filter *.zip
+
+foreach ($zipFile in $zipFiles) {
+
+    $zipOutPutFolderExtended = $zipOutPutFolder + "\" + $zipFile.BaseName
+    Expand-Archive -Path $zipFile.FullName -DestinationPath $zipOutPutFolderExtended
+
+    }
+	
+	
+	
+	
+	
+	
+	
+	function Expand-ZIPFile($file, $destination)
+{
+    $files = (Get-ChildItem $file).FullName
+
+    $shell = new-object -com shell.application
+
+    $files | %{
+        $zip = $shell.NameSpace($_)
+
+        foreach ($item in $zip.items()) {
+           $shell.Namespace($destination).copyhere($item)
+        }
+    }
+}
+
+

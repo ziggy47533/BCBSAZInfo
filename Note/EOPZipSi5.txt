@@ -1,0 +1,14 @@
+
+
+EOP Files failed in SI5
+
+following these steps first.
+
+1.	Make sure that there are no files in SI5 that are in a routing state.  If they are in a routing state hold off on replaying any files.
+2.	Make sure that the last file that shows routed or failed has been in a routed or failed state for at least an hour and you are not seeing any files in \\baz-filer01\share\EMFT_FTP\Outbound\RedCard\EOP\Prod or \\baz-filer01\share\EMFT_FTP\Inbound\HRP\EOP\Prod in the last hour.
+3.	Make sure before replaying any files in SI5 that you  move all of the Redcard files from \\baz-filer01\share\EMFT_FTP\Outbound\RedCard\EOP\Prod
+to \\baz-filer01\share\EMFT_FTP\Outbound\RedCard\EOP\Prod\HOLD. The \\baz-filer01\share\EMFT_FTP\Outbound\RedCard\EOP\Prod is the output from Velocity that goes to Redcard. This is where we had issues with the duplicates. 
+
+On today’s Finance EOP call Kelly and Palani would like to approach how we handle these failures in SI5.  I would hold-off on replaying any files until now.  We will need to collaborate with Finance on how we will handle future of failures in SI5.
+
+

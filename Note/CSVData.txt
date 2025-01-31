@@ -1,0 +1,10 @@
+
+SI EOP
+index=sterling_eop sourcetype=file_processing:eop_redcard_hrp_prd:csv | 
+table _time paymentBatchNumber paymentId paymentCycle totalAmount source
+
+
+Zelis
+
+index=sterling_eop sourcetype=file_processing:eop_redcard_prd:csv | 
+table _time paymentBatchNumber paymentId paymentCycle totalAmount

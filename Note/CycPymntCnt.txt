@@ -1,0 +1,6 @@
+
+
+Powershell
+
+(get-childitem \\baz-filer01\share\emft_ftp\outbound\pcs\prod\ -file).count
+

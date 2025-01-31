@@ -1,0 +1,207 @@
+
+
+
+(index="sterling" sourcetype="file_processing:eop_redcard_hrp_prd:csv")
+| rex field=source "\bprocessed\W(?<file_name>[^\.]+)"
+| stats count(file_name) as "SI5 Total Count"
+
+
+(index="sterling" sourcetype="*" sourcetype="hrp:dbx:bazpdwpr_gg:eop:extract:prd")
+| stats count(Payee_Name) as "SI5 Total Count"
+
+
+(index="sterling" sourcetype="*" sourcetype="hrp:dbx:bazpdwpr_gg:eop:extract:prd")
+| stats sum(Payment_Amount) as "SI5 Total $ Amount"
+
+
+SI5 - Old
+(index="sterling" sourcetype="file_processing:eop_redcard_hrp_prd:csv")
+| rex field=source "\bprocessed\W(?<file_name>[^\.]+)"
+| stats count(file_name) as "SI5 Total Count"
+
+
+RedCard
+(index="sterling" sourcetype="file_processing:eop_redcard_prd:csv") 
+| stats  count(totalAmount) as "Redcard Total Count"
+
+
+(index="sterling" sourcetype="hrp:dbx:bazpdwpr_gg:eop:extract:prd")
+| stats sum(Payment_Amount) as "SI Total $ Amount"
+
+
+index=sterling host= mp-hrp-d03 source=hrp_extract
+
+
+(index="sterling_eop" sourcetype=file_processing:eop_redcard_prd:csv)
+
+
+index=sterling_eop sourcetype = file_processing:eop_redcard_hrp_prd:csv   -- SI
+index=sterling_eop sourcetype = file_processing:eop_redcard_prd:csv       -- Zelis (RedCard)
+
+
+si - new
+index=sterling_eop sourcetype=file_processing:eop_redcard_hrp_prd:csv
+| stats count(totalAmount) as "SI Total Count"
+
+index=sterling_eop sourcetype=file_processing:eop_redcard_hrp_prd:csv
+| stats sum(totalAmount) as "SI Total $ Amount"
+
+
+Zelis - New
+index=sterling_eop sourcetype=file_processing:eop_redcard_prd:csv
+| stats count(totalAmount) as "SI Total Count"
+
+index=sterling_eop sourcetype=file_processing:eop_redcard_prd:csv
+| stats sum(totalAmount) as "SI Total $ Amount"
+
+
+
+
+SI Inbound from HRP EOP
+
+Payment Cycle broken down by payeeType  ---Old
+(index=sterling sourcetype="eop:hrp:prod" ) 
+| stats sum(totalAmount) as totalAmount_A sum(totalClaimPayableAmount) as totalClaimPayableAmount_B
+ sum(totalInterestPayableAmount) as totalInterestPayableAmount_C 
+ sum(totalAllocatedReceivedPaymentsAmount) as totalAllocatedReceivedPaymentsAmount_D
+ sum(totalOutstandingAmount) as totalOutstandingAmount_E sum(totalRecoupedAmount) as totalRecoupedAmount_F
+ sum(totalWithHoldAmount) as totalWithHoldAmount_G   sum(totalNumberOfClaims) as totalNumberOfClaims
+ count as Count by paymentCycle paymentType payeeType paymentStatus  
+| sort paymentCycle | eval BCDEFG_TotalAmount=(totalClaimPayableAmount_B+
+ totalInterestPayableAmount_C+totalAllocatedReceivedPaymentsAmount_D+
+ totalOutstandingAmount_E-totalRecoupedAmount_F+totalWithHoldAmount_G)
+| eval BCDEFG_TotalAmount_Minus_totalAmount_A=(totalAmount_A-BCDEFG_TotalAmount)
+| eval totalAmount_A_Minus_totalClaimPayableAmount_B=(totalAmount_A-totalClaimPayableAmount_B)
+| table paymentCycle, paymentType, payeeType, paymentStatus, BCDEFG_TotalAmount_Minus_totalAmount_A,
+ totalAmount_A, totalClaimPayableAmount_B, totalInterestPayableAmount_C, totalAllocatedReceivedPaymentsAmount_D,
+ totalOutstandingAmount_E, totalRecoupedAmount_F, totalWithHoldAmount_G, Count
+  
+ 
+ NEW ::::
+ 
+ index=sterling_eop sourcetype=file_processing:eop_redcard_hrp_prd:csv
+| stats sum(totalAmount) as totalAmount_A sum(totalClaimPayableAmount) as totalClaimPayableAmount_B
+sum(totalInterestPayableAmount) as totalInterestPayableAmount_C 
+sum(totalAllocatedReceivedPaymentsAmount) as totalAllocatedReceivedPaymentsAmount_D
+sum(totalOutstandingAmount) as totalOutstandingAmount_E sum(totalRecoupedAmount) as totalRecoupedAmount_F
+sum(totalWithHoldAmount) as totalWithHoldAmount_G   sum(totalNumberOfClaims) as totalNumberOfClaims
+count as Count by paymentCycle paymentType payeeType paymentStatus  source
+| sort paymentCycle | eval BCDEFG_TotalAmount=(totalClaimPayableAmount_B+
+totalInterestPayableAmount_C+totalAllocatedReceivedPaymentsAmount_D+
+totalOutstandingAmount_E-totalRecoupedAmount_F+totalWithHoldAmount_G)
+| eval BCDEFG_TotalAmount_Minus_totalAmount_A=(totalAmount_A-BCDEFG_TotalAmount)
+| eval totalAmount_A_Minus_totalClaimPayableAmount_B=(totalAmount_A-totalClaimPayableAmount_B)
+| table paymentCycle, paymentType, payeeType, paymentStatus, BCDEFG_TotalAmount_Minus_totalAmount_A,
+totalAmount_A, totalClaimPayableAmount_B, totalInterestPayableAmount_C, totalAllocatedReceivedPaymentsAmount_D,
+totalOutstandingAmount_E, totalRecoupedAmount_F, totalWithHoldAmount_G, source, Count
+ 
+ 
+Payment Cycle broken down by payeeType ---New
+index=sterling_eop sourcetype = file_processing:eop_redcard_hrp_prd:csv
+| stats sum(totalAmount) sum(totalNumberOfClaims)  count by paymentCycle paymentType paymentStatus 
+| sort paymentCycle
+
+ 
+TotalAmount by PaymentCycle Name ---Old
+(index=sterling sourcetype="eop:hrp:prod") | stats sum(totalAmount) sum(totalNumberOfClaims)  count by paymentCycle
+| sort paymentCycle
+
+TotalAmount by PaymentCycle Name ---New
+(index=sterling_eop sourcetype = file_processing:eop_redcard_hrp_prd:csv)
+| stats sum(totalAmount) sum(totalNumberOfClaims)  count by paymentCycle  | sort paymentCycle
+
+
+
+Payment Date Count by PaymentCycle  ---Old
+(index=sterling sourcetype="eop:hrp:prod")
+| stats  values(paymentThroughDate) as paymentThroughDate
+ values(paymentDate) as paymentDate values(paymentBatchNumber) as paymentBatchId count by paymentCycle
+| sort paymentCycle
+
+Payment Date Count by PaymentCycle  ---New
+(index=sterling_eop sourcetype = file_processing:eop_redcard_hrp_prd:csv)
+| stats  values(paymentThroughDate) as paymentThroughDate values(paymentDate) as paymentDate values(paymentBatchNumber) as paymentBatchId count by paymentCycle
+| sort paymentCycle
+
+
+SI Outbound to Zelis (Redcard)
+
+Payment Cycle broken down by payeeType  ---Old
+(index=sterling sourcetype="eop:redcard" host=mm-ops-a02) 
+| stats sum(totalAmount) sum(totalNumberOfClaims)  count by paymentCycle paymentType paymentStatus 
+| sort paymentCycle
+
+
+Payment Cycle broken down by payeeType  ---New
+(index=sterling_eop sourcetype = file_processing:eop_redcard_prd:csv) 
+| stats sum(totalAmount) sum(totalNumberOfClaims)  count by paymentCycle paymentType paymentStatus 
+| sort paymentCycle
+
+
+TotalAmount by PaymentCycle Name  ---Old 
+(index=sterling sourcetype="eop:redcard" host=mm-ops-a02) 
+| stats sum(totalAmount) sum(totalNumberOfClaims) count by paymentCycle  
+| sort paymentCycle
+
+
+TotalAmount by PaymentCycle Name  ---New
+(index=sterling_eop sourcetype = file_processing:eop_redcard_prd:csv) 
+| stats sum(totalAmount) sum(totalNumberOfClaims) count by paymentCycle  
+| sort paymentCycle
+
+
+Payment Date Count by PaymentCycle  ---Old
+(index=sterling sourcetype="eop:redcard" host=mm-ops-a02) 
+| stats values(paymentThroughDate) as paymentThroughDate values(paymentDate) as paymentDate
+ values(paymentBatchNumber) as paymentBatchId count by paymentCycle  
+| sort paymentCycle
+
+Payment Date Count by PaymentCycle  ---New
+(index=sterling_eop sourcetype = file_processing:eop_redcard_prd:csv) 
+| stats values(paymentThroughDate) as paymentThroughDate values(paymentDate) as paymentDate values(paymentBatchNumber) as paymentBatchId count by paymentCycle  
+| sort paymentCycle
+
+
+HRP
+index=sterling sourcetype=hrpdb:extract:eop source=HRP_EXTRACT* 
+| table Audit_Log_Key Claims	Id	Number	Pay_Through_Date
+  Payee_ID	Payee_Name	Payee_Type_Name	Payment_Amount
+  Payment_Bank	Payment_Batch_Key	Payment_Date	Payment_Status	Payment_Type_Desc
+ 
+SI5
+(index=main OR index=sterling sourcetype="eop:hrp:prod")
+| rex field=source "(EOP\W)(?<file_name>\w+)" 
+| table HICBankAccountNumber	HICBankRoutingNumber	RemittanceAdviceType
+  file_name	paybaleType	payeeType	paymentBatchNumber	paymentCycle	paymentId
+  paymentNumber	paymentStatus	paymentStatusDate	paymentType	recipientIdentifier	recipientName
+  totalAmount	totalNumberOfClaims	totalOutstandingAmount
+ 
+ 
+Zelis (Redcard)
+(index=sterling sourcetype="eop:redcard")
+| rex field=source "(EOP\W)(?<file_name>\w+)" 
+| table HICBankAccountNumber	HICBankRoutingNumber	RemittanceAdviceType
+  file_name	paybaleType	payeeType	paymentBatchNumber	paymentCycle	paymentId
+  paymentNumber	paymentStatus	paymentStatusDate	paymentType	recipientIdentifier	recipientName
+  totalAmount	totalNumberOfClaims	totalOutstandingAmount
+
+
+Dedupe the file of the same file name -
+(index=main OR index=sterling sourcetype="eop:hrp:prod")
+| rex field=source "(EOP\W)(?<file_name>\w+)"
+| dedup file_name
+| stats  count(file_name) as "SI5 Total Count"
+
+
+
+D:\Scripts\redcard\eop\working\sampledata\8917HR20220921R60E3A4D11.XML.csv
+
+(D:\\\w.*\\(?<FileName>\w+\.\w+\.csv))
+
+
+(index=sterling sourcetype="eop:redcard")
+| rex field=source "(D:\\\w.*\\(?<FileName>\w+\.\w+\.csv))" 
+| table HICBankAccountNumber	HICBankRoutingNumber	RemittanceAdviceType
+  file_name	paybaleType	payeeType	paymentBatchNumber	paymentCycle	paymentId
+  paymentNumber	paymentStatus	paymentStatusDate	paymentType	recipientIdentifier	recipientName
+  totalAmount	totalNumberOfClaims	totalOutstandingAmount

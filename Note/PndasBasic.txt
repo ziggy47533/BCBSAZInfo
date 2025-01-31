@@ -1,0 +1,40 @@
+
+python -m venv (dir file)
+
+
+python.exe -m pip install --upgrade pip
+
+pip install pandas
+
+pip install matplotlib
+
+pip install numpy
+
+
+import pandas as pd
+
+import matplotlib.pyplot as plt
+
+import numpy as np
+
+
+
+
+
+
+df = pd.read_csv( " ")
+
+df = pd.read_csv(" ", header = 1)
+
+
+df.dtypes
+
+df.describe()
+
+
+df.head(10)
+
+df.tail(10)
+
+df.index
+
