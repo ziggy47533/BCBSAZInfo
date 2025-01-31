@@ -1,0 +1,1 @@
+﻿Restart-Computer -ComputerName mm-mso-a01, mm-mso-a02, mm-mso-a03 -Wait 15 -Delay 15 -WhatIf

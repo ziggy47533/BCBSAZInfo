@@ -1,0 +1,17 @@
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/provider_timeouts
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/biztalksystemsatus
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/biztalk_performanceincident_review?form.v_DATE_TOK.earliest=%40d&form.v_DATE_TOK.latest=now
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/edi_biztalkforesight_infrastructure_performance_prd_?form.time_token.earliest=-60m%40m&form.time_token.latest=now&form.evironment_token=prd&form.host_token=MP-BTS-SA03&form.proc_token=*&form.v_WNE_tok=*
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/member_portal_overview?form.time_token.earliest=-24h%40h&form.time_token.latest=now
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/openspansummary
+https://lm-spl-a11.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_data_tracking/pinnacle?form.DT_TOK.earliest=%40d&form.DT_TOK.latest=now&form.AP_TOK=*
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_operations/ops_check_third_shift
+https://lm-spl-a11.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_data_tracking/eop_file_processing__hrp_to_si5__to_redcard?form.time_token.earliest=%40d&form.time_token.latest=now
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/web_portal_claim_status_overview
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/web_portal__provider_portal_overview
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/mq_review?form.time_token.earliest=-15m&form.time_token.latest=now
+https://monitoring.connect.azblue.com/d/sBdWI3Rnz/asp-net-namespace-service-endpoints?orgId=1&refresh=30s&var-namespace=member-prod&var-service=member-api-healthrulesanswers-query&from=now-3h&to=now&var-source=default
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_balance_controls/si_files
+https://lm-spl-a07.corp.net.bcbsaz.com:8000/en-US/app/bcbsaz_ta_5010/web_portal_provider_portal_overview_eligibility_v2
+https://www.dynatrace.com
+https://azblue.my.rubrik.com
